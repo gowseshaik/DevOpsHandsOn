@@ -1,0 +1,298 @@
+***** Chef-Server setup:  (Linux)*********
+
+- Chef-Server instance should have atleast 1GB RAM
+- /etc/hosts  should contain only one entry of IP address
+- add hostname /etc/hosts and /etc/sysconfig/network
+  10.11.12.107    chef.mycompany.com
+  $sudo hostname chef.mycompany.com
+  $hostname -f
+  chef.mycompany.com
+- Please restart server once above hostname is setup.
+  
+- Login with normal user and this user should be in sudoer's
+
+- Download chef-server rpm and install it with below commands
+	Download https://packagecloud.io/chef/stable/packages/el/6/chef-server-core-12.3.0-1.el6.x86_64.rpm/download
+	sudo rpm -ivh chef-server-core-12.3.0-1.el6.x86_64.rpm
+	sudo chef-server-ctl reconfigure
+	
+- Run below command to create user
+		
+	#sudo chef-server-ctl user-create scmaug scm aug scm.aug@gmail.com scm123 --filename /home/vagrant/scm.pem
+	sudo chef-server-ctl user-create devopsan devops jan devops.jan@gmail.com devops123 --filename /home/vagrant/devops.pem
+		
+- Run below command to create organisation id
+	
+	sudo chef-server-ctl org-create devops-aug "DEVOPSTraining Software, Inc." --association_user scmaug --filename /home/vagrant/scmaug-validator.pem
+	
+- Install packaged
+	sudo yum update
+	sudo yum install opscode-manage
+	#sudo chef-server-ctl install opscode-manage
+	sudo opscode-manage-ctl reconfigure
+	sudo chef-server-ctl reconfigure
+	
+	Try this way incase if you dont find opscode-manage in yum repository
+		Download the chef-manage-2.2.0-1.el6.x86_64.rpm and instal it
+		sudo rpm -ivh chef-manage-2.2.0-1.el6.x86_64.rpm
+		sudo chef-manage-ctl reconfigure
+ 
+- Verify the chef server by logging below URL in browser
+	https://chef.mycompany.com/  (sarahjohn/sarah123)
+	
+ Use Chef management console to manage data bags, attributes, run-lists, roles, environments, and cookbooks from a web user interface
+ 
+ 
+*****Chef-Work station setup: ( Linux)*******
+- Install the development kit with a normal user having sudoer access
+- Download the chef SDK in a CentOS instace
+  wget https://opscode-omnibus-packages.s3.amazonaws.com/el/6/x86_64/chefdk-0.10.0-1.el6.x86_64.rpm
+- Install the above downloaded rpm file which will enable chef commands in Workstation
+  sudo rpm -ivh chefdk-0.10.0-1.el6.x86_64.rpm
+  verify the installation with chef --version
+	[vagrant@localhost vagrant]$ chef --version
+	Chef Development Kit Version: 0.10.0
+	chef-client version: 12.5.1
+	berks version: 4.0.1
+	kitchen version: 1.4.2
+
+- Login to your chef server with above credentials
+	https://192.168.33.50   (sarahjohn/sarah123)
+	
+- Navigate to Organisation -> Administration-> Click on start kit and you should find a button to dowload the starter kit
+- unzip the starter kit, this will create chef-repo directory at home location
+- run below commands
+  cd ~/chef-repo
+  get the key from chef server at below location and copy to chef-repo/.chef/trusted-certs
+  /home/vagrant/chef-repo/.chef/trusted_certs
+  $knife ssl check
+  $knife ssl fetch
+  $knife client list
+
+  FOR MAC: 
+  https://opscode-omnibus-packages.s3.amazonaws.com/mac_os_x/10.8/x86_64/chefdk-0.4.0-1.dmg
+  Login to https://vapps1.konylabs.net/  ( harrypotter/harry123)
+  click on organisation-> starter kit -> Downlaod starter kit
+  unzip the starter kit, this will create chef-repo directory at home location
+  run below commands
+  cd ~/chef-repo
+  $knife ssl fetch
+  $knife client list
+    chef-validator
+   
+***** Working on Workstation to upload a cookbook to server and deploy on node ****
+	knife cookbook site download learn_chef_httpd
+	tar -zxvf learn_chef_httpd-0.1.0.tar.gz -C cookbooks
+	rm learn_chef_httpd*.tar.gz
+	mv learn_chef_httpd cookbooks/
+	knife cookbook upload learn_chef_httpd
+	kinfe cookbook list
+	
+		knife bootstrap  192.168.33.32 --ssh-user vagrant --ssh-password 'vagrant' --sudo --use-sudo-password --node-name node32 --run-list 'recipe[learn_chef_httpd]'  
+    Note: Make sure the node hosts file has the server dns pointed to the server IP
+-- Install tomat
+	knife cookbook site download tomcat7
+	knife cookbook upload tomcat7
+	kinfe cookbook list
+	
+-- Important concepts/keywords
+package- Used to manage packages on a node
+service- Used to manage services on a node
+user- Manage users on the node
+group- Manage groups
+template- Manage files with embedded ruby templates
+cookbook_file- Transfer files from the files subdirectory in the cookbook to a location on the node
+file- Manage contents of a file on node
+directory- Manage directories on node
+execute- Execute a command on the node
+cron- Edit an existing cron file on the node
+
+
+
+---------------------------------------------
+-- Roles and Environments:
+	Nice explanation form digital ocean below
+https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-environments-in-chef-to-control-server-configurations
+
+Roles:
+-----
+Chef's view of roles is almost entirely the same as the regular definition. A role in Chef is a categorization that describes what a specific machine is supposed to do. What responsibilities does it have and what software and settings should be given to it.
+
+- Create a role in two ways ( either json file DSL ruby file)
+	
+	1) Json file below with 
+	knife role create test
+	export EDITOR=vi
+	-----------------------------------
+		{
+		  "name": "web_server",
+		  "description": "A role to configure our front-line web servers",
+		  "json_class": "Chef::Role",
+		  "default_attributes": {
+				"nginx": {
+							  "log_location": "/var/log/nginx.log"
+						 }
+		  },
+		  "override_attributes": {
+				"nginx": {
+							  "gzip": "on"
+						}
+		  },
+		  "chef_type": "role",
+		  "run_list": [
+			"recipe[apt]",
+			"recipe[nginx]"
+		  ],
+		  "env_run_lists": {
+
+			  "production": [
+			  "recipe[nginx::config_prod]"
+			],
+
+			"testing": [
+			  "recipe[nginx::config_test]"
+			]
+
+		  }
+		}
+	---------------------------------------------
+	The above role with json will directly creates on server, so no need to upload
+	
+	2) Using chef DSL script
+		vi web_server.rb
+		add below contents to the web_server.rb file
+		------------------------------
+		name "web_server"
+		description "A role to configure our front-line web servers"
+		run_list "recipe[apt]", "recipe[nginx]"
+		env_run_lists "production" => ["recipe[nginx::config_prod]"], "testing" => ["recipe[nginx::config_test]"]
+		default_attributes "nginx" => { "log_location" => "/var/log/nginx.log" }
+		override_attributes "nginx" => { "gzip" => "on" }
+		------------------------------
+		upload it using below command to chef server
+		knife role from file
+
+-> Assign the role to a node
+	Check the list if nodes
+	knife node list
+	node32
+	edit the node configs to assign role
+	knife node edit node32
+	--------------------------
+	{
+		  "name": "node32",
+		  "chef_environment": "_default",
+		  "normal": {
+			"tags": [
+
+			]
+		  },
+		  "run_list": [
+		  "role[web_server]"
+		]
+	}
+	--------------------------------
+	Thats it now instead of recipies we added a role to the node
+-> To search list of nodes with given role, we can use below command
+	knife search "role:web_server AND chef_environment:_default" -a name
+	
+Environments:
+-------------
+	In some ways, environments are fairly similar to roles. They are also used to differentiate different servers, but instead of differentiating by the function of the server, environments differentiate by the phase of development that a machine belongs to.
+
+Create an Environments
+	mkdir ~/chef-repo/environments
+	cd ~/chef-repo/environments
+	Same as role we can create it with ruby DSL or json file using knife directly on server
+	
+	knife environment create development
+	----------------
+			{
+		  "name": "development",
+		  "description": "The master development branch",
+		  "cookbook_versions": {
+			"nginx": "<= 1.1.0",
+			"apt": "= 0.0.1"
+		  },
+		  "json_class": "Cheff:Environment",
+		  "chef_type": "environment",
+		  "default_attributes": {
+		  },
+		  "override_attributes": {
+			"nginx": {
+			  "listen": [
+				"80",
+				"443"
+			  ]
+			},
+			"mysql": {
+			  "root_pass": "root"
+			}
+		  }
+		}
+	---------------------
+	
+	we can upload it with the help of ruby DSL file as well
+	------------------------
+			name "development"
+		description "The master development branch"
+		cookbook_versions({
+			"nginx" => ">= 1.1.0",
+			"apt" => ">= 0.0.1"
+		})
+		override_attributes ({
+			"nginx" => {
+				"listen" => [ "80", "443" ]
+			},
+			"mysql" => {
+				"root_pass" => "root"
+			}
+		})
+	---------------------------
+	Upload it with below command to server
+	knife environment from file ~/chef-repo/environments/development.rb
+--> Assign an environment to node
+	knife node edit node32
+	
+	
+Apply the role to node and bootstrap the node:-
+----------------------------------------------
+-> Make sure you have uploaded all required cookbooks to chef-server
+	knife cookbook site download apt
+	knife cookbook upload apt 
+	there are few more dependent cookbooks required so upload all to chef server
+	
+	 knife bootstrap  192.168.33.32 --ssh-user vagrant --ssh-password 'vagrant' --sudo --use-sudo-password --node-name node32 --run-list 'role[web_server]'
+	 
+Data bags:
+--------=
+	A data bag is a collection of bits of JSON called data bag items, indexed by an ID, that Chef allows us to use and search in our recipes. Let's use knife to create our data bags
+	Type the following on your workstation to create a data bag called wp-sites.
+
+	$ knife data bag create wp-sites
+	now edit the databa with a name website1
+	knife data bag create wp-sites website1
+	-----
+	{
+	  "id": "website1",
+	  "host": "website1.example.com",
+	  "database": "website1",
+	  "db_username": "website1",
+	  "db_password": "212b09752d173876a84d374333ae1ffe"
+	}
+	-----------------------
+	How to use databags in recipies
+	
+	--------------
+	sites = data_bag("wp-sites")
+	sites.each do |site|
+		opts = data_bag_item("wp-sites", site)
+
+		  mysql_database opts["database"] do
+			connection ({:host => 'localhost', :username => 'root', :password => node['mysql']['server_root_password']})
+			action :create
+		  end
+	----------------------
+
+-------------------	
+	

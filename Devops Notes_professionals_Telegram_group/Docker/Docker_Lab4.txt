@@ -1,0 +1,165 @@
+Example 4: docker-compose Python + Redis
+
+In this example, I am going to connect Python and Redis containers.
+
+version: '2'  
+services:  
+  app:
+    build:
+      context: ./app
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+    ports:
+      - "5000:5000"
+  redis:
+    image: redis:3.2-alpine
+    volumes:
+      - redis_data:/data
+volumes:  
+  redis_data:
+
+Go to examples/compose and execute the following command:
+
+docker-compose --project-name app-test -f docker-compose.yml up
+
+if docker-compose command not found use this to install it :
+
+sudo apt-get -y install python-pip
+sudo pip install docker-compose
+
+check :which docker-compose
+
+Console output:
+
+Creating network "apptest_default" with the default driver  
+Creating volume "apptest_redis_data" with default driver  
+Pulling redis (redis:3.2-alpine)...  
+3.2-alpine: Pulling from library/redis  
+627beaf3eaaf: Pull complete  
+a503a4771a4a: Pull complete  
+72c5d910c683: Pull complete  
+6aadd3a49c30: Pull complete  
+adf925aa1ad1: Pull complete  
+0565da0f872e: Pull complete  
+Digest: sha256:9cd405cd1ec1410eaab064a1383d0d8854d1eef74a54e1e4a92fb4ec7bdc3ee7  
+Status: Downloaded newer image for redis:3.2-alpine  
+Building app  
+Step 1/9 : FROM python:3.5.2-alpine  
+3.5.2-alpine: Pulling from library/python  
+b7f33cc0b48e: Pull complete  
+8eda8bb6fee4: Pull complete  
+4613e2ad30ef: Pull complete  
+f344c00ca799: Pull complete  
+Digest: sha256:8efcb12747ff958de32b32424813708f949c472ae48ca28691078475b3373e7c  
+Status: Downloaded newer image for python:3.5.2-alpine  
+ ---> e70a322afafb
+Step 2/9 : ENV BIND_PORT 5000  
+ ---> Running in 8518936700b3
+ ---> 0f652cdd2cee
+Removing intermediate container 8518936700b3  
+Step 3/9 : ENV REDIS_HOST localhost  
+ ---> Running in 027286e90699
+ ---> 6da3674f79fa
+Removing intermediate container 027286e90699  
+Step 4/9 : ENV REDIS_PORT 6379  
+ ---> Running in 0ef17cb512ed
+ ---> c4c514aa3008
+Removing intermediate container 0ef17cb512ed  
+Step 5/9 : COPY ./requirements.txt /requirements.txt  
+ ---> fd523d64faae
+Removing intermediate container 8c94c82e0aa8  
+Step 6/9 : COPY ./app.py /app.py  
+ ---> be61f59b3cd5
+Removing intermediate container 93e38cd0b487  
+Step 7/9 : RUN pip install -r /requirements.txt  
+ ---> Running in 49aabce07bbd
+Collecting flask==0.12 (from -r /requirements.txt (line 1))  
+  Downloading Flask-0.12-py2.py3-none-any.whl (82kB)
+Collecting redis==2.10.5 (from -r /requirements.txt (line 2))  
+  Downloading redis-2.10.5-py2.py3-none-any.whl (60kB)
+Collecting itsdangerous>=0.21 (from flask==0.12->-r /requirements.txt (line 1))  
+  Downloading itsdangerous-0.24.tar.gz (46kB)
+Collecting Werkzeug>=0.7 (from flask==0.12->-r /requirements.txt (line 1))  
+  Downloading Werkzeug-0.11.15-py2.py3-none-any.whl (307kB)
+Collecting Jinja2>=2.4 (from flask==0.12->-r /requirements.txt (line 1))  
+  Downloading Jinja2-2.9.5-py2.py3-none-any.whl (340kB)
+Collecting click>=2.0 (from flask==0.12->-r /requirements.txt (line 1))  
+  Downloading click-6.7-py2.py3-none-any.whl (71kB)
+Collecting MarkupSafe>=0.23 (from Jinja2>=2.4->flask==0.12->-r /requirements.txt (line 1))  
+  Downloading MarkupSafe-1.0.tar.gz
+Installing collected packages: itsdangerous, Werkzeug, MarkupSafe, Jinja2, click, flask, redis  
+  Running setup.py install for itsdangerous: started
+    Running setup.py install for itsdangerous: finished with status 'done'
+  Running setup.py install for MarkupSafe: started
+    Running setup.py install for MarkupSafe: finished with status 'done'
+Successfully installed Jinja2-2.9.5 MarkupSafe-1.0 Werkzeug-0.11.15 click-6.7 flask-0.12 itsdangerous-0.24 redis-2.10.5  
+ ---> 18c5d1bc8804
+Removing intermediate container 49aabce07bbd  
+Step 8/9 : EXPOSE $BIND_PORT  
+ ---> Running in f277fa7dfcd5
+ ---> 9f9bec2abf2e
+Removing intermediate container f277fa7dfcd5  
+Step 9/9 : CMD python /app.py  
+ ---> Running in a2babc256093
+ ---> 2dcc3b299859
+Removing intermediate container a2babc256093  
+Successfully built 2dcc3b299859  
+WARNING: Image for service app was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.  
+Creating apptest_redis_1  
+Creating apptest_app_1  
+Attaching to apptest_redis_1, apptest_app_1  
+redis_1  | 1:C 08 Mar 09:56:55.765 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf  
+redis_1  |                 _._  
+redis_1  |            _.-``__ ''-._  
+redis_1  |       _.-``    `.  `_.  ''-._           Redis 3.2.8 (00000000/0) 64 bit  
+redis_1  |   .-`` .-```.  ```\/    _.,_ ''-._  
+redis_1  |  (    '      ,       .-`  | `,    )     Running in standalone mode  
+redis_1  |  |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379  
+redis_1  |  |    `-._   `._    /     _.-'    |     PID: 1  
+redis_1  |   `-._    `-._  `-./  _.-'    _.-'  
+redis_1  |  |`-._`-._    `-.__.-'    _.-'_.-'|  
+redis_1  |  |    `-._`-._        _.-'_.-'    |           http://redis.io  
+redis_1  |   `-._    `-._`-.__.-'_.-'    _.-'  
+redis_1  |  |`-._`-._    `-.__.-'    _.-'_.-'|  
+redis_1  |  |    `-._`-._        _.-'_.-'    |  
+redis_1  |   `-._    `-._`-.__.-'_.-'    _.-'  
+redis_1  |       `-._    `-.__.-'    _.-'  
+redis_1  |           `-._        _.-'  
+redis_1  |               `-.__.-'  
+redis_1  |  
+redis_1  | 1:M 08 Mar 09:56:55.767 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.  
+redis_1  | 1:M 08 Mar 09:56:55.767 # Server started, Redis version 3.2.8  
+redis_1  | 1:M 08 Mar 09:56:55.767 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.  
+redis_1  | 1:M 08 Mar 09:56:55.767 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.  
+redis_1  | 1:M 08 Mar 09:56:55.767 * The server is now ready to accept connections on port 6379  
+app_1    |  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)  
+app_1    |  * Restarting with stat  
+app_1    |  * Debugger is active!  
+app_1    |  * Debugger pin code: 299-635-701
+
+Current example will increment view counter in Redis. Open the following url in your web browser and check it.
+
+Using docker-compose is a topic for a separate article. To get started you can play with some images from Docker Hub or if you want to create your own images — follow best practices listed above. The only thing I can add in terms of using docker-compose: always give explicit names to your volumes in docker-compose.yml (if image has volumes). This simple rule will save you from issue in the future when you’ll be inspecting your volumes.
+
+version: '2'  
+services:  
+  ...
+  redis:
+    image: redis:3.2-alpine
+    volumes:
+      - redis_data:/data
+volumes:  
+  redis_data:
+
+In this case redis_data will be the name inside docker-compose.yml file, for the real volume name it will be prepended with project name prefix.
+
+To see volumes run:
+
+docker volume ls
+
+Console output:
+
+DRIVER              VOLUME NAME  
+local               apptest_redis_data

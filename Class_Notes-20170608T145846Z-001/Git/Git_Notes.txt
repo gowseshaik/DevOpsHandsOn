@@ -1,0 +1,81 @@
+Git Version Controlling system:
+------------------------------
+
+2 VCS:
+1. Client-server based VCS
+	CVS, SVN
+	 - Online
+	 - one bigger repo
+2. Distributed VCS (DVCS)
+	- Offline mode
+	- Distributed
+	- branching/merging easier
+	- one time checkout
+ - You cannot download/checkout a single file/dir or branch
+ - This is suitable for small code bases
+ - make many smaller repo
+ 
+ Git, Mercurial, Bazaar ...
+ 
+ Git:
+ -----
+ Providers: Bitbucket/Stash (Atlassian), Gitlab, Gitblit Git
+	On premises: Your own data center
+				
+	Cloud based : Github, Bitbucket
+ 
+Git client:  git-scm.com
+------------
+git-bash on your start menu
+
+$git clone <remote repo URL>
+$ cd repo
+$git status 
+ git add 
+ git commit -m""
+ git push
+ 
+ steps :
+ 1. Clone
+ 2. Create a new file 
+ 3. git add Hello.txt
+ 4. git commit -m"my firsyt commit"
+ 5. git push
+ 
+ 
+- Like SVN, in git also there is verisoning
+	These versions we call as : Sha1sum
+	these sha1sums are uniq
+git rm, checkout, log, remote add, 
+
+git stash, clean, blame, branch, tags
+
+merging:
+
+be in destination
+R1-> master
+src -> dest
+
+dest>git merge src
+master>git merge R1
+
+
+Merging:
+---------
+1. merge  : merge commit 
+2. Rebase : there is no merge commit
+3. Cherry-pick
+
+
+
+
+
+ Git commands :
+ ----------------
+ Branching/Merging/ Tagging
+ 
+ Cherry-pick/Patching/Stashing
+ 
+ 
+ 
+ 

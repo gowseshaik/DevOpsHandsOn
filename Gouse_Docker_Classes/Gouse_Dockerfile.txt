@@ -1,0 +1,50 @@
+python pip installation script to pass inside the docker container
+============
+vi requirements.txt
+Flask==0.10.1
+=======
+#!/bin/sh
+pip install -r requirements.txt &&
+python app.py
+=================
+
+Dockerfile:
+
+manual cli:
+docker run -dp 5000:5000 -v $PWD/app:/app -w /app python /binsh run.sh
+
+create a docker file, start with Capital D.
+
+ref: docs.docker.com/engine/reference/builder
+
+vi Dockerfile
+=====================
+FROM python
+
+COPY ./app/ /app
+
+WORKDIR /app
+
+EXPOSE 5000 --> just we are choosing ports will be mentioned by EXPOSE
+
+ENTRYPOINT [ "/bin/sh" ]
+
+================================
+run your dockerfile project
+cd /project/app
+create an image with your build
+docker build -t dev1 .
+
+create an another images, by mentioning versions
+docker build -t dev1:beta .
+
+run a container iamge your followed image
+docker run -it dev1 run.sh
+
+
+
+
+
+
+
+

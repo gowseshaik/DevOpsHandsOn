@@ -1,0 +1,47 @@
+How to use Docker File
+
+1. In the same cloned repo, go to curl directory :
+   it contains a Docker file example -
+   How to write a Dockerfile
+
+    To build a Docker image you need to create a Dockerfile. It is a plain text file with instructions and arguments. Here is the description of the instructions we’re going to use in our next example:
+
+    FROM = set base image
+    RUN = execute command in container
+    ENV = set environment variable
+    WORKDIR = set working directory
+    VOLUME = create mount-point for a volume
+    CMD = set executable for container
+	
+	For reference : https://docs.docker.com/engine/reference/builder/
+	
+	Lab Exercise : Let’s create an image that will get the contents of the website with curl and store it to the text file. We need to pass website url via environment variable SITE_URL. Resulting file will be placed in a directory mounted as a volume.
+	
+	FROM ubuntu:latest  
+    RUN apt-get update  
+	RUN apt-get install --no-install-recommends --no-install-suggests -y curl  
+	ENV SITE_URL https://google.com/  
+	WORKDIR /data  
+	VOLUME /data  
+	CMD sh -c "curl -L $SITE_URL > /data/results"
+	
+2. Build an Image:
+
+docker build . -t test-curl
+
+    docker build builds a new image locally.
+    -t flag sets the name tag to an image.
+	
+	to check the image is created or not : docker images
+
+3. We can create and run container from the image. Let’s try it with default parameters:
+docker run --rm -v $(pwd)/vol:/data/:rw test-curl
+
+you can check the output here : cat ./vol/results
+
+4. lets try with google.com
+docker run --rm -e SITE_URL=www.google.com -v $(pwd)/vol:/data/:rw test-curl
+
+To see results saved to file run:
+
+cat ./vol/results

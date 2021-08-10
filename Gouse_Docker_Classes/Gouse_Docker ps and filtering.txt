@@ -1,0 +1,62 @@
+Docker ps and filtering commands:
+
+to get the running processes of docker containers
+docker ps -a
+
+to remove the container
+docker rm <container id>or<container name>
+
+to get the help on ps command
+docker ps --help
+
+-a = --all 
+-f = --filter filter
+     --format string
+-n = --last int
+-l = --latest
+     --no-trunc
+-q = --quiet
+-s = --size
+
+to get the docker latest container
+docker ps -a -l
+
+to get all containers
+docker ps -a 
+
+to remove the all containers
+docker rm $(docker ps -a -l) --> will not work
+
+docker rm $(docker ps -a) --> will work
+
+to get the filtered with latest and exited state
+docker rm $(docker ps -a -q -l -f status=exited)
+
+to get the running containers
+docker ps
+or
+docker ps -a -l -f status=running 
+
+to get the containers with the filter by name equal to python
+docker ps -a -f name=python
+
+to get the containers with the base image
+docker ps -a -f ancestor=python
+you can get the difference with below command as well
+docker ps -a
+
+to remove container with the docker image version
+docker rm $(docker ps -a -q -f ancestor=python:3.8)
+
+to get all containers including latest one
+docker ps -a --filter before=$(docker ps -a -l --format {{.Names}})
+
+to remove all containers excpet latest one
+docker rm $(docker ps -a -q --filter before=$(docker ps -a -l --format {{.Names}}))
+
+
+to remove all docker images
+docker rmi -f $(docker images -q)
+
+
+

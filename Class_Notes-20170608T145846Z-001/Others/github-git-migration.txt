@@ -1,0 +1,13 @@
+Github to Git Migration:-
+---------------------------
+
+-- Try to clone the remote github repository in bare mode
+
+mkdir Repo
+cd Repo
+git clone --bare https://chiranjeevi.patel:xyz@github.com/chiranjeevi/sample.git
+
+-- Now you can make use of this repository for your development
+-- Provide required access and authorise with auto-ssh on this repo
+
+

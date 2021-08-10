@@ -1,0 +1,46 @@
+  This is Aravind, i had an interview yesterday, i was asked many questions, but i could not give proper answers for some questions, so please send me the answers for the following questions.
+
+1) How to auto deploy a war file into tomcat?  (process)
+   You can deploy it in many ways
+   a) Using Tomcat manager
+   b) unsing ant script by downloading catalina.jar file and define custome ant tasks
+   c) You can deploy using Jenkins by placing the war file in webapps
+   d) You can deploy using shell scripts by placing the war file in webapps
+2) How to deploy a war file into tomcat  by shellscripting(process) when you are working on linux machine?
+   Make use of scp command in shellscript to copy the war file to tomcat webapps directory
+3) what would you do if your servers are of linux machines and you are working on windows machine, when you are doing automation and deployment ?
+  I will make use of pscp and plink to do the deployment and perform the actions on linux server from windows
+4) why do use jenkins instead of ant as both tools are used for the same purpose like building artifacts and deploy those to servers ?
+   Reasons:
+   1. Ant requires scripting knowledge, but jenkins is easier to deploy by configuring the things
+   2. A nt can perform the compilation but jenkins cant do it as it again make uses of ant scripting inside
+   3. Jenkins is a CI tool but ant is a build script automation tool
+   4. You can do scheduling in Jenkins but not in Ant
+   5. You can get the history of triggered builds in Jenkins but not in Ant
+   
+
+--------------------------------------------------------------------
+Hi Chiranjeevi,
+
+Today i gone for interview in IBM, it was nearly 1 hr interview. They asked many questions. Here are some questions.
+So, please provide me the proper solution.
+
+How you will deploy the same .war file in multiple servers 
+Need Ans
+
+How to execute .sql file in db server
+Need Ans
+
+What is the process you will follow to give the installable file to client.
+I said Compile the code, Convert it into required format jar,war or ear and deploy it into servers . And also I said i will give installable file in cd to the client with complete specification details.
+
+Then they asked another question like
+How do you convert .war file into .msi file(installable file)
+Need Ans
+
+How to run the file.sh shell script in ant.
+Need Ans
+
+How to call a target of another file with in the different file.
+Need Ans
+  

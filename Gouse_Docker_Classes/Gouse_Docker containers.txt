@@ -1,0 +1,63 @@
+Docker containers commands:
+
+is for create a container
+is for run a container
+is for start & stop a container
+
+
+to get the help on each command 
+docker create --help
+
+to create a python container 
+docker create python
+
+to get container process help
+docker ps --help
+
+unix process check command to show all the processes on your system
+ps -aux 
+
+to get the container process with all command.
+docker ps -as
+
+To get the help on container start
+docker start <container_ID> or <container_names>
+
+To run a container
+docker run python
+
+to run something inside a container
+docker run python python -c 'print("docker build your skills!")'
+
+To run with different versions from the container
+docker run python:3.8 python --version
+
+to get the help on run command
+docker run --help
+
+to run a container with a interactive options
+docker run -it python
+
+to run a container with different names
+docker run -it --name python3 python
+
+to run the same name container and rm the old container if it exsits
+docker run -it --rm --name python3 python
+
+to run a container in detached option, where the container will run in background, it will still up
+doekr run --name python3 -itd python
+
+to access a shell of the container.
+docker exec -it python3 /bin/sh
+
+to use attach, once you exit from this attach container, will close. 
+docker attach python3
+
+to make our attached container with detach and make it up
+docker attach --detach-keys="ctrl-b" python3
+
+
+docker container run --name container_instance e98b6ec72f51
+
+
+

@@ -1,0 +1,198 @@
+Class Creation :
+##########################
+
+class Person:
+    pass  # An empty block
+
+p = Person()
+print(p)
+
+
+###########################
+Method Creation
+##########################
+===========================
+You must be wondering how Python gives the value for self and why you don't need to give a value for it. An example will make this clear. Say you have a class called MyClass and an instance of this class called myobject. When you call a method of this object as myobject.method(arg1, arg2), this is automatically converted by Python into MyClass.method(myobject, arg1, arg2) - this is all the special self is about.
+
+This also means that if you have a method which takes no arguments, then you still have to have one argument - the self.
+===========================
+
+class Person:
+    def say_hi(self):
+        print('Hello, how are you?')
+
+p = Person()
+p.say_hi()
+# The previous 2 lines can also be written as
+# Person().say_hi()
+
+#############################
+The __init__ method 
+#############################
+===============================
+The __init__ method is run as soon as an object of a class is instantiated (i.e. created). The method is useful to do any initialization (i.e. passing initial values to your object) you want to do with your object. Notice the double underscores both at the beginning and at the end of the name.
+===============================
+
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def say_hi(self):
+        print('Hello, my name is', self.name)
+
+p = Person('Deepak')
+p.say_hi()
+
+#################################
+Class And Object Variables
+#################################
+=================================
+Class variables are shared - they can be accessed by all instances of that class. There is only one copy of the class variable and when any one object makes a change to a class variable, that change will be seen by all the other instances.
+
+Object variables are owned by each individual object/instance of the class. In this case, each object has its own copy of the field i.e. they are not shared and are not related in any way to the field by the same name in a different instance. An example will make this easy to understand (save as oop_objvar.py)
+===================================
+class Robot:
+    """Represents a robot, with a name."""
+
+    # A class variable, counting the number of robots
+    population = 0
+
+    def __init__(self, name):
+        """Initializes the data."""
+        self.name = name
+        print("(Initializing {})".format(self.name))
+
+        # When this person is created, the robot
+        # adds to the population
+        Robot.population += 1
+
+    def die(self):
+        """I am dying."""
+        print("{} is being destroyed!".format(self.name))
+
+        Robot.population -= 1
+
+        if Robot.population == 0:
+            print("{} was the last one.".format(self.name))
+        else:
+            print("There are still {:d} robots working.".format(
+                Robot.population))
+
+    def say_hi(self):
+        """Greeting by the robot.
+
+        Yeah, they can do that."""
+        print("Greetings, my masters call me {}.".format(self.name))
+
+    @classmethod
+    def how_many(cls):
+        """Prints the current population."""
+        print("We have {:d} robots.".format(cls.population))
+		
+droid1 = Robot("R2-D2")
+droid1.say_hi()
+Robot.how_many()
+
+droid2 = Robot("C-3PO")
+droid2.say_hi()
+Robot.how_many()
+
+print("\nRobots can do some work here.\n")
+
+print("Robots have finished their work. So let's destroy them.")
+droid1.die()
+droid2.die()
+
+Robot.how_many()
+###############################################
+Inheritance
+###############################################
+class SchoolMember:
+    '''Represents any school member.'''
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        print('(Initialized SchoolMember: {})'.format(self.name))
+
+    def tell(self):
+        '''Tell my details.'''
+        print('Name:"{}" Age:"{}"'.format(self.name, self.age), end=" ")
+
+
+class Teacher(SchoolMember):
+    '''Represents a teacher.'''
+    def __init__(self, name, age, salary):
+        SchoolMember.__init__(self, name, age)
+        self.salary = salary
+        print('(Initialized Teacher: {})'.format(self.name))
+
+    def tell(self):
+        SchoolMember.tell(self)
+        print('Salary: "{:d}"'.format(self.salary))
+
+
+class Student(SchoolMember):
+    '''Represents a student.'''
+    def __init__(self, name, age, marks):
+        SchoolMember.__init__(self, name, age)
+        self.marks = marks
+        print('(Initialized Student: {})'.format(self.name))
+
+    def tell(self):
+        SchoolMember.tell(self)
+        print('Marks: "{:d}"'.format(self.marks))
+
+t = Teacher('Mrs. Shrividya', 40, 30000)
+s = Student('Deepak', 25, 75)
+
+# prints a blank line
+print()
+
+members = [t, s]
+for member in members:
+    # Works for both Teachers and Students
+    member.tell()
+	
+################################################
+Encapsulation
+################################################
+#!/usr/bin/env python
+ 
+class Car:
+ 
+    def __init__(self):
+        self.__updateSoftware()
+ 
+    def drive(self):
+        print 'driving'
+ 
+    def __updateSoftware(self):
+        print 'updating software'
+ 
+redcar = Car()
+redcar.drive()
+#redcar.__updateSoftware()  not accesible from object.
+
+###################################################
+Polymorphisim
+###################################################
+class Animal:
+    def __init__(self, name):    # Constructor of the class
+        self.name = name
+    def talk(self):              # Abstract method, defined by convention only
+        raise NotImplementedError("Subclass must implement abstract method")
+
+class Cat(Animal):
+    def talk(self):
+        return 'Meow!'
+
+class Dog(Animal):
+    def talk(self):
+        return 'Woof! Woof!'
+
+animals = [Cat('Missy'),
+           Cat('Mr. Mistoffelees'),
+           Dog('Lassie')]
+
+for animal in animals:
+    print animal.name + ': ' + animal.talk()

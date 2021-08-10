@@ -1,0 +1,52 @@
+****Handout General Scripting Questions *****
+Q-1. Presumably, what could be the reason that the <cat filename> command start giving the following error message?
+
+--bash: cat: Command not found
+
+Q-2. Write a shell script to get the current date, time, username and current working directory.
+
+Q-3. Write a shell script that adds an extension “.new” to all the files in a directory.
+
+Q-4. Write a shell script to print a number in reverse order. It should support the following requirements.
+
+    i) The script should accept the input from the command line.
+    ii) If you don’t input any data, then display an error message to execute the script correctly.
+
+Q-5. What is the syntax for different types of loops available in shell scripting?
+
+Q-6. Write a shell script to find out the unique words in a file and also count the occurrence of each of these words. We can say that file under consideration contains many lines, and each line has multiple words.
+
+$cat animal.txt
+tiger bear
+elephant tiger bear
+bear
+
+Output:
+elephant 1
+bear 3
+tiger 2
+
+Q-7. Write a shell script to validate password strength. Here are a few assumptions for the password string.
+
+    Length  – minimum of 8 characters.
+    Contain both alphabet and number.
+    Include both the small and capital case letters.
+
+If the password doesn’t comply to any of the above conditions, then the script should report it as a <Weak Password>.
+
+Q-8. Write a shell script to print the count of files and subdirectories in the specified directory.
+
+Q-9. Write a shell script that takes a uid as an argument and prints out that person's name, home directory, shell and group number. Print out the name of the group corresponding to the group number, and other groups that person may belong to. (groups, awk, cut. Also look at /etc/passwd and /etc/groups).
+
+Q-10. The default rm command will not confirm before it deletes any regular files.
+Write a short script called saferm, such that it will make a copy before deleting a
+single file(thatis, we do not use wildcard expressions for this problem) by do the following:
+• Take one and only one argument at the command line (hint:  search for an expression rep-
+resenting  the  number  of  arguments  in  the  shell  scripts).   Print  out  an error  message  if  noargument or more than one arguments are provided (hint:  use
+echo).
+• Create a directory “safermrecycle” in the current one if it is not already created.
+• Copy the file indicated by the first argument to this “safermrecycle” folder.
+• Remove this file in the current working directory.
+
+
+

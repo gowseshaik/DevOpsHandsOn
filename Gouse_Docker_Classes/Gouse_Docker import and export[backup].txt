@@ -1,0 +1,64 @@
+Docker import and export containers
+
+vi Dockerfile
+
+FROM python:alpine
+
+COPY . /app/ /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ENV DEVICE="dev1"
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python" ]
+
+HEALTHCHECK --interval=5s --timeout=3s CMD curl -f http://localhost:5000 || nc -zv localhost 5000 || exit 1
+
+CMD [ "app.py" ]
+
+
+======
+
+docker build -t dev .
+
+docker run -dp 5000:5000 dev
+curl localhost:5000
+
+docker exec -it $(docker ps -l -q) /bin/sh
+
+vi app.py
+
+exit
+curl localhost:5000
+===========
+to export a docker container
+docker export --output="test.tar" $(docker ps -l -q)
+
+To see the layers inside your image
+tar -tvf dev.tar | less
+
+To see the layers inside your container, here you have everything
+tar -tvf test.tar | less
+
+tar -tvf test.tar | grep app.py
+
+to import a container as an image
+docker import test.tar dev:test
+
+to run the imported dev:test image as a container
+docker run -dp 5000:5000 dev:test
+
+============
+-c = --change attribute
+docker import -c  'WORKDIR /app' -c 'ENTRYPOINT ["python"]' -c 'CMD["app.py]' test.tar dev:test
+
+docker run -dp 5000:5000 dev:test
+
+
+
+
+

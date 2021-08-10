@@ -1,0 +1,141 @@
+Docker Installation:
+--------------------
+Pre-requisiteS:
+	- CentOS7 64 bit Linux for Docker Engine
+		sudo yum install -y docker
+		check status: 		sudo systemctl status docker.service
+		start service: 		sudo systemctl start docker.service
+		check version:		docker version
+		docker info  : displays no of container, images, storage driver etc
+	- We can run docker with non root user, as docker maintains a group  (docker) else add your account to docker group to access without sudo
+	- $docker run -it centos /bin/bash     ( This command starts a container of ubuntu image and enters into the roor propmt of container)
+	   $exit
+	  $docker ps -a    (shows the list of docker containers spinned up recently)
+	  container id: bf5808d5971a
+	  $ls /var/lib/docker/containers/  ( you can find each container directory and the data available in container)
+	  $docker start bf5808d5971a   	( starting the existing container)
+	  $docker attach bf5808d5971a   ( getting into the container)
+Docker Engine:
+	Daemon to build & run containers 
+Docker Images: meta data info about the os image, We can't launch a container without image
+	-docker run -it fedora /bin/sh   ( in this command fedora is Docker image)
+	If that image doesn't exist, it downloads from docker hub
+	-docker images ( shows the list of images downloaded in file system)
+	-docker images fedora   ( you can see the list of fedora images with their versions)
+	-docker pull fedora     ( This command downloads the image of fedora and save in local file system @ /var/lib/docker)
+
+Containers:Containers are launched from images ( Running instances of Images) ; These are run time constructs
+	- A container is a running linux instance
+	- docker -it centos /bin/bash ( i- interactive; t- tty connection)
+	  Ctrl + P + Q ( we can exit container without exiting, so that it runs in background)
+	  docker ps  ( you can see running containers)
+	  docker ps -a ( shows all the container running/stopped)
+	- Delete container
+	  sudo docker info  (will give you total no of containers and images)
+	  sudo docker stop <docker_Id> 
+	  sudo docker rm <docker_Id> 
+	  sudo docker info   ( verify the count of no of containers)
+
+Docker images from Dockerfile:
+	- Dockerfile : is a simple instructions to build an image
+	  $mkdir dockerImages; cd dockerImages
+	  $vi Dockerfile
+		-----------------
+		# Centos based Hello Worl container
+		FROM centos:latest 
+		MAINTAINER chiranjeevi.aec@gmail.com
+		RUN yum install -y httpd
+		CMD ["echo","Hello World"]
+		-----------------
+		every RUN statement creates a layer in container and it is  a build time constructor, but CMD is run time constructor
+		where it runs when container is bring up, each docker file should have only one CMD and can have multiple RUN
+	  $sudo docker build -t helloworld:1.0 .   ( . represents you are in dockerfile dir else use -f Dockerfile ; -t specifies name of the image)
+	  $sudo docker history 2bdaa07a1ecf    ( you can see the hisotry of layers it is created and committed)
+	  $sudo docker run helloworld:1.0
+	  Hello World
+Common Dockerfile instructions start with RUN, ENV, FROM, MAINTAINER, ADD, and CMD, among others.
+
+FROM - Specifies the base image that the Dockerfile will use to build a new image. For this post, we are using phusion/baseimage as our base image because it is a minimal Ubuntu-based image modified for Docker friendliness.
+
+MAINTAINER - Specifies the Dockerfile Author Name and his/her email.
+
+RUN - Runs any UNIX command to build the image.
+
+ENV - Sets the environment variables. For this post, JAVA_HOME is the variable that is set.
+
+CMD - Provides the facility to run commands at the start of container. This can be overridden upon executing the docker run command.
+
+ADD - This instruction copies the new files, directories into the Docker container file system at specified destination.
+
+EXPOSE - This instruction exposes specified port to the host machine.
+VOLUME - This command is used to expose to the host machine the volume from the container. We can map this volume to any host directory. 
+		ex: ( VOLUME /root/.m2)
+	  
+Docker Networking:
+	$ip a  ( you can docker0: created by docker engine to behave like switch/interface between vm and container)
+	- sudo yum install bridge-utils
+	- sudo brctl show docker0
+	- sudo docker run -it --name=yellow helloworld:1.0
+		sudo brctl show docker0
+	- vi Dockerfile
+	 	-----------------
+		# Centos based Hello Worl container
+		FROM centos:latest 
+		MAINTAINER chiranjeevi.aec@gmail.com
+		RUN yum install -y httpd
+		EXPOSE 80
+		ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+		-----------------
+	$docker build t apache:1.0 .
+	$docker run -d -p 5001:80 --name=web1 apache:1.0
+	
+tomcat:
+FROM centos:latest
+RUN yum install -y wget \
+        &&  wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-x64.tar.gz" \
+        && tar xzf jdk-7u79-linux-x64.tar.gz \
+        &&  export JAVA_HOME=`pwd`/jdk1.7.0_79 \
+        && export PATH=$PATH:$JAVA_HOME/bin \
+        && wget http://mirrors.whoishostingthis.com/apache/tomcat/tomcat-7/v7.0.75/bin/apache-tomcat-7.0.75.tar.gz \
+        && wget http://mirrors.whoishostingthis.com/apache/tomcat/tomcat-7/v7.0.75/bin/apache-tomcat-7.0.75.tar.gz \
+        && tar -zxvf apache-tomcat-7.0.75.tar.gz
+ENV JAVA_HOME=/jdk1.7.0_79
+EXPOSE 8080
+CMD sh apache-tomcat-7.0.75/bin/startup.sh; while true; do sleep 1000; done
+
+Mysql:
+	https://github.com/CentOS/CentOS-Dockerfiles/tree/master/mysql/centos6
+	
+Registries/Repos
+	-Registry - hosting location ( docker.hub)
+	-Repos - centos/ubuntu/fedora etc
+	 official repos/ un official repos (user repos) created by members of docker community
+	- Register in docker.hub and get credentials to push your private repos
+	Tag/Push/Pull
+	- docker tag 1f8ec1108a3f chiranjeevipatel/fedora:latest
+	- sido docker images
+	- sudo docker login (chiranjeevipatel/XXXX)
+	- sudo docker push chiranjeevipatel/fedora
+	- sudo docker pull hiranjeevipatel/fedora
+	  sudo docker images
+	
+		
+
+Images in Details:
+-----------------
+- stack of image snapshots ; these are called layers
+  docker images --tree ( will show how the docker images are layered)
+- How to move a docker container from one machien to other
+	docker run centos /bin/bash "echo HelloWorld > /tmp/new-file"
+	The above command creates file in tmp dir, now lets build t
+
+	
+	  
+	  
+- LeadApp
+	2 images
+	1. LeadApp FE  ( Tomcat)
+	2. LeadApp BE  ( Mysql)
+	  
+	   
+	

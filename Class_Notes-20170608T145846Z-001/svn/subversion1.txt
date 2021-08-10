@@ -1,0 +1,187 @@
+Source Code mgmt:
+-----------------
+
+
+\\10.10.1.12\project\
+
+100 -1000 ( )
+
+-> Data loss
+-> History ( a.java -1000 lines) 
+-> Security ( who ? when ? what ? )
+
+-> Tools: - Source code mgmt tool/ Confguration mgmt tool/ VCS ( Version controlling system tools)
+CVS, DVCS, SVN/SUBVERSION, GIT, HG, BAZAAR, IBM CLEARCASE, TFS MS, PERFORCE ....
+0	o		o				o	o	L		L				L		L
+-> CLIENT-SERVER based SCM tool
+
+SVN/SUBVERSION:-
+---------------
+-> OPEN source/ PLATform independent
+-> CVS successor
+-> 2000
+-> Apache https://subversion.apache.org/
+-> Architecture
+	Two compenents 1. server
+					2. Client
+-> Installation:-
+				Bitnami -> Bundle of svn installer ( svn server+ apache http+ config+ repo)
+	Download bitnami installer 
+	Copy to linux and install it
+	Test it from browser  with the below url
+	http://192.168.146.129/subversion/  
+	Revision: 0/1
+->  Server Administation
+	SVN clinet training
+		-> Command line ->  Windows
+		-> UI-  Tortoise client
+		-> IDE - Eclipse/VS
+		-> Browser - Read only
+	
+--> Command line client
+	
+	Workspace/ Working directory
+	svn checkout http://192.168.146.129/subversion/
+	cd subversion
+	- create file/ copy file to ws
+	- add that file to your ws  ( svn add file.txt)
+	- pushing the added fiel to repo ( svn commit file.txt -m"this is my first file" )
+	
+	- 	checkout
+		status
+		commit
+		add
+		delete
+		update
+		log
+		info
+	-	revert
+		cat
+		ls
+		mkdir
+		diff
+	-	export
+		import
+
+SVN Dir structure:
+------------------
+	/trunk/	--> Stable code ( prod code)  -- commitin code 
+	/branches/R1(101)	--> Devlopment branches
+			 /R2 (156)	-->
+			 .
+			 .
+			 
+	/tags/QA_Build1_tag(12)
+		 /
+
+		 
+Branching stategies:
+
+1. Sequential Branching
+Jan1st
+			Mar		R3	R1 			(156)R2			R3				R4			R5
+|-----------|-------|------||------------||----------||---------------||----------| .............. R20
+					   Jun30			Sep
+2. Parallel BRanching strategy
+
+Jan		Mar		Apr				Jun
+R1|-----|----------|------|-----| - trunk		Oct
+R0	
+		|------------------|--------------|  trunl
+		R2								Sep
+					|------|-------------------------|Dec
+					R3
+												|R4----------------Mar
+	trunk/core+R1 +R2 +R3
+	branches/Release1/Core+R1   --> R1 Team
+			/Release2/Core+R2	--> R2 Team
+			/Release3/Core+R3+R1+R2	--> R3 Team	
+			
+
+			/Release20/
+	
+	
+	tags													Trunk	==	Prod
+															------------------
+													Jan		Core	|	Core
+													Jun		Core+R1	|	Core+R1(good to go)
+													Sep	Core+R1+R2	|	Core+R2 +R1 ( good to deloy)
+													Dec	Core+R1+R2+R3|	Core+R3+R1+R2 (good to go)
+													
+																	|
+																	|	
+	1. Check if there is any data loss	 (Before deploy	)				core +R1-R17+R20 ( 1-19)
+	2. Trunk == Prod  (codebase) (After deploy)
+	
+	
+	Merging:  (R3--> trunk)
+	--------
+	Always happens in workspace
+	Src:  R3
+	Dest:  trunk
+	checkout trunk
+	cd trunk>
+			svn merge R3
+			...
+			svn commit -m""
+
+
+Administration:-
+----------------
+- Security Enable
+  - Authentication :- Valid credentials
+		cd /opt/SVN_ONLINE/apache2/bin
+	1.	htpasswd -c /opt/SVN_ONLINE/svn_users harry
+		newpassword: XXXXX
+	2.	htpasswd -m /opt/SVN_ONLINE/svn_users sally
+		newpassword: XXXXX
+	
+  - Authorisation 	:- access restrictions on SVN 
+					read-r
+					read/write-rw
+					No Access-
+			create a file /opt/SVN_ONLINE/svn_access by adding below content
+				*****************************
+				[groups]
+
+				[subversion:/]
+				harry = rw
+				****************************
+  - Confgure both above files in apache2 server
+	add below content insdie /opt/SVN_ONLINE/apache2/conf/httpd.conf file
+	<Location /subversion>
+		DAV svn
+		SVNPath "/opt/SVN_ONLINE/repository"
+
+         AuthType Basic
+         AuthName "Subversion Project1 repository"
+         AuthUserFile /opt/SVN_ONLINE/svn_users
+         Require valid-user
+         AuthzSVNAccessFile /opt/SVN_ONLINE/svn_access
+	</Location>
+  -  Restart server
+
+  
+- Admin tasks
+  Backup of repo
+	subversion/bin/svnadmin dump /opt/SVN_ONLINE/repository > /opt/SVN_ONLINE/Repo.bkp
+	
+  Roll Back in case of any issues
+	-Get a New machine 
+	-Install svn (1.9.0), apache and create repo ( rev: 0)
+	-Try to provide full access to newly created repo
+	- Add this repo in httpd.conf file
+	- Restart your apache server
+	
+	Load the dump file in new repo
+	subversion/bin/svnadmin load /opt/SVN_ONLINE/NewRepo < Repo.bkp
+	
+	Migrations :   1.8.13 SVN  -> 1.9.0
+	
+- Hooks
+	Two types
+	1. Pre-Commit
+	2. Post-Commit
+	
+	
+	

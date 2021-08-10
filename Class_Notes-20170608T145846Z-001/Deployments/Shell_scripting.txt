@@ -1,0 +1,107 @@
+Shell scripting:
+--------------------
+Perl, Python, ruby:
+-shell 
+	- Types of shells
+		bash shell, korne shell,C shell
+	  DOS: 
+	Server -> Will not be having any UI
+	console/command prompt/ terminal = black screen
+- scripting 
+	programming | scripting
+- high level 
+generate byte code
+code => compiler=> binary
+binary code => Run
+1. Compilation
+2. Execution
+
+scripting:
+code => Interpreter => output
+1.execution
+
+=> System programing = scripting
+   Business app => programming
+=> /bin/sh  file 
+   vi file
+   #!/bin/sh   => shebang line
+=> C 
+  -Hello world
+  - variables ( string variables)
+  = linux command on shell script
+  - Conditions
+	If , switch( case)
+	simple if
+	if else
+	nested if
+   - Loops
+     while , for
+	 
+	 while(cond) untill the condition is false
+	 {
+		statement1
+		statement2
+	 }
+	 for(i=0;i<10;i++)
+	 {print $i}
+   - functions
+     a set of statements seperated in a block of code and called when it is required
+		
+     function add()
+	 {
+	 
+	 }
+	 
+	 add
+   - Command line params
+		sh file.sh Hello Hi
+		
+   - Special shell variables
+      $*
+	  $@
+	  $#
+	  $$
+	  $?
+   - Arrays
+    arr=[hi][hello][how][are]
+         0 1 2 3
+    arr[1]
+	 
+operators:
+<	-lt
+>	-gt
+<=	-le
+>=	-ge
+==	-eq	
+=!	-ne
+numerical condition
+==
+=! 
+
+
+
+
+-------------------
+Deployment automation with shell scripting:
+------------------------------------------
+Refine your requirements:
+Build:
+ 
+
+-> Check the connectivity from build server to deployment servers
+-> Ready with artifacts/binaries
+-> Backend deployment
+	DB backup
+	DB deployment
+-> Stop services on deployment servers ( app servervices)
+-> Take the backup of existing (optional)
+-> Deploy application
+-> Localisation ( updating the config parameters in application)
+-> Restart server
+-> Smoke test
+
+scp/ssh : 
+
+auto-ssh:
+machien1    =>  machine 2
+create pub Key =>  authorized_keys

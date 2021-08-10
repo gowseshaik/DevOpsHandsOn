@@ -1,0 +1,9 @@
+how to set environment variables?
+
+Subversion :
+Can we create trunk within trunk and branch with in branch.?
+What are various branching techniques?
+What is importance of CI in build?
+What is the format of an ANT script?
+R u a part of release activity?
+What are various environments in ur company and what was your support?

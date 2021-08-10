@@ -1,0 +1,176 @@
+Functions, modules and packages are all constructs in Python that promote code modularization.
+
+Modular programming refers to the process of breaking a large, unwieldy programming task into separate, smaller, more manageable subtasks or modules. Individual modules can then be cobbled together like building blocks to create a larger application.
+
+mod.py
+
+s = "If Comrade Napoleon says it, it must be right."
+a = [100, 200, 300]
+
+def foo(arg):
+    print arg
+	
+class Foo:
+    pass
+
+	
+Several objects are defined in mod.py:
+
+    s (a string)
+    a (a list)
+    foo() (a function)
+    Foo (a class)
+
+	
+>>> import mod
+>>> print(mod.s)
+If Comrade Napoleon says it, it must be right.
+>>> mod.a
+[100, 200, 300]
+>>> mod.foo(['quux', 'corge', 'grault'])
+arg = ['quux', 'corge', 'grault']
+>>> x = mod.Foo()
+>>> x
+<mod.Foo object at 0x03C181F0>
+
+THE MODULE SREARCH PATH
+
+When the interpreter executes the above import statement, it searches for mod.py in a list of directories assembled from the following sources:
+
+1. The directory from which the input script was run or the current directory if the interpreter is being run interactively
+2. The list of directories contained in the PYTHONPATH environment variable, if it is set. (The format for PYTHONPATH is OS-dependent but should mimic the PATH environment variable.)
+3. An installation-dependent list of directories configured at the time Python is installed
+
+>>> import sys
+>>> sys.path
+['', 'C:\\Users\\john\\Documents\\Python\\doc', 'C:\\Python36\\Lib\\idlelib',
+'C:\\Python36\\python36.zip', 'C:\\Python36\\DLLs', 'C:\\Python36\\lib',
+'C:\\Python36', 'C:\\Python36\\lib\\site-packages']
+
+>>> sys.path.append(r'C:\Users\john')
+>>> sys.path
+['', 'C:\\Users\\john\\Documents\\Python\\doc', 'C:\\Python36\\Lib\\idlelib',
+'C:\\Python36\\python36.zip', 'C:\\Python36\\DLLs', 'C:\\Python36\\lib',
+'C:\\Python36', 'C:\\Python36\\lib\\site-packages', 'C:\\Users\\john']
+>>> import mod
+
+Once a module has been imported, you can determine the location where it was found with the module’s __file__ attribute:
+
+>>> import mod
+>>> mod.__file__
+'C:\\Users\\john\\mod.py'
+
+>>> import re
+>>> re.__file__
+'C:\\Python36\\lib\\re.py'
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+>>> from mod import s, foo
+>>> s
+'If Comrade Napoleon says it, it must be right.'
+>>> foo('quux')
+arg = quux
+
+>>> from mod import Foo
+>>> x = Foo()
+>>> x
+<mod.Foo object at 0x02E3AD50>
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+>>> a = ['foo', 'bar', 'baz']
+>>> a
+['foo', 'bar', 'baz']
+
+>>> from mod import a
+>>> a
+[100, 200, 300]
+
+=====================================================
+from <module_name> import *
+
+>>> from mod import *
+>>> s
+'If Comrade Napoleon says it, it must be right.'
+>>> a
+[100, 200, 300]
+>>> foo
+<function foo at 0x03B449C0>
+>>> Foo
+<class 'mod.Foo'>
+======================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+from <module_name> import <name> as <alt_name>[, <name> as <alt_name> …]
+
+>>> s = 'foo'
+>>> a = ['foo', 'bar', 'baz']
+
+>>> from mod import s as string, a as alist
+>>> s
+'foo'
+>>> string
+'If Comrade Napoleon says it, it must be right.'
+>>> a
+['foo', 'bar', 'baz']
+>>> alist
+[100, 200, 300]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Executing a Module as a Script
+
+When a .py file is imported as a module, Python sets the special dunder variable __name__ to the name of the module. However, if a file is run as a standalone script, __name__ is (creatively) set to the string '__main__'. Using this fact, you can discern which is the case at run-time and alter behavior accordingly:
+
+mod.py
+
+s = "If Comrade Napoleon says it, it must be right."
+a = [100, 200, 300]
+
+def foo(arg):
+    print(f'arg = {arg}')
+
+class Foo:
+    pass
+
+if (__name__ == '__main__'):
+    print('Executing as standalone script')
+    print(s)
+    print(a)
+    foo('quux')
+    x = Foo()
+    print(x)
+
+Now, if you run as a script, you get output:
+
+C:\Users\john\Documents>python mod.py
+Executing as standalone script
+If Comrade Napoleon says it, it must be right.
+[100, 200, 300]
+arg = quux
+<__main__.Foo object at 0x03450690>
+
+But if you import as a module, you don’t:
+
+>>> import mod
+>>> mod.foo('grault')
+arg = grault
+
+
+An EXAMPLE:
+def fact(n):
+    return 1 if n == 1 else n * fact(n-1)
+
+if (__name__ == '__main__'):
+    import sys
+    if len(sys.argv) > 1:
+        print(fact(int(sys.argv[1])))
+		
+The file can be treated as a module, and the fact() function imported:
+
+>>> from fact import fact
+>>> fact(6)
+720
+
+But it can also be run as a standalone by passing an integer argument on the command-line for testing:
+
+C:\Users\john\Documents>python fact.py 6
+720

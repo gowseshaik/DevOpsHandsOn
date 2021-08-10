@@ -1,0 +1,64 @@
+****** GitBlit Setup ****
+
+Server Setup on Linux machine
+-----------------------------
+1. Download the gitblit war file from below link
+   http://dl.bintray.com/gitblit/releases/gitblit-1.6.2.war
+   
+   Downlaod JDK from below link and extract at root location (/root/jdk1.7)
+   http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-i586.tar.gz
+   
+2. Setup a Tomcat app server on linux machine ( Tomcat7)
+   -Download jdk1.7 from oracle site( google it you will get)
+   -Download tomcat from below link
+    http://apache.arvixe.com/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62.tar.gz
+   -Extract the tar.gz file with below command at /root/ lcoation
+   - $tar -zxvf apache-tomcat-7.0.62.tar.gz
+   - The above command will create a directory apache-tomcat-7.0.62, cd to this directory
+     cd /root/apache-tomcat-7.0.62/bin
+   - open catalina.sh file in this location ( /root/apache-tomcat-7.0.62/bin/catalina.sh)
+     add JAVA_HOME at starting of the line as shown below
+     JAVA_HOME="/root/jdk1.7"
+
+3. Copy the downloaded gitblit.war file to tomcat webapps location
+    $cp gitblit.war /root/apache-tomcat-7.0.62/webapps/
+4. Restart tomcat server
+     $cd /root/apache-tomcat-7.0.62/bin
+     $./startup.sh
+
+5. Access the gitblit from browser with an admin user
+   http://192.168.146.129:8080/gitblit   (admin/admin)
+   
+6. Create a repository with README initial commit
+
+7. Create the users from dashboard by clicking on admin user link -> users option
+   create a user harry and password harry, then under permisisons tab provide access to the respective repo and respectvie access
+   ex:
+   gitrepo --> RW ( push and pull access)
+
+Client setup on developer machine
+---------------------------------
+1. Download git client from below link and install it in your windows desktop
+   http://git-scm.com/download/win
+2. Install it as it is, how you generally install any windows msi/exe files
+
+3. open git bash from start program and create a dir at your home location on gitbash
+   C:\Users\harry>mkdir .ssh
+   cd .ssh
+   Enter below command and just enter 3 times
+   ssh-keygen -t rsa 
+   This will create three files under .ssh diretory, open id_rsa.pub file and copy the public key then add the sam through gitblit web UI under your profile sections
+4. Click on harry user name on gitblit dashboard, select ssh keys option then add above copied public key there.
+
+5. Now clone the repo to your machine by running below command to create local repo/workspace
+	
+	git config --global user.name "harry"
+	git config --global user.email "harry@gmail.com" 
+
+    git clone ssh://harry@192.168.146.129:29418/repo1.git
+    cd repo1 
+    touch Hello.txt
+    git add Hello.txt
+    git commit -m"sample commit"
+    git push origin master
+	

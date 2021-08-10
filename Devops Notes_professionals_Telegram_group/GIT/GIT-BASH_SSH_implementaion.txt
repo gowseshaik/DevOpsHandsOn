@@ -1,0 +1,46 @@
+Generating a new ssh key
+
+1. ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+2. Enter a file in which to save the key (/c/Users/you/.ssh/id_rsa):[Press enter]
+
+If you want to give a secure password type password else it would be passwordless
+
+3. Enter passphrase (empty for no passphrase): [Type a passphrase]
+4. Enter same passphrase again: [Type passphrase again]
+
+5. Ensure the ssh-agent is running:
+
+    If you are using the Git Shell that's installed with GitHub Desktop, the ssh-agent should be running.
+    If you are using another terminal prompt, such as Git for Windows, you can use the "Auto-launching the ssh-agent" instructions in "Working with SSH key passphrases", or start it manually:
+	# start the ssh-agent in the background
+    eval $(ssh-agent -s)
+    Agent pid 59566
+	
+6. Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_rsa in the command with the name of your private key file.
+   ssh-add ~/.ssh/id_rsa
+
+7. Copy the SSH key to your clipboard.
+
+If your SSH key file has a different name than the example code, modify the filename to match your current setup. When copying your key, don't add any newlines or whitespace
+
+clip < ~/.ssh/id_rsa.pub
+# Copies the contents of the id_rsa.pub file to your clipboard
+
+8. Login to your public GitHub account
+In the upper-right corner of any page, click your profile photo, then click Settings.
+
+9. In the user settings sidebar, click SSH and GPG keys.
+
+10. Click New SSH key or Add SSH key
+
+11. In the "Title" field, add a descriptive label for the new key. For example, if you're using a personal Mac, you might call this key "Personal MacBook Air".
+
+12. Paste your key into the "Key" field. 
+
+13. Click Add SSH key. 
+
+14. If prompted, confirm your GitHub password.
+
+
+And happily clone the repo
+git clone git@github.com:deepak2717/github-slideshow.git

@@ -1,0 +1,7 @@
+
+Cnitch | Container Snitch Checks Running Processes Under The Docker Engine
+
+cnitch (snitch or container snitch) is a simple framework and command line tool for monitoring Docker containers to identify any processes which are running as root.
+Why is this a bad thing? If you have not already been to can I haz non-privileged containers? by mhausenblas then I recommend you head over there now to get all the info.
+
+When I was developing cnitch I ran into what I though was a bug with the application, cnitch was reporting itself as a root process in a Docker container. I was unsure how this could be as the Dockerfile explicitly stated that I was creating a user not running as root. After much debugging and verification I decided to double check the Dockerfile and found this:

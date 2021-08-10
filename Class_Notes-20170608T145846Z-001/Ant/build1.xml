@@ -1,0 +1,17 @@
+<project name="Test" default="A">
+
+	<target name="A" depends="B">
+		<echo>Hello This is my first ANT script </echo>
+		<echo>Hello This is my first ANT script </echo>
+	</target>
+
+	<target name="B" depends="C">
+		<echo>BHello This is my first ANT script </echo>
+		<echo>BHello This is my first ANT script </echo>
+	</target>
+	<target name="C">
+		<echo>Hello This is my first ANT script </echo>
+		<echo>Hello This is my first ANT script </echo>
+	</target>
+
+</project>

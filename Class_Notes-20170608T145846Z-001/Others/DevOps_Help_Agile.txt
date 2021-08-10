@@ -1,0 +1,25 @@
+Development and Operation are separate departments in many medium and large organizations. Development is driven by customer requests, whereas Operation is driven by revenue and IT cost efficiency. Without constant collaboration between Development and IT Operations, continuous delivery can become impossible to maintain resulting in system failure.
+
+The IT Operations team is responsible for providing developers with necessary tools to validate that the changes they make are safe. By testing every small change developers avoid potential failures, reducing risk and reducing cost. The differing interests between the two departments often causes conflict, harming business values.
+
+To increase of productivity, collaboration and traceability within the software development life cycle repetitive tasks should be automated.
+
+DevOps is a solution to free IT from the repetitive tasks required for validation and make it possible for them to develop faster while meeting business values without neglecting stability, reliability and security. By using DevOps, Operation teams can benefit fromrelease management, audit capability for deployments and total tracebility (to see what is being delivered).
+
+“Right” tools for continuous integration, delivery and deployment:-
+
+Are capable to deal with complexity
+Report issues with the code as soon as they arise
+Can be used at enterprise level
+Are integrated to version control systems
+Simplify code maintenance and decrease issues that need to be fixed during the QA cycles.
+Companies using DevOps benefit from:-
+
+Faster and more frequent deployment
+Saving time and reduces errors by automating repetitive tasks
+Increasing productivity within the software development life cycle
+Better collaboration between Development and Operation teams
+Decreasing administrative support
+Responding to changes quicker, with other words becoming more Agile
+The DevOps movement has received a lot of attention at conferences in the past few years. Increasing numbers of companies are realizing that DevOps is vital for their teams to collaborate better, to be flexible enough to meet clients’ needs and to avoid high profile software release failures.
+

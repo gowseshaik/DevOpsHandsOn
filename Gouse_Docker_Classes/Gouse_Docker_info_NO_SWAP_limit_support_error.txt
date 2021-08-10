@@ -1,0 +1,68 @@
+
+Swap limit support allows you to limit the swap the container uses, see https://docs.docker.com/engine/admin/resource_constraints
+
+$free -mh
+What does this warning mean? I definitely have a swap partition, as evidenced by free -mh though I don't understand why my swap has no entry under available
+
+According to https://docs.docker.com/engine/installation/linux/linux-postinstall/#your-kernel-does-not-support-cgroup-swap-limit-capabilities :
+
+You can enable these capabilities on Ubuntu or Debian by following these instructions. Memory and swap accounting incur an overhead of about 1% of the total available memory and a 10% overall performance degradation, even if Docker is not running.
+
+1) Log into the Ubuntu or Debian host as a user with sudo privileges.
+
+2) Edit the /etc/default/grub file. Add or edit the GRUB_CMDLINE_LINUX line to add the following two key-value pairs:
+
+GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
+3) Update GRUB.
+
+$ sudo update-grub
+
+4) sudo reboot
+
+============
+Validate cgroup settings:
+
+In order to validate these settings have taken, open one console to view the systemd logs and look for messages containing “cgroup”.
+
+$journalctl -f | grep cgroup
+
+And in another console, spin up a very small alpine container.
+
+$ sudo docker run -it -m 8m --memory-swap 8m alpine:latest /bin/sh
+
+If you see an immediate warning message like below from the console running docker or a similar message from journalctl, that means the cgroup limits are not in place.
+
+# if you see this from the docker console, cgroup limits not in place
+WARNING: Your kernel does not support swap limit capabilities or the cgroup is not mounted. Memory limited without swap.
+
+# If ouput from journalctl, cgroup limits not in place
+level=warning msg="Your kernel does not support swap limit capabilities or the cgroup is not mounted. Memory limited without swap."
+If you do not see these messages, then you should have a container with an 8Mb limit on memory usage.  The “free” utility does not work for cgroups, so cat the following file to check the memory limit inside the container.
+
+Note: your result should be like below , not as above one.
+$ sudo docker run -it -m 8m --memory-swap 8m alpine:latest /bin/cat /sys/fs/cgroup/memory/memory.limit_in_bytes
+8388608
+
+$ sudo docker run -it -m 10m --memory-swap 10m alpine:latest /bin/cat /sys/fs/cgroup/memory/memory.limit_in_bytes
+10485760
+
+for more info, Please refer: https://fabianlee.org/2020/01/18/docker-placing-limits-on-container-memory-using-cgroups/
+===========
+
+On my Google Cloud Compute instance I had to do it a little bit different than the accepted answer.
+
+1) edit the file /etc/default/grub.d/50-cloudimg-settings.cfg
+
+sudo nano /etc/default/grub.d/50-cloudimg-settings.cfg
+1.1) modify or create the line
+
+GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0 cgroup_enable=memory swapaccount=1"
+1.2) save
+
+2) update grup
+
+sudo update-grub
+3) reboot
+
+sudo reboot
+==============

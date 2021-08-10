@@ -1,0 +1,14 @@
+1. What is Subversion
+2. Which protocols are used to access SVN
+3.How do we create a SVN repository
+4. How restrict everybody in a directory
+5. Show the log between two revisions
+6.Revert the local working copy changes
+7.What are hooks
+8. Difference between branch and tag
+9. What is base and head revisions
+10.difference beween svn export and svn co
+12. How do you list the list of directies in svn without checking it out
+13.When do we get conflicts
+14. How do you maintain versions in SVN
+15.How do you take the backup of SVN

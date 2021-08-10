@@ -1,0 +1,89 @@
+Intro
+VCS admini
+Build Tools
+CI 
+Deployment Process Automation:
+-----------------------------
+-> Copying the raw artifacts to the server and make sure the service is running fine
+Prior knowledge of 
+- Application(  Front end: war; backedn : *.sql)
+- App/Web server knowledge
+	App:  Apache Tomcat, Weblogic, Web sphere, Glash fish, Jetty ..
+	web:  apche httpd/  ngnix
+	http/https
+- DB : mysql, sql server, oracle, DB2 : RDBMS ( queries of deployment and backups)
+	   mongo, ravendb, cassandra : Documented db's
+
+Deploy the app manually: 
+100, 100 , 4-10
+
+-> Time consuming
+-> Errors/ Complexity
+-> No tracking
+
+DevOps Engineer to automate the Deployment Process
+
+LeadApp: ( 2 server )
+leadapp.war ( 1 -server + Apache tomcat)
+leadapp.sql  (1 -server + mysql)
+Is my application running ?
+smoke test:  http://192.168.33.10:8090/leadapp/
+loging with :   javachap
+My Environment is up and running / Deployment is success full
+
+
+App servers:
+------------
+Tomcat:
+- pre-requsiite
+  java
+1. Start/stop a app sever
+2. How to deploy an app
+	- Console deploy (soft) + no need of app server restart
+	- Direct deploy ( hard) + restart app server
+3. How to change configs
+	how to change the port no of tomcat
+	app base
+4. How to look at the logs
+
+Mysql DB:
+-----------
+- Open source
+- Relation DB ( tables)
+- Installation
+	mysql-server
+	$sudo yum install mysql-server
+	$mysql --version
+	$sudo /etc/init.d/mysqld status
+	$sudo /etc/init.d/mysqld start
+	$mysql -u root
+	mysql> show databases ;
+	mysql> create database HelloWorld ;
+	mysql> use HelloWorld
+	mysql> show tables;
+	mysql> create table
+	select, create, insert, update, alter, drop , date, count, orderby
+	https://www.ntu.edu.sg/home/ehchua/programming/sql/MySQL_Beginner.html
+	create mysql account:
+	CREATE USER 'leadapp'@'localhost' IDENTIFIED BY 'leadapp';
+	GRANT ALL PRIVILEGES ON * . * TO 'leadapp'@'localhost';
+- mysql runs on 3306 port by default
+	
+- how to take backup of a DB
+	$mysqldump -u leadapp -pleadapp HelloWorld > HelloWorld.sql
+- Load sql database
+	$mysql -u leadapp -pleadapp Hello < HelloWorld.sql
+	
+----------------------
+Deployment process automation:
+- scripting
+	Perl, Python, Ruby ,Powershell, Bash Shell...
+	automate leadapp app deployment with scripting
+- Tools ( DevOps tools)
+	Chef, Puppet, RunDeck, Deploy it, Octopus Deploy....
+	automate leadapp app deployment with Opscode Chef
+- Containers
+	Docker
+	automate leadapp app deployment with Docker
+
+Continuous Delivery with Jenkins Pipleline

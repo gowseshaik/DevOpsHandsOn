@@ -1,0 +1,284 @@
+Chef -setup with hosted chef by OpsCode:
+----------------------------------------
+
+1.  First Launch an instance with chef SDK
+	https://learn.chef.io/learn-the-basics/rhel/get-set-up/
+	
+2. 	create a repo for chef scripts at home location
+    mkdir ~/chef-repo
+	Create a resource ( file ) with some text inside it sample.txt
+	a resource can be anything of a ststem in a desied state
+
+	vi hello.rb
+	---------------------------
+	file 'sample.txt' do
+		content 'hello world'
+	end
+	---------------------------
+	Now run the below command to execute it
+	$chef-apply hello.rb
+	It created a sample.txt resource file
+	Now re run same again, it will not do anything as the files has been already created.
+
+	how to delete the same file usig chef-script
+	--------------------
+	file 'sample.txt' do
+		action :delete
+	end
+	---------------------
+	Resource can have actions  
+	:delete -- deleted resource
+	:create -- create file ( this is default, so no need to specify)
+	
+	This hello.rb is also called a recipe in chef terminology
+	briefly a recipe mean collection of resources that describes a perticular configuration policy.
+	ex: which manages files,deploys application, install and configure s/w components
+	
+3.  Now we will see more than a file creation using chef recipies
+	Like files, packages and services are also resources, and chef applies them in an order which you specify
+	
+	Install apache package using chef
+	vi apache.rb
+	---------------------------
+	package 'httpd'
+	---------------------
+	package is an another resource and we no need to mention the action as :install is the default action applicable
+	- run the above recipe , which installs apache webserver in your machine
+	  sudo chef-apply apache.rb
+	- Try to run again and it says resouce is already installed
+	- Now we will add few more actions to our resource
+	- vi apache.rb
+	-----------
+	package 'httpd'
+		service 'httpd' do
+			action [:enable, :start]
+		end
+	-------------
+		sudo chef-apply apache.rb
+	- The above action : start will start the httpd server
+	- Now we will add file resource for an html home page deployment in webserver
+	----------------
+		package 'httpd'
+		
+		service 'httpd' do
+		  action [:enable, :start]
+		end
+		
+		file '/var/www/html/index.html' do
+		  content '<html>
+		  <body>
+			<h1>hello world</h1>
+		  </body>
+		</html>'
+		end
+	-----------------------
+	stop the iptables service to access it from external
+	----------------
+	service 'iptables' do
+		action :stop
+	end
+	------------------
+4.  Now lets make our recipe more manageble, as the html file resides inside the recipe which is complex for 	practically doing it.	
+	-We can manage our recipes with cookbooks concept in chef, so lets see that
+	- create a directory cookbooks
+	mkdir cookbooks
+	cd cookbooks
+	*Note:  the cookbooks directory mandatory as chef-client sets this as chef_repo_path by default to search for cookbooks
+	- Now run below command to generate a cookbook 
+	chef generate cookbook learn_chef_httpd
+	- The above command created belwo directory structure
+	
+	+-- learn_chef_httpd
+		+-- Berksfile
+		+-- chefignore
+		+-- metadata.rb
+		+-- README.md
+		+-- recipes
+			+-- default.rb
+	- Now we will move index.html to some other file by creating templates
+		chef generate template learn_chef_httpd index.html
+	- the above command creates a templates/default/index.html.rb template placeholder file and add below content
+		<html>
+		  <body>
+			<h1>hello world</h1>
+		  </body>
+		</html>
+	- Now we will update this reference template in original recipe default.rb
+		vi default.rb
+		----------------------
+			package 'httpd'
+
+			service 'httpd' do
+			  action [:enable, :start]
+			end
+
+			template '/var/www/html/index.html' do
+			  source 'index.html.erb'
+			end
+
+			service 'iptables' do
+			  action :stop
+			end
+		--------------
+	- Now lets run the cookbook with above all configurations
+	  we will use chef-client to run cookbooks instead of chef-apply
+	  $sudo chef-client --local-mode --runlist 'recipe[learn_chef_httpd]'
+	- The above command runs the default recipe of the given cookbook, in case if you want to run other recipe
+	  $sudo chef-client --local-mode --runlist 'recipe[learn_chef_httpd:abc.rb]'
+	  this one will run abc.rb recipe in abvoe cookbook
+
+5.  Now Lets try to do all these configuration deployments in remote nodes instead of in same machine
+	The important elements of chef are three
+	1. WorkStation : Which is a machien where you run your cookbooks to apply on server,and it can be any OS
+	2. Chef Server : is a repository where it manages your cookbooks and also the nodes details and configs
+	3. Nodes	: is an instance manages by chefserver, where it has chef-client to talk to chef-server
+	
+	- Setup a workstation by installing chef SDK or you can make use of earlier instance as workstation
+	- Follow instruciton in below website or follow instrucitons here
+		https://learn.chef.io/manage-a-node/rhel/set-up-your-chef-server/
+		
+	- Login hosted chef and crete an organisation with uniq name and short name
+	- Click on org created and left side you can see started-kit, download it to your workstation.
+	- Now copy your cookbook inside the downloaded started kit dir
+	   Run below command to upload the cookbook to chef-server
+	   sudo knife cookbook upload learn_chef_httpd
+	   
+	- You can downloaded reusable cookbooks provided by OpsCode in market, use the below command to download the cookbooks
+	   knife cookbook site download learn_chef_httpd
+	   
+	- The above command downloads the httpd cookbook
+6. 	Now you are ready to deploy your cookbooks to nodes using chef-server
+	- run the below command to setup a node from workstation with bootstrap process
+	
+	knife bootstrap 192.168.146.129 --ssh-user root --ssh-password 'redhat' --sudo --node -name node1 --run-list 'recipe[learn_chef_httpd]'
+	or for hosted node given by opscode
+	knife bootstrap uvo1f5iz5942dqt9et0.vm.cld.sr --ssh-user root --ssh-password 'Tf8K1hT897' --sudo --use-sudo-password --node-name node_rhel2 --run-list 'recipe[learn_chef_httpd]'
+		
+	The above command will launch the chef-client in node automatically
+	
+	-- Now lets update the cookbook recipies and re upload to chef-server then run the cookbook on node from workstation
+	
+	knife bootstrap uvo1f5iz5942dqt9et0.vm.cld.sr --ssh-user root --ssh-password 'Tf8K1hT897' --sudo --node-name node_rhel2 --run-list 'recipe[tomcat7]'
+			  
+	knife bootstrap uvo1q15rbastg3rlaqs.vm.cld.sr --ssh-user root --ssh-password 'Ir6f4MF8hF' --sudo --node -name node1 --run-list 'recipe[nginx]'
+	
+	knife ssh uvo1q15rbastg3rlaqs.vm.cld.sr 'sudo chef-client' --manual-list --ssh-user root --ssh-password 'Ir6f4MF8hF'
+	 
+	
+/***********************************************************/
+Writing CookBooks: (https://www.digitalocean.com/community/tutorials/how-to-create-simple-chef-cookbooks-to-manage-infrastructure-on-ubuntu)
+-------------------
+What is cookbook
+	-Cookbooks serve as the fundamental unit of configuration and policy details that Chef uses to bring a node into a specific state. This just means that Chef uses cookbooks to perform work and make sure things are as they should be on the node
+What is recipe
+	-A recipe is the main workhorse of the cookbook. A cookbook can contain more than one recipe, or depend on 	outside recipes. Recipes are used to declare the state of different resources.
+
+What is resource
+-	a resource can be anything of a ststem in a desied state
+		package: Used to manage packages on a node
+		service: Used to manage services on a node
+		user: Manage users on the node
+		group: Manage groups
+		template: Manage files with embedded ruby templates
+		cookbook_file: Transfer files from the files subdirectory in the cookbook to a location on the node
+		file: Manage contents of a file on node
+		directory: Manage directories on node
+		execute: Execute a command on the node
+		cron: Edit an existing cron file on the node
+
+What is Attribute
+	Attributes in Chef are basically settings. Think of them as simple key-value pairs for anything you might want to use in your cookbook.
+	
+Whay is Template
+	Templates are similar to files, but they are not static. Template files end with the .erb extension, meaning that they contain embedded Ruby
+
+What is Metadata.rb
+	The metadata.rb file is used, not surprisingly, to manage the metadata about a package. This includes things like the name of the package, a description, etc.
+	It also includes things like dependency information, where you can specify which cookbooks this cookbook needs to operate. This will allow the Chef server to build the run-list for the nodes correctly and ensure that all of the pieces are transfered correctly
+
+-- Lets create a sample cookbook
+	create chef-repo dir
+	cd chef-repo
+	knife cookbook create nginx
+	The above command created nginx cookbook
+	add below content to default.rb of nginx cookbook
+	-------------------
+		package 'nginx' do
+		action :install
+		end
+	----------------
+	
+	
+	databag --> 
+	hio/ohi -->
+	encryption of keys in ubuntu
+	apt-get purge ( uninstall the java)
+	
+	how to search environment from ws
+	what is dsl ( domain specific language)
+	what type of language we are using in chef
+	chef validation pem 
+------------------------
+LeadApp Cookbook
+
+default.rb
+------------
+# Cookbook Name:: leadapp
+# Recipe:: default
+#
+# Copyright (c) 2015 The Authors, All Rights Reserved.
+execute "download_db_app_artifacts" do
+  command "aws s3 cp s3://scmrepo/schema.sql /root/"
+end
+
+execute "download_db_app_artifacts" do
+  command "aws s3 cp s3://scmrepo/schema.sql /root/leadapp.war"
+end
+
+template '/root/dbscript.sql' do
+  source 'dbscrpt.sql.erb'
+end
+
+#execute "dbscript_exec" do
+#  command "mysql -u root < /root/dbscript.sql"
+#end
+
+execute "dbscript_exec" do
+  command "mysql -u leadapp -pleadapp < /root/schema.sql"
+end
+
+execute "tomcat_stop" do
+  command "/etc/init.d/tomcat6 stop"
+end
+
+#execute "testing_cmd_execution" do
+#  command "wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war -P /usr/share/tomcat6/webapps/"
+#end
+
+execute "app_deploy" do
+  command "aws s3 cp s3://scmrepo/leadapp.war /usr/share/tomcat6/webapps/"
+end
+
+execute "tomcat_start" do
+  command "/etc/init.d/tomcat6 start"
+end
+
+
+	
+-----------
+AWS access keys
+Access Key ID:AKIAJC6YIYMT35IZBSYA
+Secret Access Key: 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	
+
+create a file at home
+/root/.aws/credentials
+[default]
+aws_access_key_id=AKIAJC6YIYMT35IZBSYA
+aws_secret_access_key=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
+~
+
+NOw access s3 files:
+aws s3 ls s3://scmrepo
+
+to downlaod a file
+aws s3 cp s3://scmrepo/schema.sql .

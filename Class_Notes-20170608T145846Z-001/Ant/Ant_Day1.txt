@@ -1,0 +1,139 @@
+1. Linux OS
+2. VCS - a) SVN  b)Git
+3.
+Build Process Automation:
+-------------------------
+Buid Process + Automation
+
+Build PRocess:
+--------------
+source code (Java/dotnet/C/c++) ->  
+
+Java:- javac
+Dotnet: Msbuild
+C/C++: TurboC
+
+Java:- Build process ?
+
+PRe-requisites:
+----------------
+1. Softwares - JDK (Java development kit) -- (Java compiler+ JRE)
+2. Source code ?
+
+Java Run Time environemnt (JRE)- Java Virtual machine (JVM)
+
+- Java - OS/PI programming language
+- How to build a source code
+
+md build\classes
+javac -sourcepath src -d build\classes src\HelloWorld.java
+
+Packaging:-
+jar: java archival ( collection of class files)
+jar cf build\jar\HelloWorld.jar  -C build\classes .
+
+Jar:- 1. Executable - jar
+	  2. Non executable -- jar
+Create a manifest file will help you to create executable jar
+
+dll--
+java -cp build\classes HelloWorld
+
+IDE: Interactive development environment 
+	Eclipse
+Dotnet IDE: Visual Studio
+
+The problems with conventional build process:-
+---------------------------------------------
+1. Time Consuming 
+2. Quality issues :- error proned  ( 30 min )
+3. Manitanance : 1,2,3 N(30)
+
+Automation system: 
+-------------------
+Java :- ANT, MAVEN and Gradle (OS/PI)
+Dotnet:- Msbuild, NANT 
+C/C++ : make/rake/cmake 
+
+ANT:
+----
+- OS/PI project
+- JDK is mandatory
+- ANT is a XML based scripting langage
+- Apache Org
+- 2000
+- Install : zip file 
+   - extract the zip
+   - set the path variable
+   - check C:\ant -version
+- Ant follow xml lanuage ( Everyhting in a tags format)
+	tag: 1.  <html>   </html>  
+		 2.  <br/>
+
+- Build.xml important tags/elements
+
+Project:- root tag of build.xml
+	attributes:
+	<project name="test" default="A" base=".">
+Target:-  Its a collection of tasks together inside the project tag
+	<target name="A" depends="B" description="this is for a compilaton program">
+Tasks: -- An actual action perfomed
+	N- of tasks
+	<echo>Hi This is my first ANT script</echo>
+
+------------
+1. File System tasks
+   echo, mkdir, delete, copy (file-file/file-dir/dir-dir/  dir(*) -dir(*)), move
+2. Java Relates tasks
+   javac, jar ,java ,war
+3. Properties
+   variable
+   x=10
+   printf &x
+   <property name="x" value="10"/>
+   ${x} - 10
+   3 ways we can declare the properties
+   1. Within build.xml
+   2. within build.properties
+   3. Command line properties
+       -Dx=10
+   System properies/default properties
+   
+4. Advanced Tasks
+   zip,unzip,antcall,antfile,exec ...
+     
+   Project/mod1/src
+				build.xml
+		  /mod2/src
+				build.xml
+		  /mod3/src
+				build.xml
+		 /build_main.xml
+		 <ant antfile="mod1/build.xml"/>
+		 <ant antfile="mod2/build.xml"/>
+   exec ---> solition for all
+   
+5. Java project ( web application)  war
+  Jar- java achival -- its a collection of class files
+  Project -- stand alone app ( jar) & executed
+		  -- webapp( static+ dynamic) host it on a web/app server
+			 browser
+			 *.war -- it s collection of dynamic(clases+jars) and static content ( clases+jars+html+xml+css)
+  
+5. External tasks
+	scp,sshexec, mail, if , for task, xml , svn checkout
+	- identify the task name and its libraries
+	- Download and keep them in ANT installation lib dir
+	- Make use of the task
+
+6. Ant options
+	>ant 
+	-f, -D, -v
+	-debug
+	-logfile
+	by default ant runs builds in release mode
+
+macros:-
+
+
+

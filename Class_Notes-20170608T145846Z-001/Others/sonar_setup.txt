@@ -1,0 +1,27 @@
+AsiaLogic:
+
+Work related:
+1. Any team
+2. Work from home ?
+3. Timings 
+
+Others
+1. How long is the contract
+2. Taxation and other benefits
+3. How many leaves I can get
+4. About family expenses
+
+
+
+CREATE USER 'dbclient'@'localhost' IDENTIFIED BY 'dbpwd';
+GRANT ALL PRIVILEGES ON *.* TO dbclient@'localhost' IDENTIFIED BY 'dbpwd';
+GRANT ALL PRIVILEGES ON *.* TO dbclient@'192.168.146.1' IDENTIFIED BY 'dbpwd';
+
+Downlaod sonarqube zip
+-> conf/sona.properties
+   update db user/pwd and mysql db connection string
+-> start sonar.sh based on OS
+
+AFP@0hrWQ
+
+saasfoundation@kony.com

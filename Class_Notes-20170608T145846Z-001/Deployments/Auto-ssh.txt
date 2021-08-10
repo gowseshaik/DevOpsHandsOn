@@ -1,0 +1,16 @@
+Auto-ssh from one server to another:
+--------------------------------------
+Source:
+At home location of user create .ssh dir
+
+cd .ssh
+ssh-keygen -t rsa
+
+The above command creates a file id_rsa.pub
+
+Dest:
+mkdir .ssh
+cd .ssh
+
+copy the contents of id_rsa.pub  to destination server below location
+vi /root/.ssh/authorized_keys

@@ -1,0 +1,40 @@
+Docker Inspect commands:
+
+parsing tool jq
+sudo apt install jq -y
+
+jq --version
+
+to get the help on docker inspect
+docker inspect --help
+
+-f = --format string
+-s = --size
+     --type string (return JSON for specified type)
+
+to inspect with size of the container
+docker inspect -s python
+
+to parse our inspected container with jq tool
+docker inspect python1 | jq
+
+docker inspect python1 | jq keys
+
+to get first list, 0 is the first list array
+docker inspect python1 | jq .[0] | jq keys
+
+to retrieving value from the first list
+docker inspect python1 | jq .[0].ResolveConfPath
+
+to retrieving value from the first list in readable formate
+docker inspect python1 | jq -r .[0].ResolveConfPath
+
+to check the above content for readable formate file
+sudo cat $(docker inspect python1 | jq -r .[0].ResolveConfPath)
+
+
+
+
+
+
+

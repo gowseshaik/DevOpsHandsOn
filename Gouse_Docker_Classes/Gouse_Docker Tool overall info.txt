@@ -1,0 +1,21 @@
+All About Docker
+
+- first release was March 20, 2013
+- Written in Golang
+- Utilizes the host OS
+- Originally built on LXC
+- Uses a filesystem called "overlay2", this filesystem is used to access from host. it will help to reuse filesystem files and overlap them and used as a container. Files needed for the container are stored in plain sight.
+
+- docker conatiners are essentially system processes isolated by "cgroups"
+
+Two host example:
+
+Host A : Hypervision : you can use for multiple os, single software will be used inside single os, you cant use same software on same os.
+Host B : Docker Engine : directly you can use mulptile softwares
+
+
+
+
+
+
+

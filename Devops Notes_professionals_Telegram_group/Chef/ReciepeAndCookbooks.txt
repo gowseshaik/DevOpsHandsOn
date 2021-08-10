@@ -1,0 +1,111 @@
+﻿Chef Reciepe : Install package and update a file
+
+create a ruby script : webserver.rb
+
+apt_update 'Update the apt cache daily' do
+  frequency 86_400
+  action :periodic
+end
+
+package 'apache2'
+
+service 'apache2' do
+  supports status: true
+  action [:enable, :start]
+end
+
+file '/var/www/html/index.html' do
+  content '<html>
+  <body>
+    <h1>hello world</h1>
+  </body>
+</html>'
+
+end
+
+Create a CookBook
+
+1. First, from your ~/chef-repo directory, create the cookbooks directory. mkdir cookbooks
+2. Now run the command to generate coook book : chef generate cookbook cookbooks/learn_chef_apache2
+
+sudo apt-get install tree
+
+3. tree cookbooks/
+cookbooks/
+└── learn_chef_apache2
+    ├── Berksfile
+    ├── chefignore
+    ├── metadata.rb
+    ├── README.md
+    ├── recipes
+    │   └── default.rb
+    ├── spec
+    │   ├── spec_helper.rb
+    │   └── unit
+    │       └── recipes
+    │           └── default_spec.rb
+    └── test
+        └── smoke
+            └── default
+                └── default_test.rb
+
+8 directories, 8 files
+
+4. Generate Template : chef generate template cookbooks/learn_chef_apache2 index.html
+
+ubuntu@ip-172-31-39-120:~/chef-repo$ tree cookbooks/
+
+cookbooks/
+└── learn_chef_apache2
+    ├── Berksfile
+    ├── chefignore
+    ├── metadata.rb
+    ├── README.md
+    ├── recipes
+    │   └── default.rb
+    ├── spec
+    │   ├── spec_helper.rb
+    │   └── unit
+    │       └── recipes
+    │           └── default_spec.rb
+    ├── templates
+    │   └── index.html.erb
+    └── test
+        └── smoke
+            └── default
+                └── default_test.rb
+
+9 directories, 9 files
+
+The .erb extension simply means that the file can have placeholders
+
+
+5. Now copy the contents of the HTML file from your recipe to the new HTML file, index.html.erb.
+
+<html>
+  <body>
+    <h1>hello chef</h1>
+  </body>
+</html>
+
+6. Update the reciepe to reference the HTML template
+In default.rb
+
+apt_update 'Update the apt cache daily' do
+  frequency 86_400
+  action :periodic
+end
+
+package 'apache2'
+
+service 'apache2' do
+  supports status: true
+  action [:enable, :start]
+end
+
+template '/var/www/html/index.html' do
+  source 'index.html.erb'
+end
+
+7. Run the cookbook
+sudo chef-client --local-mode --runlist 'recipe[learn_chef_apache2]'

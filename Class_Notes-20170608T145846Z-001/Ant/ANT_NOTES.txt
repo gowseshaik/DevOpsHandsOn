@@ -1,0 +1,118 @@
+Intro:
+- VCS administration
+- Build Process Automation
+- DeploymentAutomation
+- CI
+.
+.
+
+Build Process Automation:
+--------------------------
+
+Source code ready (java/c#/c/c++) => Conversion Process (Compilation) => Binary files
+Human understanble 										
+
+Java technology platform ( source platform)
+
+Pre-requisiteS:
+- Java compiler
+- Java packaging
+	jar- 2 types
+		1. executable/ 2. Non executable
+		  java -jar Hellworl.jar 
+		manifest file
+- Java run time installed
+
+- source code 				
+- Build process : Manual
+- Time consuming process
+- Reliable approach
+- Maitanance of build process
+- Quality issues
+
+ Automation Tools:
+- Java : ant, MAVEN, Gradle
+  Dotnet : msbuild, Nant, VS
+  C/C++ : make,rake ...
+ 
+Apache ANT:
+--------------
+- apache
+- OS/PI
+- Java
+- written in Java
+- jdk is mandatory 
+- Is a scripting language
+- XML 
+- XML script to ant to execute the statement written in xml file
+- build.xml is the default ant input file
+- How to write this build.xml to implement build process ?
+ 
+- build.xml structure
+<project>
+
+	<target>
+		<task>	</task>
+		<task>	</task>
+	</target>
+
+	<target>
+		<task>	</task>
+	</target>
+	
+	<target>	
+		<task>	</task>
+	</target>
+
+</project>
+
+
+Project: root element 
+	<project name="DevOpsTest" default="TargetA" basedir="C:\DevOps">
+Target: block of code seperated from rest of instructions
+	<target name="TargetA" depends="TargetB" description="Compiling source code">
+Task: Actual action performed
+	<echo> Hello World </echo>
+	<mkdir dir="build"/>
+	<delete dir="build"/>
+
+
+Tasks:
+--------
+File Systems tasks: echo , mkdir , delete, copy, move 
+Java Related Tasks: javac, jar, java , war
+Properties  : variable in programming
+	can be defined in 3 ways
+	1. within build.xml
+	2. property file
+	3. command line
+   global/default propeties
+Advanced Tasks : zip, unzip, exec, antcall, antfile
+Web app building: war, path variable
+External tasks : 
+Options 
+ 
+ 
+a=10
+<property name="a" value="10"/>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+ 

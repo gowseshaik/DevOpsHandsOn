@@ -1,0 +1,53 @@
+﻿Specifying(changing) a default Docker storage directory for manually installed Docker
+============================================================================
+If you installed Docker on your nodes, take the following steps:
+    1. Remove all Docker containers and images.
+       sudo docker rm -f $(docker ps -aq); docker rmi -f $(docker images -q)
+       
+    2. Stop the Docker service.
+	sudo service docker stop
+	(or)
+       sudo systemctl stop docker
+       
+    3. Remove the Docker storage directory.
+       sudo rm -rf /var/lib/docker
+       
+    4. Create a new /var/lib/docker storage directory.
+       sudo mkdir /var/lib/docker
+       Note: A /var/lib/docker directory with less than 50 GB disk space isn’t supported.
+       
+    5. Use bind mount to set the new location. For example, to set the new location as /mnt/docker run the following commands:
+       sudo mkdir /mnt/docker
+       sudo mount --rbind /mnt/docker /var/lib/docker
+       
+    6. Start the Docker service.
+	sudo service docker start
+	(or)
+       sudo systemctl start docker
+
+Specifying(changing) a default Docker storage directory for automatically installed Docker
+===============================================================================
+If the IBM Cloud Private installation process includes Docker installation, take the following steps:
+    1. Create a new /var/lib/docker storage directory.
+       sudo mkdir /var/lib/docker
+       
+    2. Use bind mount to set the new location. For example, to set the new location as /mnt/docker run the following commands:
+       sudo mkdir /mnt/docker
+       sudo mount --rbind /mnt/docker /var/lib/docker
+
+========================
+****************
+daemon.json
+****************
+With recent versions of Docker, you would set the value of the data-root parameter to your custom path, in /etc/docker/daemon.json (according to https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file).
+
+With older versions, you can change Docker's storage base directory (where container and images go) using the -goption when starting the Docker daemon. (check docker --help). You can have this setting applied automatically when Docker starts by adding it to /etc/default/docker
+
+Yes, change this line to DOCKER_OPTS="-dns 8.8.8.8 -dns 8.8.4.4 -g /mnt"
+
+==========
+
+https://collabnix.com/how-to-change-docker-image-installation-directory/
+
+
+

@@ -1,0 +1,64 @@
+Optimizing our Dockerfile:
+
+vi Dockerfile
+
+FROM python
+
+COPY ./app/ /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+===========
+
+time docker build -t dev1 .
+docker history dev1 > dev1
+
+============
+lest change our docker file
+
+
+vi Dockerfile
+
+FROM python
+
+COPY ./app/requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+COPY ./app/ /app
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+==========
+sudo su - sh /var/lib/docker/overlay2
+931M /var/lib/docker/overlay2
+
+time docker build -t dev2 .
+
+sudo su - sh /var/lib/docker/overlay2
+945M /var/lib/docker/overlay2
+
+time docker build -t dev3 .
+
+sudo su - sh /var/lib/docker/overlay2
+945M /var/lib/docker/overlay2
+
+
+docker history dev2 > dev2
+docker history dev3 > dev3
+
+

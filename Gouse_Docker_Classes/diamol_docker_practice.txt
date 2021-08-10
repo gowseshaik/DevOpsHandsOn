@@ -1,0 +1,627 @@
+Dockerfile run commands:
+==========================
+cd /data/DevOpsUniversity/DevOpsGLabs/mmonit
+docker image build -t mmonit:v1 .
+
+just create a custom image without any tag:
+$ docker build .
+
+Let's tag our image with IMAGE ID dc3d4fd77861 as my-tagged-image:v1.0 :
+$ docker image tag dc3d4fd77861 my-tagged-image:v1.0
+
+now you run your container from the dockerfile created image:
+$ docker container run my-tagged-image:v1.0
+$ docker run --rm -it my-tagged-image:v1.0 bash
+$ docker run -it ubuntu /bin/bash
+$ docker run -it -d --rm --name linux1 ubuntu /bin/bash
+
+--rm <container name> will remove the container and recreate a container with the same name with the --name flag.
+
+$ docker run --rm -v ${PWD}:/myvol ubuntu /bin/bash -c "ls -la > /myvol/myfile.txt
+$ docker run -d httpd
+$ docker logs <containerID>
+$ docker logs <containerID> -f ==> is like a tail of logs
+$ docker inspect <containerID> ==> it will show all the settings of the container
+$ docker rm -f <containerID> ==> remove the container as ungracefully.
+$ docker run -d -p 8080:80 httpd
+
+====================
+vi index.php
+<? echo "hello world\n\n";>
+
+
+vi Dockerfile
+
+FROM php:7.1-cli
+EXPOSE 8000
+RUN mkdir /myproject
+COPY index.php /myproject
+WORKDIR /myproject
+CMD php index.php
+(or)
+CMD ["php", "index.php"]
+(or)
+CMD ["php", "-S", "0.0.0.0:8000"] ==> here we are just start/serving a server with the port 8000
+
+$ docker build -t myphpwebapp .
+
+but browser will not accessible on port 8000, because we have to do the port forwarding.
+
+$ docker run -p 8080:8000 myphpapp:web
+$ docker run --name=php7-fpm -v /var/www/html/:/var/www/html/ -p 9002:9000 marty/php7
+
+
+$ docker build -t myphp .
+
+push your image to dockerhub:
+=============================
+
+vi dockerfile
+
+FROM alpine
+RUN apt -y update && apt install curl
+CMD ["curl"]
+(or)
+ENTRYPOINT ["curl"]
+
+now run your dockerfile to build an image
+
+$ docker build -t mycurl .
+
+login to your dockerhub
+create a repository gowseshaik\curubuntu
+goto your local:
+
+$ docker tag mycurl gowseshaik\mycurl:latest
+$ docker push mycurl gowseshaik\mycurl:latest
+
+goto dockerhub now, and check your pushed image in your dockerhub.
+
+same image should be available in your dockerhub.
+====================
+Docker-compose
+
+1. create Dockerfile
+2. place the files, if any to mount in dockerfile
+3. create Docker-compose.yml file
+
+step 1: now we are creating docker-compose with "dockerfile"
+==============================================================
+vi docker-compose.yml
+
+version: '3'
+
+services:
+  phpapp:
+     ports:
+        - "8080:80"
+     build:
+        context: ./
+        dockerfile: Dockerfile
+
+ALT+SHIFT+F = to automate the formate of your yml file in vscode studio. you have to install yml addon.
+
+$ docker-compose up
+to rebuild:
+$ docker-compose up --build
+
+========>
+step 2: now we are creating docker-compose with an "image"
+
+vi docker-compose.yml
+----------------------
+
+version: '3'
+
+services:
+   phpapp:
+     image: php:7.2-apache
+     ports:
+     	- "8080:80"
+     volumes:
+        - "./:/var/www/html"
+========>
+step 3: now we are creating docker-compose with an "Dockerfile" to create an "image" and "container"
+
+vi docker-compose.yml
+
+version: '3'
+
+services:
+  phpapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: phpapp:123
+    ports:
+      - "8080:80"
+    volumes:
+      - "./:/var/www/html"
+    container_name: my-php-app
+    
+docker-compose up
+
+========>
+step 4: now we are creating docker-compose with an with two services and interactive each other
+
+vi docker-compose.yml
+
+version: '3'
+
+services:
+  phpapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: phpapp:123
+    ports:
+      - "8080:80"
+    volumes:
+      - "./:/var/www/html"
+  
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my!!root!!!pw
+    container_name: myphpapp-db
+  
+docker-compose up
+docker-compose up --build -d (its a dettached in background)
+
+to see the logs of our phpapp db container
+docker logs myphpapp-db
+
+to see the both container logs of your compose 
+docker-compose logs -f
+==============
+step 4: now we are creating docker-compose with an with data persistance
+there are two methods
+1. Host Directory Volume mounting
+2. Named Volume Mounting (Name: yourvolume)
+
+volumes:
+    my-vol:
+     name: my-vol
+
+lets go for 1. Host Directory Volume mounting:
+
+vi docker-compose.yml
+
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: myphpapp-db
+    environment:
+       MYSQL_ROOT_PASSWORD: somepass
+       MYSQL_DATABASE: somedatabase
+    #volumes:
+    #  - ./data:/var/lib/mysql
+    
+  dbclient:
+    image: mysql:latest
+    depends_on:
+      - db
+    command: mysql -uroot -psomepass -hdb
+ 
+$ docker-compose up -d
+$ docker-compose ps
+$ docker-compose run --rm dbclient
+$ docker-compose stop
+$ docker-compose rm
+$ docker-compose up
+$ docker-compose run --rm dbclient
+
+now enable volume in docker-compose file
+
+again
+$ docker-compose stop
+$ docker-compose rm
+$ docker-compose up
+$ docker-compose run --rm dbclient
+create some table in your db, and exit and stop all containers and remove.
+now you can check your host directory ./data directory, it will show your data persistence.
+
+$ docker-compose up -d db
+$ docker-compose run --rm dbclient
+
+
+==========================
+sharing volumes accross all containers:
+2. Named Volume Mounting (Name: yourvolume)
+
+volumes:
+    my-vol:
+     name: my-vol
+     
+
+
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: myphpapp-db
+    environment:
+       MYSQL_ROOT_PASSWORD: somepass
+       MYSQL_DATABASE: somedatabase
+    volumes:
+      - my-vol:/var/lib/mysql
+    
+   volumes:
+     my-vol:
+       name: my-vol
+
+$ docker-compose up
+
+docker-compose ps
+docker ps -a
+docker volume ls
+see our created volume by docker-compose.
+now lets delete the volume created by docker-compose
+create a new volume by 
+$docker volume create --name mydb_vol
+and now configure this volume in our docker-compose file.
+
+now the same volume can be mounted on different ubuntu container
+lets see how we can configure the same
+
+$docker run -v mydb_vol:/mydata --rm -it ubuntu /bin/bash
+inside the container, ls -ltr /mydata
+
+===================
+
+$ docker network ls
+Types of Drivers:
+  bridge :bridge
+  host : host
+  null : none
+$ docker network prune
+$ docker run --rm --name my-webserver -d httpd
+$ docker inspect my-webserver
+you can see the bridge network has been connected to your container.
+in the Networksettings:
+but we cant able to access this page without port forwarding.
+so this is the reason we have networks here to access
+create a simple network which is used the bridge drive
+$ docker network create simple-network
+
+$ docker run --rm --name my-webserver --network simple-network httpd
+
+$ docker run --rm --network simple-network tomw1808/mycurl --name my-webserver
+ 
+$ docker inpsect my-webserver
+
+to remove the network 
+docker network rm simple-network
+=======================
+vi docker-compose.yml
+
+version '3'
+
+services:
+  app1:
+    image: httpd:latest
+    container_name: app1
+    port:
+      - "8080:80"
+    networks:
+      - app1_net
+
+networks:
+  app1_net:
+
+$ docker-compose up
+$ docker inspect app1
+you can compare the NetworkID with your "docker network ls"
+
+
+
+
+
+=============================================
+
+docker-compose ps
+docker-compose down
+docker-compose up
+docker-compose logs -f
+
+
+========================
+
+$ docker stop foobar
+$ docker start foobar
+$ docker exec -it foobar bash
+
+$ docker build --rm -t local/c7-systemd -f Dockercentos /data/DevOpsUniversity/DevOpsGLabs/mmonit
+
+error: Linux command “systemctl status” is not working inside a Docker container
+solution: is run with privileged
+$ docker run -it --privileged -p 10081:80 centos7 /bin/bash
+
+volumes and mounting to container:
+==================================
+
+-v <sour_dir>:<dest_dir>
+$ docker run --rm -v ${PWD}:/myvol ubuntu /bin/bash -c "ls -lha > /myvol/myfile.txt"
+
+============
+Securing docker images before pulling / pushing unsigned images to repository.
+
+export DOCKER_CONTENT_TRUST=1
+
+try to push the unsigned image to repository, it will fail.
+
+docker push <some image>
+
+
+vi DockerfileNginx
+====================
+FROM centos:8
+
+LABEL maintainer="admin@example1.com"
+RUN dnf update -y
+RUN dnf upgrade -y
+RUN dnf install epel-release -y
+RUN dnf install nginx -y
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+$ docker build -t nginx-image:1.0.0 -f DockerfileNginx /home/centos
+Now to build the above docker file you need to run docker build -t nginx-image:1.0.0 -f dockerfile1 /home/centos command. You can also specify .(dot) when using dockerfile from current directory but if it is in some other directory then you need to specify the complete path. Also -f option is only required when you are not using the default dockerfile name.
+
+gana@gana:/data/DevOpsUniversity/DevOpsGLabs/mmonit$ docker build -t nginx-image:1.0.0 DockerfileNginx
+unable to prepare context: context must be a directory: /data/DevOpsUniversity/DevOpsGLabs/mmonit/DockerfileNginx
+gana@gana:/data/DevOpsUniversity/DevOpsGLabs/mmonit$ docker build -t nginx-image:1.0.0 -f DockerfileNginx /data/DevOpsUniversity/DevOpsGLabs/mmonit
+
+
+
+docker images search:
+=====================
+$ docker search [OPTIONS] TERM
+$ docker search --no-trunc fedora --> You can see that this time, it has not truncated the description and the output looks somewhat clumsy.
+Limiting the number of results
+$ docker search --limit=5 fedora
+
+Placeholder 	Description
+.Name 	Name of the Image
+.Description 	Description of the Images
+.StarCount 	Count of stars
+.IsOfficial 	“OK” for official images
+.IsAutomated 	“OK” for automated images
+
+$ docker search --limit=10 --format “The {{.Name}} image has {{.StarCount}} number of stars” fedora
+$ docker search --limit=10 --format “table {{.Name}}\t{{.IsOfficial}}” fedora
+$ docker search --filter stars=3 --filter is-automated=true fedora
+$ docker search --filter is-official=true centos
+
+iamges & containers cleanup commands:
+=====================================
+docker container rm -f $(docker container ls -aq)
+docker image rm -f $(docker image ls -f reference='diamol/*' -q)
+docker rmi -f $(docker images -aq)
+docker container rm --force $(docker container ls --all --quiet)
+
+$docker image rm -f $(docker image ls -f reference='diamol/*' -q)
+
+$ docker system purn
+
+run a container from the diamol project:
+========================================
+docker container run diamol/ch02-hello-diamol
+(or)
+docker run diamol/ch02-hello-diamol
+
+the docker run will check first in local, if not found it will pull from docker hub repository.
+https://hub.docker.com/r/diamol/ch02-hello-diamol
+
+You can restart an existing container after it exited and your changes are still there. 
+=========================================================================================
+docker start  `docker ps -q -l` # restart it in the background
+docker attach `docker ps -q -l` # reattach the terminal & stdin
+
+
+To exit from this running container, you can use ctrl+c, ctrl+d or enter exit in the terminal.
+
+To detach the tty without exiting the shell, use the escape sequence CTRL + P followed by CTRL + Q.
+esc and CTRL+p+q
+
+Additional info from this source:
+
+docker run -t -i → can be detached with Ctrl+P & Ctrl+Q sequece and reattached with "docker attach"
+
+docker run -i → cannot be detached with Ctrl+P & Ctrl+Q sequence; will disrupt stdin
+
+docker run → cannot be detached with Ctrl+P & Ctrl+Q; can SIGKILL client; can reattach with "docker attach"
+
+$docker attach 3c0768817471
+$ docker stop 3c0768817471
+$docker start 3c0768817471
+
+docker container top lists the processes running in the container:
+==================================================================
+
+$docker container top 3c0768817471
+$docker container logs 3c0768817471
+$docker container inspect 3c0768817471
+$docker inspect -f {{.Author}} IMAGE
+$docker container ls --all
+$docker container stats 3c0768817471  --> it shows a live
+view of how much CPU, memory, network, and disk the container is using
+
+$docker history 3c0768817471 --> to see the history of an image.it will show the steps/layers executed.
+
+Docker system details:
+=====================
+Commands:
+  df          Show docker disk usage
+  events      Get real time events from the server
+  info        Display system-wide information
+  prune       Remove unused data
+
+
+$docker system df
+$docker system events
+$docker system info
+$docker system prune
+
+Running detached mode of a container
+====================================
+
+docker container run --detach --publish 8088:80 diamol/ch02-hello-diamol-web
+
+--detach —Starts the container in the background and shows the container ID
+		Running a detached container just puts the container in the background so it starts up and stays hidden, like a Linux daemon or a Windows service.
+		
+--publish —Publishes a port from the container to the computer
+		traffic sent to the computer on port 8088 will get sent into the container on port 80
+		
+http://localhost:8088/
+=============================
+Docker EE and opensource products for monitory tool:
+====================================================
+This is Universal Control Plane (UCP), a commercial product from the company
+behind Docker (https://docs.docker.com/ee/ucp/). Portainer is another option,
+which is an open source project. Both UCP and Portainer run as containers them-
+selves, so they’re easy to deploy and manage.
+
+Universal Control Plane (UCP) -- docker EE
+Portainer -- opensoure
+
+
+Building your own Docker images
+===============================
+$docker image pull diamol/ch03-web-ping
+
+to create your own image with pull and with the tag --name <give an image name>
+$docker container run -d --name web-ping diamol/ch03-web-ping
+
+$docker container run -d --name Gouse-web-ping diamol/ch03-web-ping
+
+$docker run --env TARGET=google.com  diamol/ch03-web-ping
+
+====================The following instructions are available in Dockerfiles:
+
+ADD:
+====
+Copies files from the build context or remote URLs into the image. If an archive
+file is added from a local path, it will automatically be unpacked. As the range of
+functionality covered by ADD is quite large, it’s generally best to prefer the simpler
+COPY command for copying files and directories in the build context and RUN
+instructions with curl or wget to download remote resources (which retains the
+possibility of processing and deleting the download in the same instruction).
+
+
+CMD:
+====
+Runs the given instruction when the container is started. If an ENTRYPOINT has
+been defined, the instruction will be interpreted as an argument to the ENTRY
+POINT (in this case, make sure you use the exec format). The CMD instruction is
+overridden by any arguments to docker run after the image name. Only the last
+CMD instruction will have an effect, and any previous CMD instructions will be
+overridden (including those in base images).
+
+
+COPY:
+=====
+Used to copy files from the build context into the image. It has two forms, COPY
+src dest_ and COPY ["src", "dest"] , both of which copy the file or directory
+at src in the build context to dest inside the container. The JSON array format is
+required if the paths have spaces in them. Wildcards can be used to specify multi‐
+ple files or directories. Note that you cannot specify src paths outside the build
+context (e.g., ../another_dir/myfile will not work).
+
+
+ENTRYPOINT:
+===========
+Sets an executable (and default arguments) to be run when the container starts.
+Any CMD instructions or arguments to docker run after the image name will be
+passed as parameters to the executable. ENTRYPOINT instructions are often used to
+provide “starter” scripts that initialize variables and services before interpreting
+any given arguments.
+
+
+ENV:
+====
+Sets environment variables inside the image. These can be referred to in subse‐
+quent instructions. For example:
+...
+ENV MY_VERSION 1.3
+RUN apt-get install -y mypackage=$MY_VERSION
+...
+The variables will also be available inside the image.
+
+
+EXPOSE:
+=======
+Indicates to Docker that the container will have a process listening on the given
+port or ports. This information is used by Docker when linking containers (see “Linking Containers”) or publishing ports by supplying the -P argument to
+docker run ; by itself the EXPOSE instruction will not affect networking.
+
+
+FROM:
+=====
+Sets the base image for the Dockerfile; subsequent instructions build on top of
+this image. The base image is specified as IMAGE:TAG (e.g., debian:wheezy ). If the
+tag is omitted, it is assumed to be latest , but I strongly recommend you always
+set the tag to a specific version to avoid surprises. Must be the first instruction in
+a Dockerfile.
+
+
+MAINTAINER:
+===========
+Sets the “Author” metadata on the image to the given string. You can retrieve this
+with docker inspect -f {{.Author}} IMAGE . Normally used to set the name
+and contact details of the maintainer of the image.
+
+
+ONBUILD:
+========
+Specifies an instruction to be executed later, when the image is used as the base
+layer to another image. This can be useful for processing data that will be added
+in a child image (e.g., the instruction may copy in code from a chosen directory
+and run a build script on the data).
+
+
+RUN:
+====
+Runs the given instruction inside the container and commits the result.
+
+
+USER:
+=====
+Sets the user (by name or UID) to use in any subsequent RUN , CMD , or ENTRYPOINT
+instructions. Note that UIDs are the same between the host and container, but
+usernames may be assigned to different UIDs, which can make things tricky
+when setting permissions.
+
+
+VOLUME:
+=======
+Declares the specified file or directory to be a volume. If the file or directory
+already exists in the image, it will copied into the volume when the container is
+started. If multiple arguments are given, they are interpreted as multiple volume
+statements. You cannot specify the host directory for a volume inside a Docker‐
+file for portability and security reasons. For more information, see “Managing
+Data with Volumes and Data Containers”.
+
+
+WORKDIR:
+========
+Sets the working directory for any subsequent RUN , CMD , ENTRYPOINT , ADD , or COPY
+instructions. Can be used multiple times. Relative paths may be used and are
+resolved relative to the previous WORKDIR.
+
+
+
+
+
+=
+
+
+
+

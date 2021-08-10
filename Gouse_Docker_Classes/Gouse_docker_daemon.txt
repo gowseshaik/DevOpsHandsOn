@@ -1,0 +1,5 @@
+The default config file path on Linux is /etc/docker/daemon.json like you said, but it doesn't exist by default. You can write one yourself and put additional docker daemon configuration stuff in there instead of passing in those configuration options into the command line. You don't even have to do dockerd --config-file /etc/docker/daemon.json since that's the default path, but it can be useful to make it explicit for others who are inspecting the system.
+
+Also ensure that any configuration you set in /etc/docker/daemon.json doesn't conflict with options passed into the command line evocation of dockerd. For reference:
+
+The options set in the configuration file must not conflict with options set via flags. The docker daemon fails to start if an option is duplicated between the file and the flags, regardless their value.

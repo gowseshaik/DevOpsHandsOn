@@ -1,0 +1,47 @@
+Docker overlay2 filesystem deep dive:
+
+lets use the busybox, its a light weight images
+docker pull busybox
+
+to get the filesystem with overlay details
+docker inspect busybox
+you can see, our filesystem storage are located under /var/lib/docker/overlay2
+
+values like
+lowerDir: /var/lib/docker/overlay2/2******
+MergedDir:/var/lib/docker/overlay2/*******
+UpperDir:/var/lib/docker/overlay2/******
+WorkDir:/var/lib/docker/overlay2/******
+
+to understand the structure of our filesystem overlay2
+cd /var/lib/docker/overlay2
+tree --inodes -L 3
+
+it will show the tree sturcture of our container
+1. image
+	1.1 diff
+	    .... changes of directories
+1.2 link in between our source host file system --> and container file system
+
+to check of details for filesystem
+$df
+
+docker run -v /data -d busybox ping google.com
+docker ps
+docker inspect $(docker ps -l -q)
+cd /var/lib/docker/overlay2
+tree --inodes -L 3
+tree --inodes -L 4 */diff/dev
+tree --inodes -L 4 */merged/dev
+df
+
+docker rm -f $(docker ps -a -q)
+cd /var/lib/docker/overlay2
+tree --inodes -L 3
+
+
+docker rm -f $(docker images -q)
+cd /var/lib/docker/overlay2
+tree --inodes -L 3
+
+

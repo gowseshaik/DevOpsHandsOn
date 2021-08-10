@@ -1,0 +1,435 @@
+CVS
+Step by Step Introduction
+
+CVS offers a couple help commands which display the usage information. This is very useful when trying to figure out the different command line arguments used by each of the CVS commands.
+% cvs --help
+% cvs --help-commands
+% cvs <command> --help
+Environment Variables:
+
+ 
+Using a remote repository:
+
+To access the central repository located on svr0lx using ssh, set the following environment variables as shown.
+(using csh or tcsh)
+% setenv CVSROOT :ext:<username>@svr0lx.ud.infn.it:/repository/glast-is
+% setenv CVS_RSH ssh
+
+(using sh or bash)
+% CVSROOT=:ext:<username>@svr0lx.ud.infn.it:/repository/glast-is
+% export CVSROOT
+% CVS_RSH=ssh
+% export CVS_RSH
+Using a local repository:
+
+If you are new to CVS and want to experiment with it before using the main central repository, you can set up and test on a local CVS repository. The following steps can be used for setting up a local CVS repository.
+First create a local repository somewhere on your system. For example, using the path /u/wk/edavis/cvsroot as the location for the CVS repository, the CVS init command is used to create the repository.
+
+% cvs -d /u/wk/edavis/cvsroot init
+Then set the following evironment variable to access this new local repository.
+(using csh or tcsh)
+% setenv CVSROOT /u/wk/edavis/cvsroot
+
+(using sh or bash)
+% CVSROOT=/u/wk/edavis/cvsroot
+% export CVSROOT
+Importing your sources for the first time:
+
+Each collection of sources managed by CVS is called a module. You can create a new module by importing one from scratch, from an existing collection of sources, or from an existing RCS Repository.
+ 
+Importing a new module from scratch:
+
+First create the directory structure that is needed. Then move any files to be included for this module to the directories.
+% mkdir ~/foobar
+% cd ~/foobar
+% mkdir foo bar 
+% mv ~/x foo
+% mv ~/y bar
+Once you are done setting up the directory structure you can then import it to the CVS repository. Make sure you are directly under the top level directory.
+% pwd
+~/foobar
+% cvs import foobar INFN start
+cvs import: Importing /u/wk/edavis/cvsroot/foobar/bar
+N foobar/bar/y
+cvs import: Importing /u/wk/edavis/cvsroot/foobar/foo
+N foobar/foo/x
+No conflicts created by this import
+This import command tells CVS to create a new module named 'foobar' with the vendor name 'INFN' and the first release-tag 'start'. CVS will then import the entire directory tree you created. You can now delete the directory tree you created because it is now stored in the CVS repository. 
+ 
+Importing a new module from an existing collection of sources:
+
+Assuming you have a tar file that contains the sources for a specific application, you can import these sources to the CVS repository using the same method above.
+% tar -xvf foobar.tar
+x foobar/bar/y, 0 bytes, 0 blocks
+x foobar/foo/x, 0 bytes, 0 blocks
+% cd foobar
+% cvs import foobar NAS start
+cvs import: Importing /u/wk/edavis/cvsroot/foobar/bar
+N foobar/bar/y
+cvs import: Importing /u/wk/edavis/cvsroot/foobar/foo
+N foobar/foo/x
+No conflicts created by this import
+Importing a new module from an RCS Repository:
+
+Check the CVS manual on how to import RCS files into a CVS Repository.
+Checking out sources:
+
+To checkout the sources for a specific module use the CVS checkout command. Note that the module must have already been imported to the repository.
+% cvs checkout foobar
+cvs checkout: Updating foobar
+cvs checkout: Updating foobar/bar
+U foobar/bar/y
+cvs checkout: Updating foobar/foo
+U foobar/foo/x
+This will create a local copy of the module in your current working directory. Now you add files to, delete files from, and edit the module sources. (See section 9 below on how to release the sources when you are done.) 
+ 
+Updating your sources:
+
+When multiple developers are working on the same module, it is good practice to periodically check if the sources in the CVS repository have been modified since you last checked them out. The CVS diff and update commands are used to ensure that your local copy of the module is current. The diff command shows you which files are different and how they differ. If some files are different, then use the update command to update your local copy of the files with the new modifications.
+% cvs diff -D now foobar
+cvs diff: Diffing foobar
+cvs diff: Diffing foobar/bar
+cvs diff: Diffing foobar/foo
+The above diff command shows that no files have been modified and the local copy of the module is up to date. The following happens when a file has been modified by someone else and committed to the repository.
+% cvs diff -D now foobar
+cvs diff: Diffing foobar
+cvs diff: Diffing foobar/bar
+cvs diff: Diffing foobar/foo
+Index: foobar/foo/x
+===================================================================
+RCS file: /u/wk/edavis/cvsroot/foobar/foo/x,v
+retrieving revision 1.2
+retrieving revision 1.1.1.1
+diff -r1.2 -r1.1.1.1
+1d0
+< text here
+% cvs update foobar
+cvs update: Updating foobar
+cvs update: Updating foobar/bar
+cvs update: Updating foobar/foo
+U foobar/foo/x
+Here the file x has been modified since the last checkout. Use the CVS update command to incorporate the new modifications from the repository to the local copy of the module. Note that there are various formats to the CVS date string (-D). Using the date now tells CVS to diff the latest module sources in the repository. If the date yesterday were used, then CVS would diff the latest revision from the previous day. Check the man page for the various correct formats. 
+ 
+Committing your changes:
+
+Once you are done making any modifications to the module sources, you need to commit your changes to the CVS repository. This is done using the CVS commit command. Modify the files foobar/foo/x and foobar/bar/y and then commit them to the repository.
+% cvs commit foobar
+cvs commit: Examining foobar
+cvs commit: Examining foobar/bar
+cvs commit: Examining foobar/foo
+cvs commit: Committing foobar/bar
+Checking in foobar/bar/y;
+/u/wk/edavis/cvsroot/foobar/bar/y,v  <--  y
+new revision: 1.2; previous revision: 1.1
+done
+cvs commit: Committing foobar/foo
+Checking in foobar/foo/x;
+/u/wk/edavis/cvsroot/foobar/foo/x,v  <--  x
+new revision: 1.3; previous revision: 1.2
+done
+The commit command recursively traverses the foobar directory and commits any changes you have made. Here CVS showed that both the x and y files have been modified and committed to the repository. 
+ 
+Adding and removing source files:
+
+A source tree is constantly changing and there is often the need to add new files and delete existing files within the directory tree. This can be accomplished for a module using the CVS add and remove commands.
+% cd foobar/foo
+% ls
+CVS/ x
+% touch z
+% ls
+CVS/ x z
+% cvs add z
+cvs add: scheduling file `z' for addition
+cvs add: use 'cvs commit' to add this file permanently
+% cd ../..
+% cvs commit foobar
+cvs commit: Examining foobar
+cvs commit: Examining foobar/bar
+cvs commit: Examining foobar/foo
+cvs commit: Committing foobar/foo
+RCS file: /u/wk/edavis/cvsroot/foobar/foo/z,v
+done
+Checking in foobar/foo/z;
+/u/wk/edavis/cvsroot/foobar/foo/z,v  <--  z
+initial revision: 1.1
+done
+As shown above, to add a file to the module, simply create the new file and execute the CVS add command. The add command tells CVS to import the new file when the next commit operation is performed. Now let's see what happens when a file is added and another deleted.
+% cd foobar/bar
+% ls
+CVS/ y
+% mv y a
+% ls
+CVS/ a
+% cvs remove y
+cvs remove: scheduling `y' for removal
+cvs remove: use 'cvs commit' to remove this file permanently
+% cvs add a
+cvs add: scheduling file `a' for addition
+cvs add: use 'cvs commit' to add this file permanently
+% cd ../..
+% cvs commit foobar
+cvs commit: Examining foobar
+cvs commit: Examining foobar/bar
+cvs commit: Examining foobar/foo
+cvs commit: Committing foobar/bar
+RCS file: /u/wk/edavis/cvsroot/foobar/bar/a,v
+done
+Checking in foobar/bar/a;
+/u/wk/edavis/cvsroot/foobar/bar/a,v  <--  a
+initial revision: 1.1
+done
+Removing y;
+/u/wk/edavis/cvsroot/foobar/bar/y,v  <--  y
+new revision: delete; previous revision: 1.2
+done
+Above is an example of how to rename a file within the repository. Simply rename the file, do a CVS remove on the old filename, do a CVS add on the new filename, and finally commit the change to the repository. 
+ 
+Tagging sources for symbolic revisions:
+
+To create a snapshot of the current sources for later use, use the CVS tag command. The tag command generates a symbolic tag that is bound to each of the current revisions in your local copy of the module. Try creating the tag release-1-2 and releasing the module.
+% cvs tag -R release-1-2 foobar
+cvs tag: Tagging foobar
+cvs tag: Tagging foobar/bar
+T foobar/bar/a
+cvs tag: Tagging foobar/foo
+T foobar/foo/x
+T foobar/foo/z
+% cvs release -d foobar
+You have [0] altered files in this repository.                
+Are you sure you want to release (and delete) module `foobar': y
+This created the symbolic tag release-1-2 for the module. Now this tag can be specified during future checkouts. If you don't specify a symbolic tag during a checkout, the latest sources are pulled out of the repository. Now try checking out the release you just created.
+% cvs checkout -r release-1-2 foobar
+cvs checkout: Updating foobar
+cvs checkout: Updating foobar/bar
+U foobar/bar/a
+cvs checkout: Updating foobar/foo
+U foobar/foo/x
+U foobar/foo/z
+The above checkout command specified to grab the sources bound to the tag release-1-2. Not only can you tag the sources but you can also create a whole new branch to develop off of. This allows future development of an existing revision without disrupting the current development on the main branch. This is most useful for importing bug fixes to past revisions. Note that branches can only be rooted at a tag that has been applied to the sources. Assuming you have already checked out the release-1-2 version of the foobar module, try creating a branch called release-1-2-fix and then release the module.
+% cvs tag -b release-1-2-fix foobar
+cvs tag: Tagging foobar
+cvs tag: Tagging foobar/bar
+T foobar/bar/a
+cvs tag: Tagging foobar/foo
+T foobar/foo/x
+T foobar/foo/z
+% cvs release -d foobar
+You have [0] altered files in this repository.                
+Are you sure you want to release (and delete) module `foobar': y
+Here a branch has been created from the symbolic tag release-1-2 named release-1-2-fix. To check out the sources on a branch simply specify the branch tag during the checkout.
+% cvs checkout -r release-1-2-fix foobar
+cvs checkout: Updating foobar
+cvs checkout: Updating foobar/bar
+U foobar/bar/a
+cvs checkout: Updating foobar/foo
+U foobar/foo/x
+U foobar/foo/z
+% cvs release -d foobar
+You have [0] altered files in this repository.                
+Are you sure you want to release (and delete) module `foobar': y
+If a branch is checked out then all changes made to the module are done to the branch and future commits will not affect the main development trunk. You can also merge a branch into the main trunk using the CVS update command. Be very careful when merging two trunks as many conflicts will result. Check the CVS manual on how to merge two different development trunks. 
+ 
+Checking the status:
+
+The CVS log and status commands are used to display the current status of the locally checked out module. The CVS log command will display all the logs for the file/s and the status command will display the current revision numbers and any symbolic tags that have been created. Here is the output of both the log and status commands after all the examples above have been performed.
+% cvs checkout foobar
+cvs checkout: Updating foobar
+cvs checkout: Updating foobar/bar
+U foobar/bar/a
+cvs checkout: Updating foobar/foo
+U foobar/foo/x
+U foobar/foo/z
+% cvs log foobar
+cvs log: Logging foobar
+cvs log: Logging foobar/bar
+
+RCS file: /u/wk/edavis/cvsroot/foobar/bar/a,v
+Working file: foobar/bar/a
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+        release-1-2-fix: 1.1.0.2
+        release-1-2: 1.1
+comment leader: "# "
+keyword substitution: kv
+total revisions: 1;     selected revisions: 1
+description:
+----------------------------
+revision 1.1
+date: 1998/05/27 19:49:09;  author: edavis;  state: Exp;
+renamed the file y to a
+=============================================================================
+
+RCS file: /u/wk/edavis/cvsroot/foobar/bar/Attic/y,v
+Working file: foobar/bar/y
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+        start: 1.1.1.1
+        NAS: 1.1.1
+comment leader: "# "
+keyword substitution: kv
+total revisions: 4;     selected revisions: 4
+description:
+----------------------------
+revision 1.3
+date: 1998/05/27 19:49:09;  author: edavis;  state: dead;  lines: +0 -0
+renamed the file y to a
+----------------------------
+revision 1.2
+date: 1998/05/27 19:20:49;  author: edavis;  state: Exp;  lines: +1 -0
+changed the file y
+----------------------------
+revision 1.1
+date: 1998/05/27 18:47:12;  author: edavis;  state: Exp;
+branches:  1.1.1;
+Initial revision
+----------------------------
+revision 1.1.1.1
+date: 1998/05/27 18:47:12;  author: edavis;  state: Exp;  lines: +0 -0
+
+Initial import of the foobar module
+
+=============================================================================
+cvs log: Logging foobar/foo
+
+RCS file: /u/wk/edavis/cvsroot/foobar/foo/x,v
+Working file: foobar/foo/x
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+        release-1-2-fix: 1.3.0.2
+        release-1-2: 1.3
+        start: 1.1.1.1
+        NAS: 1.1.1
+comment leader: "# "
+keyword substitution: kv
+total revisions: 4;     selected revisions: 4
+description:
+----------------------------
+revision 1.3
+date: 1998/05/27 19:20:55;  author: edavis;  state: Exp;  lines: +1 -0
+changed the file y
+changed the file x
+----------------------------
+revision 1.2
+date: 1998/05/27 18:50:38;  author: edavis;  state: Exp;  lines: +1 -0
+changed file x
+----------------------------
+revision 1.1
+date: 1998/05/27 18:47:12;  author: edavis;  state: Exp;
+branches:  1.1.1;
+Initial revision
+----------------------------
+revision 1.1.1.1
+date: 1998/05/27 18:47:12;  author: edavis;  state: Exp;  lines: +0 -0
+
+Initial import of the foobar module
+
+=============================================================================
+
+RCS file: /u/wk/edavis/cvsroot/foobar/foo/z,v
+Working file: foobar/foo/z
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+        release-1-2-fix: 1.1.0.2
+        release-1-2: 1.1
+comment leader: "# "
+keyword substitution: kv
+total revisions: 1;     selected revisions: 1
+description:
+----------------------------
+revision 1.1
+date: 1998/05/27 19:43:14;  author: edavis;  state: Exp;
+added the file z
+=============================================================================
+% cvs status -v foobar
+cvs status: Examining foobar
+cvs status: Examining foobar/bar
+===================================================================
+File: a                 Status: Up-to-date
+
+   Working revision:    1.1     Wed May 27 19:49:09 1998
+   Repository revision: 1.1     /u/wk/edavis/cvsroot/foobar/bar/a,v
+   Sticky Tag:          (none)
+   Sticky Date:         (none)
+   Sticky Options:      (none)
+
+   Existing Tags:
+        release-1-2-fix                 (branch: 1.1.2)
+        release-1-2                     (revision: 1.1)
+
+cvs status: Examining foobar/foo
+===================================================================
+File: x                 Status: Up-to-date
+
+   Working revision:    1.3     Wed May 27 19:20:55 1998
+   Repository revision: 1.3     /u/wk/edavis/cvsroot/foobar/foo/x,v
+   Sticky Tag:          (none)
+   Sticky Date:         (none)
+   Sticky Options:      (none)
+
+   Existing Tags:
+        release-1-2-fix                 (branch: 1.3.2)
+        release-1-2                     (revision: 1.3)
+        start                           (revision: 1.1.1.1)
+        NAS                             (branch: 1.1.1)
+
+===================================================================
+File: z                 Status: Up-to-date
+
+   Working revision:    1.1     Wed May 27 19:43:14 1998
+   Repository revision: 1.1     /u/wk/edavis/cvsroot/foobar/foo/z,v
+   Sticky Tag:          (none)
+   Sticky Date:         (none)
+   Sticky Options:      (none)
+
+   Existing Tags:
+        release-1-2-fix                 (branch: 1.1.2)
+        release-1-2                     (revision: 1.1)
+ 
+When you are done:
+
+When you are done making your changes to the module, use the CVS release command. Since CVS does not create locks, the release command isn't necessary although it is still a good idea to use. The release command will check to ensure that no uncommitted changes exist. Modify the file foobar/foo/z and let's see what happens when the release command is executed.
+% cvs release -d foobar
+M foo/z
+You have [1] altered files in this repository.
+Are you sure you want to release (and delete) module `foobar': n
+** `release' aborted by user choice.
+Oops, the file z has been edited and not committed to the repository. Better find out what has changed.
+% cvs diff foobar/foo/z
+Index: foobar/foo/z
+===================================================================
+RCS file: /u/wk/edavis/cvsroot/foobar/foo/z,v
+retrieving revision 1.1
+diff -r1.1 z
+0a1,2
+> file changed
+>
+If you don't care about the changes then simply release the local copy:
+% cvs release -d foobar
+M foo/z
+You have [1] altered files in this repository.
+Are you sure you want to release (and delete) module `foobar': y
+Else commit the changes and then release the local copy:
+% cvs commit foobar
+cvs commit: Examining foobar
+cvs commit: Examining foobar/bar
+cvs commit: Examining foobar/foo
+cvs commit: Committing foobar/foo
+Checking in foobar/foo/z;
+/u/wk/edavis/cvsroot/foobar/foo/z,v  <--  z
+new revision: 1.2; previous revision: 1.1
+done
+% cvs release -d foobar
+You have [0] altered files in this repository.
+Are you sure you want to release (and delete) module `foobar': y

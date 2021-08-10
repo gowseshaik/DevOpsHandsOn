@@ -1,0 +1,7 @@
+API: api-gateway/psrcwf3wog/*/*/MyServerLessPage
+API endpoint: https://psrcwf3wog.execute-api.us-east-1.amazonaws.com/prod/MyServerLessPage
+Authorization: AWS_IAM
+Method: ANY
+Resource path: /MyServerLessPage
+Security: AWS_IAM
+Stage: prod

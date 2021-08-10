@@ -1,0 +1,119 @@
+Virtualization:
+-----------------
+virtual machines on your hardware
+Vmware software
+
+1. Dual mode OS
+	- Windos XP/10
+	- Linux
+  Boot only one at a time
+  
+ Virtualization
+ 
+- step 1
+	Install Virtual box
+- step 2
+	Install vagrant
+- Step 3
+	Create virtual machine
+	Open CMD prompt
+	C:\>mkdir DevOps_Practice
+	C:\DevOps_Practice\ mkdir Linux_VM
+	cd Linux_VM
+	>vagrant init aerospike/centos-6.5
+	> vagrant up  
+	   : download the linux image from the repo ( 700MB)
+	> download putty & login to putty with the vagrant instance IP
+	  Cred:  vagrant/vagrant
+->Linux OS 
+	>Linux Torvalds
+	>Derived UNix
+	>Open source : support ( charge)
+	>File system
+	C:\ -> OS + S/w + D:\ + e:\
+	>	/-> root
+		/bin	/home	/root 	/tmp
+			/httpd	 /vagrant/
+	
+	Login: Administrator/ Normal users
+			root	/ All other 
+	-> Distributed OS
+	->/home/<user>
+
+	[vagrant@localhost ~]$
+	[user@machine_name] $
+-> Basic commands to work on Linux OS
+	bare main basics: cd, pwd,hostname, ls -l, mv, cp, mkdir , touch, rm, rm -r
+ - cat, more, less, head, tail
+ - editor
+	vi 
+	2 modes:
+		esc	(esc): default mode : Non editing: save, close
+			save:    :w  - save
+					 :q  - quit
+					 :wq 
+					 
+		insert: (i)
+ - Operators:
+	> : redirection , >> : appending , | : Pipe
+ - wc, uniq, cut, grep ,
+   find, awk, sort, 
+ - System commands
+	df , du , top , free , uname
+ - Network commands
+	netstat, telnet ( check remote ports), scp , ssh
+ - File permissions
+	read	-r = 4
+	write	-w = 2
+	execute	-x = 1
+				----
+				 7
+	
+	3 groups  ( Owner/Author) ( Group) (Others)
+			_f/d	r_	w_	x_   r_	w_	x_   r_	w_	x_  = 9 digits
+			
+		- => File
+		d => dir
+	chmod 764 Hello.txt
+	0- No access
+	1- execute
+	2- Write
+	3- write & execute
+	4- read
+	6- read * write
+	7 -all permissions
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

@@ -1,0 +1,39 @@
+<project name="Java Project" default="main">
+
+	<property file="build.properties"/>
+	
+	<target name="main" >
+		<antcall target="Compile"/>
+		<antcall target="Package"/>
+		<antcall target="Run"/>
+		<ant antfile="C:\DevOps_Practice\ANT_Practice\build_adv.xml"/>
+		<ant antfile="C:\DevOps_Practice\ANT_Practice\build_file.xml"/>
+	</target>
+	
+	<target name="Compile" >
+		<echo> ant version : ${ant.version} </echo>
+		<echo> ant home : ${ant.home} </echo>
+		<echo>  my password : ${pwd}</echo>
+		<echo>  a value is ${a}</echo>
+		<delete dir="${bldDir}"/>
+		<echo>Compilation of Java source</echo>
+		<mkdir dir="${bldDir}/${clsName}"/>
+		<javac srcdir="${srcDir}" destdir="${bldDir}/${clsName}"/>
+	</target>
+	
+	<target name="Package" >
+		<echo>Packaging the Java class files</echo>
+		<mkdir dir="${bldDir}/jar"/>
+		<jar basedir="${bldDir}/${clsName}" destfile="${bldDir}/jar/${fileName}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="${fileName}"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="Run" >
+		<echo>Running the jar file</echo>
+		<java jar="${bldDir}/jar/${fileName}.jar" fork='true'/>
+	</target>
+	
+</project>

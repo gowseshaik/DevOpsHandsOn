@@ -1,0 +1,37 @@
+Docker Ports and Detaching:
+
+we are using the detach mode because our container will occupy entire terminal.
+
+to run the container in detach mode
+docker run -d -v $PWD/app:/app -w /app python /bin/sh run.sh
+
+docker ps
+
+curl $(docker inspect $(docker ps -q) | jq -r .[0].NetworkSettings.IPAddress):5000)
+
+docker ps -a
+
+if i run this container again
+docker run -d -v $PWD/app:/app -w /app python /bin/sh run.sh
+we can see two containers 
+curl $(docker inspect $(docker ps -q) | jq -r .[0].NetworkSettings.IPAddress):5000)
+curl $(docker inspect $(docker ps -q) | jq -r .[1].NetworkSettings.IPAddress):5000)
+
+
+docker inspect $(docker ps -q)
+curl $(docker inspect $(docker ps -q -l) | jq -r .[1].NetworkSettings.IPAddress):5000)
+
+these ip's will be accessible from internal not from external
+so for this reason, we will mention --publish
+docker run -d --publish 5000 -v $PWD/app:/app -w /app python /bin/sh run.sh
+
+to configure a static port, mention port no at source. make sure you have to remove existing container before running next time with the same port.
+docker run -dp 5000:5000 -v $PWD/app:/app -w /app python /bin/sh run.sh
+
+curl localhost:5000
+
+
+
+
+
+

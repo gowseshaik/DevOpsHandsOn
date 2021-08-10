@@ -1,0 +1,56 @@
+tree view tool:
+
+sudo tree -L /var/lib/docker
+sudo tree -L 1 /var/lib/docker
+sudo tree -L 2 /var/lib/docker
+
+Docker commands:
+
+To see the installed and running version of docker
+docker --version
+
+To see the more details of docker client and server
+docker version
+
+To see the deep dive details like registry and storage path of docker
+docker info
+
+To search official images from cli
+docker search --filter is-official=true python
+
+To search all images from cli
+docker search python
+
+To get more help about search
+docker search --help
+
+To pull docker images
+docker pull python
+Note : dockerfile, it will pull each instruction as a different layer and call it as final one docker image.
+
+To list the docker images
+docker images
+
+To get the help on docker images
+docker images --help
+
+-a = all, digests
+-f = filter, format string, no-trunc
+-q = quiet -- it will shows the image ids
+
+To remove all images at a time as a single command.
+docker rmi -f $(docker images -a -q)
+
+To get the history of your image with image id
+docker history $(docker images -q)
+
+docker history --format "{{.ID}} {{.CreatedBy}} {{.Size}}" $(docker images -q) > latest
+
+
+
+
+
+
+
+
+

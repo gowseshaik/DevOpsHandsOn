@@ -1,0 +1,48 @@
+Docker Named Volumes:
+
+vi Dockerfile
+
+FROM python:alpine
+
+COPY . /app/ /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ENV DEVICE="dev1"
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python" ]
+
+HEALTHCHECK --interval=5s --timeout=3s CMD curl -f http://localhost:5000 || nc -zv localhost 5000 || exit 1
+
+CMD [ "app.py" ]
+
+================
+docker volume create dev1-vol
+
+to check the volumns
+docker volume ls
+
+docker volumne inspect dev1-vol
+mountpoint: "/var/lib/docker/volumes/dev1-vol/_data"
+sudo ls /var/lib/docker/volumes/dev1-vol/_data
+
+==============
+
+docker build -t dev1 .
+
+docker run -dp 5000:5000 --name dev1 --mount source=dev1-vol, target=/app dev1
+
+cd /var/lib/docker/volumes/dev1-vol/_data
+vi app.py
+
+curl localhost:5000
+
+docker volume rm dev1-vol
+docker volume ls
+
+
+

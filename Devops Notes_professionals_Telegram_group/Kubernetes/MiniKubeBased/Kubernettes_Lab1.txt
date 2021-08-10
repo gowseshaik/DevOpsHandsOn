@@ -1,0 +1,53 @@
+Download Kubectl and Minikube
+
+1. Kubectl Download https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/windows/amd64/kubectl.exe
+
+2. Minikube Download :
+
+Download the minikube-windows-amd64.exe file, rename it to minikube.exe and add it to your path
+
+https://storage.googleapis.com/minikube/releases/latest/minikube-windows-amd64.exe
+
+Note : Kubectl and Minikube exe path location need to be set in the PATH varibale using Environment settings in Advance properties of My computer
+
+3. Download Virtual Box :
+
+https://download.virtualbox.org/virtualbox/5.1.34/VirtualBox-5.1.34-121010-Win.exe
+
+To use please check if your machine has virtualization enabled:
+ In window - Go to task manager and check in Performance for Virtualization. If it says enabled then you are good. If not, Go to Bios and in advance setting look for Virtulaization and enable it.
+
+In Unix : 
+ sudo modprobe msr
+sudo rdmsr 0x3a
+if returns 3 or 5 means your good
+
+also 
+sudo kvm-ok if returns 1 then good
+
+
+4. If done with all above settings we can check with minkube.exe start command. to raise the kuberente cluster
+
+For Errors if any :
+Step 1: prepare your Windows machine for dual boot with and without Hyper-V
+
+As Administrator, open a CMD and issue the commands
+
+bcdedit /copy "{current}" /d "Hyper-V" 
+bcdedit /set "{current}" hypervisorlaunchtype off
+bcdedit /set "{current}" description "non Hyper-V"
+
+Step 2: Reboot the machine and choose the “non-Hyper-V” option.
+
+If Still not works, uninstall Virtualbox and install any lastest one
+
+Ref : https://vocon-it.com/2017/09/30/resolving-the-virtualbox-code-e_fail-problem-caused-by-hyper-v/
+
+5. Now run following 
+kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+kubectl expose deployment hello-minikube --type=NodePort
+kubectl get pod
+curl $(minikube.exe service hello-minikube --url)
+kubectl delete services hello-minikube
+kubectl delete deployment hello-minikube
+minikube stop

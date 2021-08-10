@@ -1,0 +1,102 @@
+﻿Example : Hello World!!
+
+docker run ubuntu /bin/echo 'Hello world'
+
+ubuntu@ip-172-31-87-58:~$ docker run ubuntu /bin/echo 'Hello world'
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+22dc81ace0ea: Pull complete
+1a8b3c87dba3: Pull complete
+91390a1c435a: Pull complete
+07844b14977e: Pull complete
+b78396653dae: Pull complete
+Digest: sha256:e348fbbea0e0a0e73ab0370de151e7800684445c509d46195aef73e090a49bd6
+Status: Downloaded newer image for ubuntu:latest
+Hello world
+###################################
+    docker run : is a command to run a container.
+    ubuntu : is the image you run, for example, the Ubuntu operating system image. 
+	     When you specify an image, Docker looks first for the image on your Docker host. 
+	     If the image does not exist locally, then the image is pulled from the public image registry - Docker Hub.
+    /bin/echo ‘Hello world’ : is the command that will run inside a new container. This container simply prints 
+          Hello world and stops the execution.
+######################################
+
+
+Let’s try to create an interactive shell inside Docker container:
+ubuntu@ip-172-31-87-58:~$ docker run -i -t --rm ubuntu /bin/bash
+root@9c881eff3b6d:/# echo Hello
+Hello
+root@9c881eff3b6d:/# exit
+exit
+ubuntu@ip-172-31-87-58:~$
+
+##################
+    -t flag assigns a pseudo-tty or terminal inside the new container.
+    -i flag allows you to make an interactive connection by grabbing the standard input (STDIN) of the container.
+    — rm flag to automatically remove the container when the process exits. By default, containers are not deleted. This container exists until we keep the shell session and terminates when we exit from the session (like SSH session to a remote server).
+#################
+
+If you want to keep container running after the end of the session, you need to daemonize it:
+
+docker run --name daemon -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"
+
+ubuntu@ip-172-31-87-58:~$ docker run --name daemon -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"
+af48dc84c7c1dceade200d36f3b720b945adf5d4b51b6dc3f15240b68ec27347
+
+    — name daemon assigns daemon name to a new container. If you don’t specify a name explicitly, Docker will generate and assign it automatically.
+    -d flag runs the container in the background (daemonize it).
+
+Let’s see what containers we have at the moment:
+
+docker ps -a
+ubuntu@ip-172-31-87-58:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES
+af48dc84c7c1        ubuntu              "/bin/sh -c 'while t…"   24 seconds ago      Up 24 seconds                                  daemon
+4a81865ad96a        ubuntu              "/bin/echo 'Hello wo…"   7 minutes ago       Exited (0) 7 minutes ago                       dazzling_newton
+e849adfc0fec        hello-world         "/hello"                 9 minutes ago       Exited (0) 9 minutes ago                       infallible_spence
+
+
+
+--------------------
+
+docker logs -f daemon
+
+Console output:
+
+...
+hello world  
+hello world  
+hello world
+
+
+
+---------------
+
+Now let’s stop daemon container:
+
+docker stop daemon
+###########################################
+ubuntu@ip-172-31-87-58:~$ docker stop daemon
+daemon
+ubuntu@ip-172-31-87-58:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                            PORTS               NAMES
+af48dc84c7c1        ubuntu              "/bin/sh -c 'while t…"   5 minutes ago       Exited (137) About a minute ago                       daemon
+4a81865ad96a        ubuntu              "/bin/echo 'Hello wo…"   12 minutes ago      Exited (0) 12 minutes ago                             dazzling_newton
+e849adfc0fec        hello-world         "/hello"                 14 minutes ago      Exited (0) 14 minutes ago                             infallible_spence
+############################################
+
+
+Now let’s stop it again and remove all the containers manually:
+
+docker stop daemon  
+docker rm <your first container name>  
+docker rm daemon
+
+To remove all containers we can use the following command:
+
+docker rm -f $(docker ps -aq)
+
+    docker rm is command to remove container.
+    -f flag (for rm) is to stop container if it’s running (force deletion).
+    -q flag (for ps) is to print only container IDs.

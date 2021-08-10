@@ -1,0 +1,16 @@
+Major difference B/W Application and Web server ?
+
+How many servers do u have?As you cannot deploy a War file in Apache Tomcat what other server do u use?
+
+U have 2 releases scheduled today?one is in the QA phase and other is in the Production phase.
+   The one in Production phase is getting errors and you cannot move further what will you do?
+
+Is it possible to move a War or Ear file from QA stage to UAT  and Production stage?
+How will move a War or Ear to UAT and Production environment which completed a successfull QA phase?
+ 
+When do u use svn -reintegrate option?
+
+What are SVN Properties and why do we need them?Name a few?
+
+How do u call another build file and target without importing a file in ur script and without using a command line?
+

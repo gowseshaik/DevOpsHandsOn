@@ -1,0 +1,3 @@
+$docker ps
+To check the memory utilization/usage of a container.
+$docker stats --no-stream

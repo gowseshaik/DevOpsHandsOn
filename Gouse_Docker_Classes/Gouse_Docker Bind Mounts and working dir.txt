@@ -1,0 +1,25 @@
+Bind Mounts and working directories:
+
+docker run -it python /bin/sh
+exit
+
+to run our python app container from the current working dir
+docker run -it -v $PWD/app:/app python /bin/sh
+
+
+#!/bin/bash
+pip install -r requirements.txt && python app.py
+
+docker run -it -v $PWD/app:/app python /bin/sh run.sh --> throughs an error that /bin/sh: 0: Cant't open run.sh
+
+so for this specify working directory to start off.
+docker run -it -v $PWD/app:/app -w /app python /bin/sh run.sh
+
+now you have to get the docker container ip
+docker inspect $(docker ps -q) | jq -r .[0].NetworkSettings.IPAddress
+output: 172.17.0.2
+curl $(docker inspect $(docker ps -q) | jq -r .[0].NetworkSettings.IPAddress):5000
+
+
+
+ 

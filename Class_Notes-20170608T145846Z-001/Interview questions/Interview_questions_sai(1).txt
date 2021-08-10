@@ -1,0 +1,21 @@
+First and foremost question., About my Responsibilites I have explained everything for about 10 mins. Followed by these questions.
+
+
+1. How do we execute a target specifically?
+2. How do you deploy an artificat through ANT. step by step procedure?
+3. How do you execute a build.xml file through command prompt which is stored in a different location?
+4. How do you send an email through ANT, step by step procedure?
+5. Have you involved in POC discussion?
+
+
+JENKINS
+
+1. Master slave configuration and how do you connect to jenkins from slave machine?
+2. Build Pipelines? 
+3. I have two Jobs, I want first job should get executed from Master and the other Job from slave. How to acheive this?
+4. Difference between freestyle project and Maven based project?
+5. Ldap configuration
+6. Whats the difference between LDAP and Email notification?
+
+
+And few more question triggered I do not remember exactly.

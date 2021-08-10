@@ -1,0 +1,25 @@
+Docker Layers Deeper Dive:
+
+docker images
+to get the disk usage of our docker filesystem
+sudo du -sh /var/lib/docker/overlay2
+16k  /var/lib/docker/overlay2
+
+to calicute of time execution
+time docker build -t dev1 .
+
+after execution the image command, ti will show the timestamp below
+
+real 
+user
+sys
+
+again, now check the disk usage with du -sh
+cd /var/lib/docker/overlay2
+du -sh
+
+ls -al
+docker history dev1 > dev1
+
+
+

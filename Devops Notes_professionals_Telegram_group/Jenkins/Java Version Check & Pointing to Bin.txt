@@ -1,0 +1,12 @@
+
+https://gist.github.com/rtfpessoa/17752cbf7156bdf32c59
+
+sudo yum install -y jdk-8u
+
+sudo /usr/sbin/alternatives --install /usr/bin/java java  /usr/java/jdk1.8.0_141/bin/java  20000
+
+Set the Sun Java 8 SDK as the default java
+sudo /usr/sbin/alternatives --config java
+
+
+

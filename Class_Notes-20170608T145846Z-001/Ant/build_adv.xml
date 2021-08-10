@@ -1,0 +1,11 @@
+<project name="Java Project" default="adv">
+
+	<target name="adv" >
+		<echo> Advances tasks </echo>
+		<!-- <zip basedir="build" destfile="build.zip"/> 
+		<unzip src="build.zip" dest="build"/>-->
+		<exec executable="cmd.exe">
+			<arg line="/c notepad"/>
+		</exec>
+	</target>
+</project>

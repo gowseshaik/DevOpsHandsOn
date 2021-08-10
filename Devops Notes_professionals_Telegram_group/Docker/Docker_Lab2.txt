@@ -1,0 +1,19 @@
+Docker Lab2
+
+How to enable enginx up and running using docker
+To pull a DockerDemo repository.
+1. git init
+
+2. git clone https://github.com/deepak2717/DockerDemo.git
+
+3. Change the directory to examples/nginx
+
+4. Run the command below :
+docker run -d --name test-nginx -p 80:80 -v $(pwd):/usr/share/nginx/html:ro nginx:latest
+
+-p is a ports mapping HOST PORT:CONTAINER PORT.
+-v is a volume mounting HOST DIRECTORY:CONTAINER DIRECTORY
+
+Important: run command accepts only absolute paths. In our example we’ve used $(pwd) to set current directory absolute path
+
+5. Access the url to see the hosted index.html. You can change the content in index.html to see the change and how the docker container reads the mounted volume outside the container.

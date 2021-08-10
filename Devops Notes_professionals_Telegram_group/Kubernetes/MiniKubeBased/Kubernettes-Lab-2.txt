@@ -1,0 +1,62 @@
+LAB :
+
+1. Enable Heapster
+
+PS C:\WINDOWS\system32> minikube addons enable heapster
+heapster was successfully enabled
+
+2. Check the services for heapster starts running
+
+PS C:\WINDOWS\system32> kubectl get services --namespace=kube-system
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP   5d
+kubernetes-dashboard   NodePort    10.107.107.206   <none>        80:30000/TCP    5d
+
+PS C:\WINDOWS\system32> kubectl get services --namespace=kube-system
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+heapster               ClusterIP   10.101.148.47    <none>        80/TCP              1m
+kube-dns               ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP       5d
+kubernetes-dashboard   NodePort    10.107.107.206   <none>        80:30000/TCP        5d
+monitoring-grafana     NodePort    10.105.165.43    <none>        80:30002/TCP        1m
+monitoring-influxdb    ClusterIP   10.100.236.61    <none>        8083/TCP,8086/TCP   1m
+
+3.Create NameSpace
+PS C:\WINDOWS\system32> kubectl create namespace mem-example
+namespace "mem-example" created
+
+4. Create Pod
+PS E:\Edu\DevOps\Kubernetes> kubectl create -f memory-request-limit.yml --namespace=mem-example
+pod "memory-demo" created
+
+5. Get the pod details
+
+PS E:\Edu\DevOps\Kubernetes> kubectl get pod memory-demo --namespace=mem-example
+NAME          READY     STATUS    RESTARTS   AGE
+memory-demo   1/1       Running   0          17s
+PS E:\Edu\DevOps\Kubernetes> kubectl get pod memory-demo --output=yaml --namespace=mem-example
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: 2018-03-31T07:06:00Z
+  name: memory-demo
+  namespace: mem-example
+  resourceVersion: "27124"
+  selfLink: /api/v1/namespaces/mem-example/pods/memory-demo
+  uid: f7e376f2-34b1-11e8-8918-080027f40653
+spec:
+  containers:
+  .
+  .
+  .
+ 
+6. Start Proxy and  call the heapster service to check the memory usages
+
+kubectl proxy
+
+http://localhost:8001/api/v1/proxy/namespaces/kube-system/services/heapster/api/v1/model/namespaces/mem-example/pods/memory-demo/metrics/memory/usage
+
+7. Delete your Pod:
+
+kubectl delete pod memory-demo --namespace=mem-example
+
+Exceed a Container’s memory limit

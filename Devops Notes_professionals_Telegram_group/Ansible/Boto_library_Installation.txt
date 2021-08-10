@@ -1,0 +1,14 @@
+ Installing Python boto in Linux
+
+Step 1: Install python, python-dev, python-pip applications if they are not installed as these packages are required for boto instalation
+Installing boto on Redhat based machines(Centos/Fedora):
+
+	yum install -y python python-dev python-pip
+
+Installing boto on Debian based machines(Ubuntu):
+
+	apt-get install -y python python-dev python-pip
+
+Step2​: Once the above packages are installed, install boto by using pip which is a python module installer
+
+	pip install boto

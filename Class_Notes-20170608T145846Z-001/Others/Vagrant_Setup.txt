@@ -1,0 +1,51 @@
+Virtualisation:
+	- Making the best utilisation of hardware using the tools like VMware
+Cloud Computing:
+	- Taking an advantage of Virtualisation in cloud for provisioning the instances and application for pay and use
+
+Virtualisation softwares: VMware, VirtualBox etc
+
+Vagrant:
+	- Makes use of virtualisation concept and gives an easier way to launch instances on the fly to make use of them in a developer machine
+
+Installation of vagrant in Windows:
+===================================
+	- Vagrant makes use of VirtualBox to provision instances, so first install VB from below link
+		http://www.virtualbox.org/
+	- Now download vagrant and install it as these are plain exe files and easy to install
+		https://docs.vagrantup.com/v2/installation/
+	- Vagrant requires some ssh client to talk to nodes from command line, so you can install any ssh clent like    Cygwin or Git bash etc
+	https://git-scm.com/download/win
+	- Now create a directory in any drive
+	cd D:
+	mkdir Vagrant
+	cd Vagrant
+	vagrant init hashicorp/precise32
+	vagrant up
+	- The above commands will automatically setups a default hashicorp instance under D:\vagrant directory, this takes a while to install as it downloads the VM image from internet
+	- To verify list of instances in your machine run below command
+		vagrant box list
+	- Now you can login to the box with below command and run all linux commands and play around
+	  vagrant ssh
+Features of vagrant:
+===================
+	- You can share your files in windows(host OS) with vagrant node, try to keep any files under D:\vagrant and same file can be seen inside the node under /vagrantfile/ location
+	- You can enable port forwardings even
+	- You can assign static IP and make private network
+	- You can assign dynamic IP to your box, go through below link to see how we can enable these features
+		https://docs.vagrantup.com/v2/getting-started/networking.html
+		
+Chef-Server Installation:
+------------------------
+	- RHEL7 instance should be a pre-requisite
+	- Follow instructions mentioned here: http://misheska.com/blog/2014/11/25/chef-server-12/		
+	  Download chef 12.0 rpm file for centOS 7.0
+	  rpm -i cehf_installer.rpm
+	  sudo chef-server-ctl install opscode-manage
+	  sudo chef-server-ctl reconfigure
+	
+	sudo chef-server-ctl user-create --filename /etc/chef-server/chiru.pem chiru Chiranjeevi Patel chiranjeevi.patel1@gmail.address 123456
+	
+	sudo chef-server-ctl org-create ssh SacredSF --association_user chiru --filename /etc/chef-server/ssh.pem
+	
+

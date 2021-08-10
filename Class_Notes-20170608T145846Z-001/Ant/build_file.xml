@@ -1,0 +1,21 @@
+<project name="Test" default="A">
+
+	<target name="A" >
+		<echo>File system tasks </echo>
+	<!--	<mkdir dir="build/classes"/>	
+			<delete file="apache-ant-1.10.0-bin.zip"/>
+			<delete dir="build"/>
+			<copy file="Ant_Notes.txt" tofile="notes.txt"/>
+			<copy file="Ant_Notes.txt" todir="build/"/>
+			<copy todir="build">
+				<fileset dir="apache-ant-1.10.0"/>
+			</copy>
+			<copy todir="build">
+				<fileset dir=".">
+					<include name="*.txt"/>
+				</fileset>
+			</copy>-->
+			<move file="Ant_Notes.txt" tofile="ANT_NOTES.txt"/>
+			
+	</target>
+</project>

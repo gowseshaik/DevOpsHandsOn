@@ -1,0 +1,145 @@
+Source Code management:/ VCS
+-----------------------
+-> Multiple no of developers
+-> Versioning ( Getting history is difficult, so we need versioning)
+-> Parallel releases
+
+SCM Tool-> Managing the code
+Tools:  CVS, SVN, Git, Bazar, Mercurial, Clearcase, TFS .......
+SVN ( Subversion):-
+	
+- Open source
+- Platform Independent ( Win/Lin)
+- Apache people
+- 2000
+- CVS 
+- Architecture
+	client-server
+- Installation	
+	SVN-Server
+		-> Subversion Core
+		-> Web server
+	$chmod 755  bitnami...
+	$./bitna...
+	
+	http://192.168.33.10:8080/subversion
+	
+	SVN client:
+		- command line 
+		- UI - Tortoise svn
+		- IDE client - eclipse/visual   R/Write
+		- Browser - used - Read only
+	SVN command line client:
+Win/Lin: 
+- Installa svn client
+- Open cmd prompt
+- >svn checkout <repo URL>
+  This checkout command creates workspace 
+  :subversion>svn add file
+			  svn commit file -m"some comment"
+			  svn commit -m"bunch of files"
+	every commit -> increments the revision number in svn repo
+	
+	with any SCM tool
+		- who made changes
+		- when 
+		- what
+	Version Control System ( VCS)
+svn checkout, add, commit,status, delete, update, log, 
+	move, mkdir, revert, diff, export, import
+
+Branching strategy:
+--------------------
+
+Project:
+	|----------------------|M1 release to customer
+							|------------------------| M2 release 
+									   M3|-------------------
+												M4|----------------------
+				project>trunk/src(M1)
+						branches/srcM1 + M2 ->  Happy  ( M1 + M2)
+								/srcM1 + M3  + M2->     ( M1+ M3) ¬M1
+								/srcM1 + M4  + M2 + M3->      (M1 + M4)  ¬M1,M2
+						tags
+				Core Banking -M1
+				Credit - M2
+				Mortgages - M3
+				Insurance - M4
+				Prod = > Core Banking		= Happy
+				M2   =>  Core Banking + CC  = Happy 
+				M3	 =>  Core Banking + Mortages = :(  CC
+				M4	 =>  Core Banking + Insurance = :( :( 
+	Merging:
+	
+	1. Merge ( M2 (src)-> M3(dest))
+		svn checkout the dest
+		svn checkout M3
+		M3>svn merge src (M2)
+Parallel branching strategy: widely 			
+		
+	
+Administration:
+---------------  
+- Security enable
+	3 types of permission on svn repo
+		read - r
+		read/write - rw
+		no access  - 
+	-Authentication: valid cred ( user/pwd)
+			touch /home/vagrant/svn_users
+			 cd subversion-1.9.5-0/apache2/bin/
+			 ./htpasswd -m /home/vagrant/svn_users harry
+	
+	-Authorization : valid permissions/access restriction
+			touch /home/vagrant/svn_access
+			-----------------------------
+			[groups]
+			
+			[subversion:/]
+			 harry = rw
+			 sally = r
+			
+			
+			-----------------------------
+	- Integrate Authentication & Authorization files with apache/conf/httpd.conf
+		   <Location /subversion>
+			 DAV svn
+			 SVNPath "/home/vagrant/subversion-1.9.5-0/repository"
+			 AuthType Basic
+			   AuthName "Subversion repositories"
+			   AuthUserFile /home/vagrant/svn_users
+			   AuthzSVNAccessFile /home/vagrant/svn_access
+			   Require valid-user
+			</Location>
+
+	- Restart server
+		./ctlscript.sh restart
+	
+- Backup & Roll back
+  New repo creation:  ./subversion/bin/svnadmin create newrepo
+  Backup of existing repo : ./subversion/bin/svnadmin dump repository > repository.bkp
+  Roll back:
+		- New server
+		- Install your SVN server
+		- Create a new repo : revision:0
+ 		- Get the repository.bkp file from tape drive into this new machine
+		- ./subversion/bin/svnadmin load newrepo < repository.bkp
+- Hooks
+  *-> Can I block a developer to commit more then 50 MB file ?
+  *-> would you block developer commits , if they are not entering any commit message ?
+  -> Why dont you send an email to me, when ever my developer performs a commit on repo
+  hooks 
+
+Git:
+----
+
+
+
+
+
+
+
+  
+  
+  
+  

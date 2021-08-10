@@ -1,0 +1,64 @@
+CMD vs ENTRYPOINT
+
+vi Dockerfile
+=====================
+FROM python
+
+COPY ./app/ /app
+
+WORKDIR /app
+
+EXPOSE 5000 --> just we are choosing ports will be mentioned by EXPOSE
+
+ENTRYPOINT [ "/bin/sh" "run.sh"]
+============
+docker build -t dev1 .
+docker run -it dev1
+
+
+============================
+
+vi Dockerfile
+=====================
+FROM python
+
+COPY ./app/ /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000 --> just we are choosing ports will be mentioned by EXPOSE
+
+ENTRYPOINT [ "python", "app.py"]
+
+==============
+docker build -t dev1 .
+docker run -it dev1
+
+===========
+
+vi Dockerfile
+=====================
+FROM python
+
+COPY ./app/ /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000 --> just we are choosing ports will be mentioned by EXPOSE
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+==========
+docker build -t dev1 .
+if you want to deploy a new code version app.1.py, it will overrite on your CMD
+docker run -it dev1 app.1.py
+
+==============
+
+

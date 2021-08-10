@@ -1,0 +1,85 @@
+1. Launch Ubuntu AWS instance 
+ Server 14.04 LTS (HVM) on Amazon Web Services
+
+    Region: us-east-1
+    AMI ID: ami-841f46ff
+    Instance type: t2.micro
+    Software: Chef Development Kit 2.0.28
+	
+2. Install the Chef DK on your Ubuntu instance
+
+sudo apt-get update
+sudo apt-get -y install curl
+
+3. Installing Chef DK
+curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.0.28
+
+4. Set up your working directory
+mkdir ~/chef-repo
+cd ~/chef-repo	
+
+5. Create the MOTD file
+From your ~/chef-repo directory, create a file named hello.rb, add these contents, and then save the file.
+
+6. file '/tmp/motd' do
+  content 'hello world'
+end
+
+From your terminal window, run the following chef-client command to apply what you've written
+
+chef-client --local-mode hello.rb
+
+Check the file /tmp/motd
+
+7. Run the same command second time and you will find that will say its uptodate
+
+8. Update the MOTD file's contents
+file '/tmp/motd' do
+  content 'hello chef'
+end
+
+Run the same command to see the change it makes
+chef-client --local-mode hello.rb
+
+
+9. Ensure the MOTD file's contents are not changed by anyone else
+
+You need to make sure that no other process can change the MOTD.
+
+Imagine that a co-worker manually changes /tmp/motd by replacing 'hello chef' with 'hello robots'. Go ahead and change your copy of /tmp/motd through your text editor. Or you can change the file from the command line like this.
+
+echo 'hello robots' > /tmp/motd
+chef-client --local-mode hello.rb
+
+10. Now lets Delete the MOTD file
+ write a ruby goodbye.rb script
+ 
+ file '/tmp/motd' do
+  action :delete
+end
+
+chef-client --local-mode goodbye.rb
+
+##################################################################
+
+A Chef resource describes one part of the system, such as a file, a template, or a package. A Chef recipe is a file that groups related resources, such as everything needed to configure a web server, database server, or a load balancer.
+
+Resources describe the what, not the how
+
+A recipe is a file that holds one or more resources. Each resource declares what state a part of the system should be in, but not how to get there. Chef handles these complexities for you.
+
+In this module, you declared that the file /tmp/motd must exist and what its contents are, but you didn't specify how to create or write to the file. This layer of abstraction can not only make you more productive, but it can also make your work more portable across platforms.
+Resources have actions
+
+When you deleted the file, you saw the :delete action.
+
+Think of an action as the process that achieves the desired configuration state. Every resource in Chef has a default action, and it's often the most common affirmative one – for example, create a file, install a package, and start a service.
+
+When we created the file we didn't specify the :create action because :create is the default. But of course you can specify it if you want.
+
+The documentation for each resource type, file for example, explains the type's default action.
+Recipes organize resources
+
+In Chef, hello.rb is an example of a recipe, or an ordered series of configuration states. A recipe typically contains related states, such as everything needed to configure a web server, database server, or a load balancer.
+
+Our recipe states everything we need to manage the MOTD file. You used chef-client in local mode to apply that recipe from the command line.

@@ -1,0 +1,19 @@
+Can you share your day to day activities.
+
+svn administration ...>mentioned in your resume right. explain
+
+nightbuilds.>>>>  explain
+If any build failure in night time what you do..?
+
+branch, tag...? explain
+
+jenkins: 5 java projects, svn repositories lo only particular files ye kavali. how u can configure. how you can exclude some directories. 
+
+How much expertise on jenkins.....? 
+What are the plugins used in jenkins.....?
+
+We have shell script in  windows, can we run it in linux system from windows only..?
+
+war jar ear files where u save in your company.....> ?
+
+!#bash exactly what do you mean by this...? 

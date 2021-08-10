@@ -1,0 +1,97 @@
+HOW-TO Install and Configure a CVS Repository Server
+
+Assumptions:
+
+RedHat 6.1 Installed
+
+Repository will reside in /usr/local/cvsroot. You can change this.
+
+Needed:
+
+CVS v1.10.6-2 is installed (RPM is on RedHat CD if not already installed)
+
+Repository Installation:
+
+Login as root on repository machine
+
+Create a user (& group) called: cvs
+
+Create repository:
+
+cvs -d /usr/local/cvsroot init
+(Repeat this process if you want to create multiple repositories e.g., /usr/local/cvsroot2, /usr/local/cvspublic etc). Each repository can have different sets of authorized users.
+
+Change owner and group of repository and all files to cvs:
+
+chown -R cvs.cvs /usr/local/cvsroot
+Create tcp service by editing /etc/services - add line (NOTE: May already be present):
+
+cvspserver 2401/tcp #CVS PServer
+Create inetd entry for service by editing /etc/inetd.conf - add following lines:
+
+#
+# CVS PServer
+#
+cvspserver stream tcp nowait cvs /usr/bin/cvs cvs --allow-root=/usr/local/cvsroot pserver
+NOTE: The above line "cvspserver stream ..." must appear on a single line. If you created multiple repositories in step 3, add an additional --allow-root=[repository path] argument for each repository.
+
+Restart inetd. NOTE: Because you will be restarting inetd from root's session, it will inherit the environment, most notably HOME=/root. This causes the following error when you try to check anything out of the repository:
+
+cvs server: cannot open /root/.cvsignore: Permission denied
+cvs [server aborted]: can't chdir(/root): Permission denied
+To remedy this, use one of two methods. 
+1) The first method is to restart the server (the problem does not occur when inetd is started during system startup.
+2) The second method is a manual restart while logged in as root. For this to work you need to restart inetd without the HOME pointing to root's home directory. Start a terminal session and enter the following:
+
+unset HOME
+/etc/rc.d/init.d/inet restart
+Now login as the user cvs. We will now setup the password file for cvs users.
+
+You will need a utility to create encrypted passwords. You can use the below perl script for that purpose:
+
+#!/usr/bin/perl
+
+srand (time());
+my $randletter = "(int (rand (26)) + (int (rand (1) + .5) % 2 ? 65 : 97))";
+my $salt = sprintf ("%c%c", eval $randletter, eval $randletter);
+my $plaintext = shift;
+my $crypttext = crypt ($plaintext, $salt);
+
+print "${crypttext}\n";
+Create a text file in /usr/local/cvsroot/CVSROOT called passwd and enter the users as shown below (format is: userid:encrypted-password:cvs ):
+
+username1:x$5itFdsw123:cvs
+username2:3fgRH4p3443:cvs
+NOTE: Use the crypt.pl utilty from above to generate the encrypted passwords for the above entries. The passwords for the users should NOT be the same as their unix password (if they have a unix account). The cvs users you enter above do NOT need a unix account.
+
+Set restrictive permissions on the file:
+
+chmod 400 /usr/local/cvsroot/CVSROOT/passwd
+(optional) Repeat step 10 and 11 for each additional repository you created in step 3.
+
+Repository Testing
+
+Set the default repository in the environment (will save entering it on every cvs command):
+
+export CVSROOT=:pserver:username1@your_server_name:/usr/local/cvsroot
+(substitute real values for username1, your_server_name and repository path if needed)
+
+Test the basic login:
+
+cvs login
+Enter the username1's password. There should not be any error messages.
+
+Create a tiny test project:
+
+cd
+mkdir testproj
+echo "//Main Class">testproj/Main.java
+Import the project to the repository.
+
+cd testproj
+cvs import -m "My initial project message" testproj mycompany start
+Check to make sure the project was created in the repository. You should see the file Main.java in /usr/local/cvsroot/testproj
+
+Remove the test project from the repository:
+
+rm --R /usr/local/cvsroot/testproj

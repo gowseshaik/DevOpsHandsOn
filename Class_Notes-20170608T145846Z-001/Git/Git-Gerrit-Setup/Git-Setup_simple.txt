@@ -1,0 +1,58 @@
+A short tutorial detailing the steps required to quickly setup a secure git server that doesn’t allow the git user access via ssh – in other words, git commands work & one may use keys for password-less access, but you may prevent any / all ssh keys from being able to log into your server as the `git` user.
+
+On your workstation:
+
+Each user needs to generate an RSA key. This can be done like so (*nix)
+
+$~ ssh-keygen -t rsa
+Copy your public key (not your private key – that should never leave your machine!)
+
+$~ scp ~/.ssh/id_rsa.pub <username>@<server>/tmp/
+On your server
+
+Install git
+
+$~ yum install git
+Create git user
+
+$~ useradd git
+Create the git user’s `.ssh` directory
+
+$~ mkdir /home/git/.ssh
+Add your workstation’s public key to the git user’s authorized_keys file
+
+$~ cat /tmp/id_rsa.pub /home/git/.ssh/authorized_keys
+Test what you’ve done so far by attempting to ssh to your server from your workstation with
+
+$~ ssh -v git@<server>
+Assuming that worked fine, create a git repository on your server
+
+$~ mkdir /home/git/new-repo.git
+$~ cd /home/git/new-repo.git
+$~ git --bare init
+
+Now on your workstation, add this repository, add the remote, create a file, add & commit it, then push it to the server
+
+$~ mkdir ~/new-repo
+$~ cd ~/new-repo
+$~ git init
+$~ git config --global user.name "chiranjeevi.patel"
+$~ git config --global user.email "chiranjeevi.aec@gmail.com" 
+$~ git remote add origin git@<server>:new-repo.git
+$~ touch README
+$~ git add README
+$~ git commit -m 'Added README file, first commit'
+$~ git push origin master
+
+Assuming that went well, you’re nearly done. Now all we have to do is prevent anyone from being able to ssh into your server with the git user. What we need to do is to lock down the relevant ssh keys. This is accomplished on your server by prepending the following string to the git user’s authorized_keys entry for each key we don’t want to have ssh access
+
+command="perl -e 'exec qw(git-shell -c), $ENV{SSH_ORIGINAL_COMMAND}'"
+For example, change the current authorized_keys file from
+
+ssh-rsa <rsa-key> <username>@<hostname>
+To the ‘locked down’ version
+
+command="perl -e 'exec qw(git-shell -c), $ENV{SSH_ORIGINAL_COMMAND}'" ssh-rsa <rsa-key> <username>@<hostname>
+Any attempt to login to your server from your workstation should now fail. You may now collect authorized keys from your developers and add them (not forgetting to prepend the ‘lock down’ line!) to the git users’s authorized_keys file.
+
+

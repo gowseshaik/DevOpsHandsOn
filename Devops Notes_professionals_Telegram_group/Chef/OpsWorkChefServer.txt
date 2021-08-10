@@ -1,0 +1,56 @@
+In this module, you'll run Chef commands from a command prompt to manage your node remotely.
+
+Install chef on windows
+1. . { iwr -useb https://omnitruck.chef.io/install.ps1 } | iex; install -project chefdk -channel stable -version 0.16.28
+
+2. check ssh and chef version in the powershell using the CHEF shortcut
+
+3. Also you can use Ubuntu to do the same
+
+4. Set up a instance for AWS opswork
+
+Services --> creaet chef automate server --> and create use existinf security and keypair. Dont forgot to downlaod the starter kit and credentials and keep it safe.
+
+5. In your ubuntu workstation : copy the doenlaoded starter kit and mv it to learb-chef directory
+
+PS E:\Edu\DevOps> scp -i MyEC2-NV.pem test-chef_starter_kit.zip ubuntu@18.232.93.2:/home/ubuntu/
+
+unzip test-chef_starter_kit.zip
+
+mv test-chef-1jru7kw6u27mouot learn-chef
+
+tree -a learn-chef/
+
+cat ~/learn-chef/.chef/private.pem
+
+knife ssl check
+
+Login using the chefautomate hostname of instance
+https://ec2-35-168-85-102.compute-1.amazonaws.com
+
+6. cd ~/learn-chef/cookbooks
+7. git clone https://github.com/learn-chef/learn_chef_apache2.git
+
+8. Upload the cookbook to the server
+cd ~/learb-chef/
+knife cookbook upload learn_chef_apache2
+Uploading learn_chef_apache2 [0.1.0]
+Uploaded 1 cookbook.
+
+9. knife cookbook list
+
+10 . Bootstraping the node
+cd ~/learb-chef
+
+knife bootstrap 35.174.155.179 --ssh-user ubuntu --sudo --identity-file ~/.ssh/private_key --node-name node1-ubuntu --run-list 'recipe[learn_chef_apache2]'
+
+After this refresh the Opswork browser nad you will see a node
+
+You can check that in node the apache will get installed and using the chef server
+
+How you check the state or run command
+knife ssh 'name:node1-ubuntu' 'sudo chef-client' --ssh-user ubuntu --identity-file ~/.ssh/private_key --attribute ipaddress
+
+
+
+

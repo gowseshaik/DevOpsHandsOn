@@ -1,0 +1,74 @@
+AWS Lab for Students:
+
+
+
+1.  Go to services and show them Route 53 (If you want to use a registered domain then you can use it) For lab not required as we will be using ELB DNS instead of registered domain.
+2. Create a role for EC2, Go to IAM and create Role S3-admin-access.
+3. Create a security group for EC2. We need to create two Security Groups
+   - Web-DMZ and RDS-SG (use your default VPC)
+   - Go and select Web-DMZ and we need to open some ports - go to inbound - add http port 80 and 0.0.0.0/0 and also ssh port 22 and 0.0.0.0/0
+   -Go and select RDS-SG and open mysql port - select Mysql/aurora and source as Web-DMZ security group
+4. Go to EC2 and configure load balancer - Select application Load balancer - Configure it and select all Availabilty zone - Next Configure security settings - Go ahead and configure security group - Select default VPC  - Configure Routing (Name targeting(MyWebService) and path as healthy.html) - The next no target groups so next and create
+
+5. Go to storage and select S3 - create bucket to keep the code(ethans-wpcode) - create another buckt to keep media asset(ethans-media)
+
+6. Go to cloudfront to create CDN network - Create Distribution - Web distribution - Select S3 media that we created as bucket - select restrict bucket access and select yes for grant read permission on bucket - rest all keep as default - create distribution - click distribution in right pane to see the distribution you have created.
+
+7. Provision your RDS instance - Go to Database - RDS - Get started now - click on instances - use mysql select - select dev/test - db instance class as t2.micro - Multi AZ select create replica in different zone - setting give DB name user/password for learning keep all same - Configur Advance setting(make sure it is default vpc) - Public accessbilty as no and select only RDS SG - enter db name that you have given(ethans) - leave everything as default and launch DB instance
+
+EC2 provision lab
+
+1. Go to EC2 - Launch Instance - Select AMI(machine image) Linux AMI - use free tier t2.micro - Configure Instance - Select IAM role (S3-admin-access) - In advance settings we can use bash script to setup the environment but we will do manually first - go to add storage(nothing to do) next - Add tag ad name as MyEC2WebServer - Next Configure security group(select the existing Web-DMZ SG) - Review and Launch - Create a new key pair (MyEC2-NV) downlaod the .pem file and save it safely in a location - view instance - wait till it assign a public IP - copy the ip(54.167.113.60) - from terminal window we need to ssh the instance - 
+
+Connecting to instance using putty
+
+1. Start PuTTYgen (for example, from the Start menu, choose All Programs > PuTTY > PuTTYgen). 
+2. Under Type of key to generate, choose RSA. (older version of puttygen use rsa-2)
+3. Choose Load. By default, PuTTYgen displays only files with the extension .ppk. To locate your .pem file, select the option to display files of all types.
+4.Select your .pem file for the key pair that you specified when you launched your instance, and then choose Open. Choose OK to dismiss the confirmation dialog box.
+5. Choose Save private key to save the key in the format that PuTTY can use. PuTTYgen displays a warning about saving the key without a passphrase. Choose Yes. 
+
+6. Specify the same name for the key that you used for the key pair (for example, my-key-pair). PuTTY automatically adds the .ppk file extension. 
+7. After that using putty goto Auth -SSH and browse the ppk file and login.
+
+Using Git Bash
+1. Go to the .pem file location
+2. chmod 400 .pem file
+3. ssh ec2-user@54.167.113.60 -i MyEC2-NV.pem
+
+
+Manually we can execute all the commands in script as a root user
+sudo su
+
+
+
+#!/bin/bash
+yum update -y
+yum install httpd 	
+cd /etc/httpd/conf
+cp httpd.conf httpdconfbackup.conf
+rm -rf httpd.conf
+wget https://s3-eu-west-1.amazonaws.com/acloudguru-wp/httpd.conf
+cd /var/www/html
+echo "healthy" > healthy.html
+wget https://wordpress.org/latest.tar.gz
+tar -xzf latest.tar.gz
+cp -r wordpress/* /var/www/html/
+rm -rf wordpress
+rm -rf latest.tar.gz
+chmod -R 755 wp-content
+chown -R apache:apache wp-content
+service httpd start
+chkconfig httpd on
+
+EC2 provision Done
+
+8. Go to EC2 load balncer - got to listener and you will see the listening port 80 and default action is redirected to My server which is  Target Groups - Traget Groups ( we have to create registered instances) - Health check (make it less 2 sec healthy threshold and interval 6) to get quick check - Target - edit - add the registerd port 80 and after a while healthy state will come - go back to load balancer - instead of default edit security group in description to web-DMZ group
+
+9. Now use the DNS name of Load balance to host the wordpress site
+10. Database configuration page will come - use the entries for db that you have used while configuring RDS - end point can be taken from the RDS and use it in Database Host (Go to RDS - click db instance - copy endpoint)
+
+
+
+Problem with SeLinux can be solved by
+setsebool -P httpd_can_network_connect=1

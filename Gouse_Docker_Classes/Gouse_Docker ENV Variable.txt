@@ -1,0 +1,56 @@
+Creating an Environemnt variable:
+
+in your code, your getting environment varibale
+os.GETENV(JENKINS_HOME)
+
+==========
+vi Dockerfile
+
+FROM python
+
+COPY ./app/requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ENV JENKINS_HOME="/home/gouse/jenkins"
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+=============
+
+docker build -t dev1 .
+
+docker run -dp 5000:5000 dev1
+
+===========
+
+vi Dockerfile
+
+FROM python
+
+COPY ./app/requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ENV JENKINS_HOME="/home/gouse2/jenkins"
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+======
+
+docker build -t dev2 .
+
+docker run -dp 5000:5000 dev2
+
+==========

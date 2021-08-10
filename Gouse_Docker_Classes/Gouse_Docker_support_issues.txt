@@ -1,0 +1,50 @@
+systemctl not booting issue in images creation
+
+error:
+[root@c4c02a623b03 /]# systemctl
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+
+
+[root@180c9f6866f1 /]# ps faux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.7  0.1  11756  2856 ?        Ss   03:01   0:00 bash
+root        15  0.0  0.1  47424  3300 ?        R+   03:02   0:00 ps faux
+
+Since only bash and ps faux are running in the container, there would be nothing for systemctl to communicate with.
+
+reason: 
+Hi, if you go to docker hub of centos7 release you are using there is instruction on how to run the centos with systemctl enabled.In 1.1k short:
+
+    Create a dockerfile and paste:
+
+vi Dockercentos
+
+FROM centos:7
+MAINTAINER “you” your@email.here
+ENV container docker
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in ; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);
+rm -f /lib/systemd/system/multi-user.target.wants/;
+rm -f /etc/systemd/system/.wants/;
+rm -f /lib/systemd/system/local-fs.target.wants/;
+rm -f /lib/systemd/system/sockets.target.wants/udev;
+rm -f /lib/systemd/system/sockets.target.wants/initctl;
+rm -f /lib/systemd/system/basic.target.wants/;
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+VOLUME [ “/sys/fs/cgroup” ]
+CMD ["/usr/sbin/init"]
+
+
+docker build --rm -t local/c7-systemd -f Dockercentos /data/DevOpsUniversity/DevOpsGLabs/mmonit
+
+
+Then build the container using in the dir you have created the file (be sure no other files are inside, as they will be taken into the context and may cause troubles :wink: )
+
+docker build --rm -t c7-systemd . (c7-systemd can be replaced with other name)
+
+Then run the image with:
+docker run -itd --privileged --name=yourName c7-systemd
+
+Enjoy your systemd enabled centos
+
+====================

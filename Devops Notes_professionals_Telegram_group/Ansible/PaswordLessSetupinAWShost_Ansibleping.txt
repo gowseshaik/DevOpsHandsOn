@@ -1,0 +1,49 @@
+Ansible ping to other client host:
+
+1. ssh-keygen -t rsa (ubuntu AMI host)
+2. ssh -i aws.pem ec2-user@54.153.89.201(linux AMI)
+3. In ec2 ami(linux) create user ubuntu
+$ sudo su -
+# adduser ubuntu
+# cd /home/ubuntu
+# mkdir .ssh
+# cd .ssh
+4. Put  public key genertaed in, ~/.ssh/id_rsa.pub, into aws's /home/ubuntu/.ssh/authorized_keys
+5. chown ubuntu:ubuntu authorized_keys
+6. check for passwordless Auth(from Ubuntu AMI)
+ssh 54.67.48.10
+Welcome to Linux AMI (GNU/Linux 3.13.0-48-generic x86_64)
+7. In ubuntu machine home create a structure like 
+.
+|--- prod
+       |---inventory
+
+entry in inventory file :
+   
+[host]
+54.89.182.185 ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/.ssh/id_rsa
+
+8. ansible -i prod -m ping all
+54.89.182.185 | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+
+
+Dynamic Inventory
+
+mkdir DynamicInventory
+cd DynamicInventory/
+ls -ltr
+wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py
+wget https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini
+vim ec2.ini
+chmod 755 ec2.py
+ansible -i ec2.py tag_Name_client* -m ping
+sudo apt install python-pip
+sudo pip install boto
+ansible -i ec2.py tag_Name_client* -m ping
+export AWS_ACCESS_KEY_ID='AKIAJGRHXFOXHAQBA5VQ'
+export AWS_SECRET_ACCESS_KEY='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'
+ansible -i ec2.py tag_Name_client* -m ping

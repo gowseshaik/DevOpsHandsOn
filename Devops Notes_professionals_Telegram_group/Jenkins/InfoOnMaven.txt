@@ -1,0 +1,82 @@
+maven:
+
+Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information.
+
+
+1>mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+2>cd my-app
+
+    my-app
+    |-- pom.xml
+    `-- src
+        |-- main
+        |   `-- java
+        |       `-- com
+        |           `-- mycompany
+        |               `-- app
+        |                   `-- App.java
+        `-- test
+            `-- java
+                `-- com
+                    `-- mycompany
+                        `-- app
+                            `-- AppTest.java
+							
+Sample POM
+
+    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+     
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-app</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <packaging>jar</packaging>
+     
+      <name>Maven Quick Start Archetype</name>
+      <url>http://maven.apache.org</url>
+     
+      <dependencies>
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.8.2</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </project>
+
+Build the Project
+
+3>mvn package
+
+After Build Success
+
+4> java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
+
+Maven Build Phases :
+
+1. validate: validate the project is correct and all necessary information is available
+2. compile: compile the source code of the project
+3. test: test the compiled source code using a suitable unit testing framework. 
+These tests should not require the code be packaged or deployed
+4. package: take the compiled code and package it in its distributable format, such as a JAR.
+5. integration-test: process and deploy the package if necessary into an environment where 
+integration tests can be run
+6. verify: run any checks to verify the package is valid and meets quality criteria
+7. install: install the package into the local repository, for use as a dependency in other 
+projects locally
+8. deploy: done in an integration or release environment, copies the final package to the 
+remote repository for sharing with other developers and projects.
+
+There are two other Maven lifecycles of note beyond the default list above. They are
+
+9. clean: cleans up artifacts created by prior builds
+
+10. site: generates site documentation for this project
+
+
+
+Interesting to note: phases and goals may be executed in sequence.
+mvn clean dependency:copy-dependencies package

@@ -1,0 +1,100 @@
+(Apache 2.2)
+Apache httpd download:
+http://apache.tradebit.com/pub//httpd/binaries/win32/httpd-2.2.25-win32-x86-no_ssl.msi
+
+Subversion download:
+http://sourceforge.net/projects/win32svn/files/latest/download
+Version: version 1.7.6 (r1370777)
+
+1. Install subversion and Apache
+
+Verify SVN Installation :  Open a cmd.exe and run "svn help" command 
+
+Verify Apache http server Installation:  
+->Open a browser
+access below link
+http://localhost:80/
+Output should be "It works" 
+
+2. Create a Repository using svnadmin command
+	Ex: svnadmin create D:\MyProject
+
+3. SVN Repo & Apache httpd server configuration:
+	a) Copy C:\Program Files\Subversion\bin\mod_authz_svn.so and C:\Program Files\Subversion\bin\mod_dav_svn.so  from subversion instal path to Apache ( C:\Program Files\Apache Software Foundation\Apache2.2\modules)
+	
+	b) Open C:\Program Files\Apache Software Foundation\Apache2.2\conf/httpd.conf
+	Add below 3 lines at the end of the Load modules
+	LoadModule  dav_module             modules/mod_dav.so
+	LoadModule  dav_svn_module         modules/mod_dav_svn.so
+	LoadModule  authz_svn_module       modules/mod_authz_svn.so
+	
+	c) At the end of the file (httpd.conf file) add the below lines
+	<Location /svn>
+  	 DAV svn
+ 	 SVNPath D:/MyProject
+	</Location>
+4) Restart Apache
+
+If apache throws errors while restarting from windows , start using below command
+cd C:\Program Files\Apache Software Foundation\Apache2.2\bin>
+httpd.exe
+You can see errors, fix them 
+	
+check the below link 
+
+http://localhost:80/svn
+
+
+5) Authentication file:
+
+CReate Authentication File   UserId/Pwd
+
+Create D:\etc\svn_auth_file  by using below command inside apache bin
+
+cd C:\Program Files (x86)\Apache Software Foundation\Apache2.2\bin>
+
+>htpasswd.exe -c D:\etc\svn-auth-file seetharam
+passwd: *****
+ReConfirm: *****
+
+>htpasswd.exe -m D:\etc\svn-auth-file harry
+passwd: *****
+ReConfirm: *****
+
+
+6. Authorisation File  --  Giving access
+
+Create another file svn-acl
+
+PRovide access to the users which you created
+---------------------------------------------------------
+[groups]
+devtemaf1 = seetaram, surech, Janardhan, santosh
+
+
+[svnrepo:/]
+seetaram = rw
+
+[svnrepo:/branches/Feature2]
+santosh = rw
+---------------------------------------------------
+
+Step3:
+Add below lines in your httpd.conf file where your repository added
+
+<Location /svn>
+  	 DAV svn
+ 	 SVNPath D:/MyProject
+
+	 AuthType Basic
+	 AuthName "Subversion Project1 repository"
+	 AuthUserFile D:/etc/svn-auth-file
+	 Require valid-user
+	 AuthzSVNAccessFile D:/etc/svn-acl
+
+</Location>
+
+
+6) Restart Apache
+
+7) Try to access the http://localhost/svn  , It should ask vaid user name and password	

@@ -1,0 +1,58 @@
+    • Make sure that Docker is stopped:
+sudo systemctl stop docker
+
+After that, make sure that Docker is not running with the following commands:
+sudo systemctl status docker
+ 
+ 
+If you see that Docker is not running, then you could proceed. Another way of checking if there are any Docker processes is by using the ps command:
+ps faux | grep -i docker
+ 
+ 
+    • After that, copy the /var/lib/docker/ Docker directory to the new location. Let’s say that we want to put the files in a folder called /home/docker. To do so, first create the folder:
+mkdir /data/varlibDocker
+ 
+ 
+Then using the rsync command transfer the files over:
+rsync -avxP /var/lib/docker/ /data/varlibDocker
+ 
+ 
+Note: this might take a while depending on the size of your images. 
+If your folder is too large you might want to run the rsync command in a screen session to avoid your connection being dropped and interrupting the transfer.
+    • Next, you need to update the Docker unit file. To do that, using your favorite text editor, edit the following file:
+    
+sudo vi /lib/systemd/system/docker.service
+
+
+user1@DevOpsG::~$ sudo vi /lib/systemd/system/docker.service
+
+update below value with -g <your created directory under newly mounted>
+
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+And change it to:
+ExecStart=/usr/bin/dockerd -g /home/docker -H fd:// --containerd=/run/containerd/containerd.sock
+
+
+user1@DevOpsG:~$ sudo systemctl daemon-reload
+
+
+user1@DevOpsG:~$ systemctl start docker
+
+
+user1@DevOpsG:~$ ps faux | grep -i docker
+gouse       5261  0.0  0.0   8904   724 pts/0    S+   02:30   0:00  |       \_ grep --color=auto -i docker
+root        5107  2.0  0.5 1612116 86576 ?       Ssl  02:30   0:00 /usr/bin/dockerd -g /data/varlibDocker -H fd:// --containerd=/run/containerd/containerd.sock
+
+
+
+
+user1@DevOpsG:~$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+hello-world   latest    d1165f221234   4 months ago   13.3kB
+
+
+
+user1@DevOpsG:~$ docker inspect d1165f221234 | grep WorkDir
+
+ "WorkDir": "/data/varlibDocker/overlay2/3ee215c127cd713917108bc81b7ff6b71e945b6ebde1ea50e371cfb467df1f49/work"
+

@@ -1,0 +1,95 @@
+https://www.youtube.com/watch?v=SRAQzs41ct4
+
+Jenkins Setup EC2
+-----------------------
+1. sudo apt-get install language-pack-en   #to fix up the local in earlier ubuntu version
+
+2. wget -q  -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add - # to add the package repository
+
+3. echo "deb http://pkg.jenkins-ci.org/debian binary/" | sudo tee -a /etc/apt/sources.list.d/jenkins.list
+
+4. sudo apt-get update
+
+5. sudo apt-get install jenkins
+
+6. ps -ef | grep jenkins #check the installation of jenkins 
+
+#jenkins is unprivlege user and it can not use port 80 and therfore it is using port 8080. to use this port to access we will proxy it from port 80 to port 8080 using apache
+
+7. sudo apt-get install apache2
+
+8. sudo a2enmod proxy
+
+9. sudo a2enmod proxy_http
+
+10. sudo vim /etc/apache2/sites-available/jenkins.conf
+<VirtualHost *:80>
+   ServerName HOSTNAME<amazon ec2 hostname>
+   ProxyRequests Off
+   <Proxy *>
+       Order deny,allow
+	   Allow from all
+   </Proxy>
+   ProxyPreserveHost on
+   ProxyPass / http://localhost:8080/
+</VirtualHost>
+
+11. sudo a2ensite jenkins
+
+12. sudo service apache2 reload
+
+13. Access web server and enter hostname to see the jenkins running
+
+Configuring Jenkins
+
+By default security is not enabled for jenkins
+
+14. Manage Jenkins --> Configure Global Security --> enable jenkins and use jenkins own database --> uncheck allow user to sign up --> for simplicity we will use login user can do anything --> click on the jenkins on right pane ---you will get signup form --> add details
+
+15. Install Plugin : Manage Jenkins --> Manage Plugins --> updates all --- in available search for github and install the plugin -- restart jenkins
+
+16. To create user --> Manage Jenkin --> Add user
+
+17. Get back to AWS and install some package before setting global configuration in jenkins
+
+18. sudo add-apt-repository ppa:webupd8team/java; sudo apt-get update
+
+19. sudo apt-get install oracle-java7-installer maven git-core
+
+check using java -version and mvn -version
+
+20 readlink -f /usr/bin/javac
+/usr/lib/jvm/java-7-oracle(copy this part from the above command)
+
+21. Go to Manage Jenkins --> Configure System --> Add Java --> Paste that path in JAVA_HOME (uncheck install automatically)
+
+22. Foe maven add the version and MAVEN_HOME. use command readlink -f /usr/bin/mvn and copy the path till bin (/usr/share/mvn)
+
+23. unchek annonymous usage stats
+
+24. disable ssh server
+
+25. Set email notification(smtp server details)
+
+Setup Jenkins project
+
+Create a git hub project to be build using jenkins/maven
+
+26. go to aws ec2 machine sudo su - jenkins
+
+27 . pwd (/usr/lib/jenkins)
+
+28 . ssh-keygen -t dsa
+
+29. cd .ssh/;ls;cat id_dsa.pub (copy the public key)
+
+git@github.com:kevinsawicki/github-maven-example.git
+
+30. go to your github -- settings --deploykeys
+
+
+
+#####Apache 2 and Jenkins start and stop servive#####
+
+1. sudo systemctl start|stop|restart jenkins.service
+2. sudo service apache2 start|stop|restart|reload
