@@ -1,0 +1,8 @@
+https://blog.dockbit.com/templating-your-dockerfile-like-a-boss-2a84a67d28e9
+
+Build-time configuration with ARG
+The ARG instruction is superb for parameterizing the build phase of your Docker image. It allows you to define a variable that can be passed when building your image. You can also optionally set default values for ARG instructions.
+In order to pass a value to the variable, you’ll need to add --build-arg <varname>=<value>to your docker buildcommand.
+Consider the following Dockerfile where we parameterize the application version to build:
+
+In order to specify the exact version, you can execute $ docker build --build-arg app_version=1.0 .. This will render the following results:

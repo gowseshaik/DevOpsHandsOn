@@ -1,4 +1,42 @@
-Dockerfile run commands:
+Docker volume from host to container
+$ docker run -itd -v /opt/gouse:/opt/mount centos
+
+docker volume from container to container
+$ docker run -itd --volumes-from <container_ID> <image>
+
+docker attach --> only for attach the container, it will exit with "exit" cmd and container will close automatically
+docker exec --> to exec into a container, it will not exit with "exit" cmd.
+
+docker commit <containerID>
+docker tag <image> "testv1"
+docker push devOpsG/centos
+
+docker logs <containerID>
+docker history <images>
+docker exec -it -u gouse <containerID> /bin/bash --> to login with specific user.
+docker start
+docker stop
+docker restart
+docker pause
+docker rename flamboyant-banazai container-1
+
+to get the host IP
+$ hostname -I
+192.168.10.51 2a02:ce0:12a02:ce0:1001:fd7 
+
+docker stats <containerID>
+docker run -itd -m 500m centos
+
+docker events
+docker events --filter evernt=stop
+docker events --since '1h'
+docker network list
+docker inspect <networkID>
+docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 network1
+docker network create --subnet 10.1.0.0/24 --gateway 10.1.0.1 --ip-range 10.1.0.0/24 --driver bridge --label test-network bridge1
+docker network list
+docker network rm <networkID>
+
 ==========================
 cd /data/DevOpsUniversity/DevOpsGLabs/mmonit
 docker image build -t mmonit:v1 .
