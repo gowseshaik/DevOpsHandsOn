@@ -1,0 +1,99 @@
+Creating infrastructure for devops
+=======================================
+We require muiltple linux machine for different otlls of devops
+Eg Ansible 5 vms
+   Docker 3 vms
+   Jenkins 3 vms
+   Git 1vm
+   Nagios 2 vms
+
+Creating infrastructure using vagrant
+-----------------------------------------
+1 Download and install oracle virtual box
+  https://www.virtualbox.org/wiki/Downloads
+
+2 Download and install vagrant
+  https://www.vagrantup.com/downloads.html
+
+3 To check the version of vagrant
+  Open cmd prompt
+  vagrant --version
+
+4 Copy vagrant file into some folder
+
+5 Open cmd prompt and cd to that folder
+  cd path-of-folder-where-vagrantfile-is-present
+
+6 vagrant up
+
+
+Creating infrastructure uing AWS
+=====================================
+1 Open https://portal.aws.amazon.com/billing/signup
+  Signup for a free acoount
+
+2 Login using that account
+
+2 Click on EC2-->Click on Instances
+
+3 Click on Launch Instance-->Select ubuntu server 14.04
+
+4 Select t2.micro(free)
+
+5 Click on "Next"Configure Instance Details"
+
+6 Specify the no of linux instances
+
+7 click on add storage-->click on add tags
+
+8 click on next configuration security group
+
+9 click on add rule and select https and customTCP
+
+10 click on review and launch-->click on launch
+
+11 in select an exisiting keypair window-->click on create a new keypair
+
+12 specify some name for keypair-->download keypair
+
+13 Launch instance
+
+14 Once the instances are running-->downlaod and install git 
+   https://git-scm.com/downloads
+
+15 Open git bash
+
+16 go to aws console-->Select the instance that we want to connect-->click on connect
+
+17 It will display the ssh command to connect to aws console
+
+18 copy that command and give in git bash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

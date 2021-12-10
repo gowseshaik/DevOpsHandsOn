@@ -1,0 +1,35 @@
+Ticket: Middleware/Server Connectivity Problem
+One of the most common DevOps support ticket types that comes across our desks is related to connectivity issues. 
+It normally goes something like this: “I am trying to deploy to IIS or to WebShpere. If I log in through Windows or Unix with the correct credentials,
+I can log in and access my middleware applications. But when I try to connect via WinRm or SSH, things don’t work. I keep getting a weird error saying 
+“host not trusted.”
+Answer: Simply being able to connect to the server is only half the battle. Troubleshooting the remote connections is often required to automate deployment tasks.
+
+Ticket: Permissions Error
+This prevalent ticket boils down to restrictions causing errors accessing files, folders remotely, and so on. 
+It’s most common when you need access to something like the temp directory, but you don’t have sufficient rights from the system administrator.
+ These restrictions are put in place for security reasons and to stop chaos from breaking out inside your directory/repository.
+Answer: Talk to your sysadmin. This should be the first and easiest step. If your sysadmin is on vacation or just won’t give you permissions,
+ you can use a workaround. Workarounds for problems like these are specific to each case depending on what environment you’re working in.
+ Our best advice is to map out your deploy before starting so you can figure out exactly what you will need permissions for…before you’re denied.
+
+Ticket: Server Limitations Causing Deployments to Fail 
+If you don’t have enough disk space, if you have competing applications, or if things are just slow, it’s probably because you have server limitations.
+ Server limitations often times cause deployments to fail, for obvious reasons. Server space should be on the checklist of any developer when things go awry.
+Answer: The best answer we can give in this situation is to understand how to configure the resources that are being shared amongst a lot of users and applications. 
+You can also look for space in another network location.
+
+Ticket: Software Updates Breaking Functionality of Existing Software Packages
+Software updates are great! Right? New functionality and optimization are wonderful, 
+but only when they don’t mess up your existing structure. This ticket comes up often because of 
+software updates no longer being compatible with older versions of plugins or applications. 
+“Everything was working yesterday, but now I have all these error messages when I try to deploy my website.”
+Answer: Once you’ve downloaded a new version of software, double check your systems by doing diagnostics, checking logs, backing out of updates, and so on.
+As you can imagine, there are any number of fixes for this ticket, all of which depend on the specific update and application.
+
+Ticket: Network Bottlenecks Causing Problems with Deployment/Release Times
+There is nothing worse than meticulously writing and reviewing scripts for a new application only to have the deploy fail due to network issues.
+ This is common when trying to run or copy huge files or when moving to a new environment.
+Answer: Our best advice is to start managing your deployment schedule. Once you understand your resources and bandwidth,
+ you can learn when the network is in the least use (overnight) and schedule your deployment to release then. Other options 
+include deploying in parallel instead of sequentially or breaking up your deployment.

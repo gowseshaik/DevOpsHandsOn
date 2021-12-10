@@ -1,0 +1,398 @@
+Docker Is a containerization software using which we can create containers.
+
+Docker is for Devlepors, Admins(DevOps) to build and run applications as contianers.
+
+Docker Editions:
+
+Docker CE --> Comunity Edition --> Open Source(Free)
+
+Docker EE --> Enterprise Edition --> Commercial
+
+Type: Containerization
+Vendor: Docker INC
+
+O.S --> Cross Platform(Docker can be installed in any O.S)
+
+Docker Can Be Installed in Linux, Windows OS ,mac OS  
+
+Docker CE Can be installed in Most of the linux except redhat.
+
+Docker EE can installed in all O.S including redhat.
+
+Docker CE --> OpenSouce Free
+
+Docker EE --> Commerical
+   DTR --> Docker Trusted Registry(Private Repo to main docker images)
+   UCP --> Universal Controll Pane --> It's GUI for managing Docker Machines
+
+Docker,CoreOS,Rockert --> Containerzation Platforms/Softwares.
+
+
+
+Dockerfile --> Dockerfile is file which contains instructions to create an image. Which contains 
+               Docker Domain Specific Key Words to build image.
+			
+		   
+DockerImage --> It's a package which contains everything(Softwares+ENV+Application Code) to run your application.
+
+DockerContainer --> Run time instance of an image.If you run docker image container will be created
+                    that's where our application(process) is running.
+DockerRegistriy/Repository
+
+DockerRepo/Registry. --> We can store and share the docker images.
+
+Public Repo --> Docker hub is a public reposotiry. Which contains all the open source softwares as 
+a docker images. We can think of docker hub as play store for docker images.
+
+
+Private Repo(Nexus,JFrog,D.T.R(Docker Trusted Registory)),AWS ECR  --> We can store and share the docker images with in our company
+network using private repo
+
+Docker Enigine/Daemon/Host --> It's a software or program using which we can create images & contianers.
+
+Docker is cross platform.
+
+Docker CE
+   Docker CE will not be supported by Redhat.
+   
+ 
+Docker EE
+  Docker EE will be support most of the os including redhat.
+
+      
+First Create Account in docker hub
+https://hub.docker.com
+
+What is docker hub?
+It's a public repository for docker images. You can think as play store for
+docker images.
+
+Install Docker on AWS Ubuntu
+############################
+sudo apt update -y
+sudo apt install docker.io -y
+sudo service docker start
+
+sudo docker info
+
+# Check docker is installed or not
+   docker info
+
+# You will get permison denied error as regular user dosn't have permisions to execute docker commands.Add user to docker group.
+
+sudo usermod -aG docker $USER 
+     or 
+sudo usermod -aG docker ubuntu
+
+# Exit From Current SSH Terminal & SSH(Login) again .Then execute 
+docker ps
+
+
+# Amazon Linux
+================
+sudo yum update -y		
+sudo yum install docker -y
+sudo service docker start
+
+Add Regural user to dockergroup
+sudo usermod -aG docker  <username>
+
+ex:
+sudo usermod -aG docker ec2-user
+
+Once you add user to group exit from the server and login again.
+# Get docker information
+docker info
+
+#Install Docker in Linux (Works for most of linux flavors).
+sudo curl -fsSL get.docker.com | /bin/bash
+
+
+Docker Home/Working Dir: 
+/var/lib/docker
+
+
+Install Docker on AWS RHEL  (Offcially No Support)
+############################
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf install docker-ce-3:18.09.1-3.el7 -y
+sudo systemctl enable docker
+sudo systemctl start docker
+
+
+sudo docker info
+
+# Check docker is installed or not
+docker info
+
+# You will get permison denied error as regular user dosn't have permisions to execute docker commands.Add user to docker group.
+
+sudo usermod -aG docker $USER 
+or 
+sudo usermod -aG docker ec2-user
+
+# Exit From Current SSH Terminal & SSH(Login) again .Then execute 
+docker ps
+
+
+
+
+How many containers we can run in on system/server?
+It dependes on your system resources(CPU,RAM).
+
+
+# List Images
+
+docker images
+
+
+
+
+
+# Sample DockerFile Content
+
+FROM tomcat:8-jdk8-corretto
+COPY target/maven-web-application*.war /usr/local/tomcat/webapps/maven-web-application.war
+
+
+# Build Image
+Defautl Docker file Name: Dockefile
+docker build -t <imageName> .
+
+If you have docker file with custom name using -f <fileName> while building docker image.
+docker build -f DockerfileMaven -t <imageName> .
+
+Note: Image name should have repository details along with name and version.
+
+Public Repo (Docker Hub)
+
+docker build -t <registryName>/<RepoName>:<version> .
+
+Note: If we don't mention version information. By defualt it will use 'latest' as version
+
+ex:
+docker build -t dockerhandson/maven-web-application .
+
+Private Repo (Nexus/JFrog/DTR)
+
+docker build -t <imageName> .
+
+docker build -t <IP/HostNameOfRepo>:<RepoPort>/<repoName>:<version> .
+
+ex:
+docker build -t 178.90.34.12:8083/maven-web-application .
+
+Authenticate with repo
+
+# Public Repo
+docker login -u <userName> -p <password>
+ex:
+docker login -u dockerhandson -p password
+
+
+Priavate Repo
+docker login -u <username> -p <password>  <URL>
+ex:
+docker login -u admin -p admin123 178.90.34.12:8083
+
+
+Push Docker Image to Repo
+docker push <imageName>
+
+Public Repo
+docker push dockerhandson/maven-web-application
+
+Private Repo
+docker push 178.90.34.12:8083/maven-web-application
+
+
+
+
+
+=============
+
+
+# List Images
+
+docker images
+
+docker image ls
+
+# Will return only ids.
+docker images -q
+
+
+# Sample DockerFile Content
+
+FROM tomcat:8-jdk8-corretto
+COPY target/maven-web-application*.war /usr/local/tomcat/webapps/maven-web-application.war
+
+
+# Build Image
+Defautl Docker file Name: Dockefile
+docker build -t <imageName> .
+
+If you have docker file with custom name using -f <fileName> while building docker image.
+docker build -f DockerfileMaven -t <imageName> .
+
+Note: Image name should have repository details along with name and version.
+
+Public Repo (Docker Hub)
+
+docker build -t <registryName>/<RepoName>:<version> .
+
+Note: If we don't mention version information. By defualt it will use 'latest' as version
+
+ex:
+docker build -t dockerhandson/maven-web-application .
+
+Private Repo (Nexus/JFrog/DTR)
+
+docker build -t <imageName> .
+
+docker build -t <IP/HostNameOfRepo>:<RepoPort>/<RepoName>:<version> .
+
+ex:
+docker build -t 178.90.34.12:8083/maven-web-application .
+
+Authenticate with repo
+
+# Public Repo
+docker login -u <userName> -p <password>
+ex:
+docker login -u dockerhandson -p password
+
+
+Priavate Repo
+docker login -u <username> -p <password>  <URL>
+ex:
+docker login -u admin -p admin123 178.90.34.12:8083
+
+
+Push Docker Image to Repo
+docker push <imageName>
+
+Public Repo
+docker push dockerhandson/maven-web-application
+
+Private Repo
+docker push 178.90.34.12:8083/maven-web-application
+
+# Downlod Image from repo
+docker pull <imageName>
+
+Public Repo
+docker pull dockerhandson/maven-web-application
+
+Private Repo
+docker pull 178.90.34.12:8083/maven-web-application
+
+
+Inspect Docker Image
+==================
+docker image inspect <imageId/Name>
+
+docker inspect <imageId/Name>
+
+How to list only layers of an image?
+docker history <imageId/Name>
+
+
+Delete Image
+
+docker rmi <imageId/Name>
+
+docker rmi -f <imageId/Name>
+
+
+
+
+Note: We cann't remove images if there are running container for the image.We cann't force delete images if there is running container.
+
+If container is in stopped(exited) state we can force delete image for the stopped container.
+
+what is dangling images in docker?
+The image which doesn't have repository mapping or tag.
+
+How to delete all the images?
+docker rmi -f imageId imageId imageId
+
+docker rmi -f $(docker images -q)
+
+docker system prune 
+Will delete all stopped containers , unused docker networks and dangling images.
+
+docker image prune
+
+Will delete angling images.
+
+We can tag image with repo.
+
+# We can use docker tag to tag images with multiple repo.
+docker tag <ImageId/ExistingImageName> <ImageName>
+
+
+What is working directory of docker?
+/var/lib/docker
+
+
+How can we move/copy images from one server to another server with out repo?
+
+In Source Server(where you have image)
+# It save image(All the layers) as a tar file
+
+docker save -o <fileName>.tar <imageName/Id>
+
+
+Then SCP tar file from Source Server to Destination Server
+
+# In destination server
+docker load -i <fileName>.tar
+
+
+List Dangling images
+
+docker images -f dangling=true
+
+Remove Dangling Images
+docker rmi $(docker images -f dangling=true -q)
+
+
+docker system prune 
+
+This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+
+docker image prune
+This will remove:
+- all dangling images
+
+docker contianer prune
+This will remove:
+  - all stopped containers
+
+docker network prune
+This will remove:
+  - all networks not used by at least one container
+  
+  
+  
+Create ECR in AWS.
+  
+ECR
+===
+docker build -t 935840844891.dkr.ecr.ap-south-1.amazonaws.com/maven-web-app
+
+# Authentication with ECR
+aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 935840844891.dkr.ecr.ap-south-1.amazonaws.com  
+
+
+Note: Create IAM Role with required policy and attach to EC2 Servers.
+
+# IAM Policiy to autheticate and pull & Push image.
+AmazonEC2ContainerRegistryFullAccess
+
+# IAM Policiy to autheticate and pull image.
+AmazonEC2ContainerRegistryReadOnly

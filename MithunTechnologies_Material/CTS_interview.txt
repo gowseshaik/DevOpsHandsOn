@@ -1,0 +1,19 @@
+Cognizant Interview Quetions
+--------------------------------
+1)Tell me about yourself and roles and responsibilities.
+2)what are the pipeline jobs u have written.
+3)how many stages and What are the stages u have in ur pipelinejob.
+4)What are the plugins you used in ur jenkins job and why.
+5)What you know about docker.
+
+2nd round
+-----------
+1)Tell me about ur self and roles and responsibilities.
+2)Which langauge u know and have u written any script for ur project.
+3)Maven life cycle.
+4)If Ansible controler machine goes down.what will happen to remote notes and how will u take backup of ansible conterol machine?
+5)ansible archetecture prerequsits and softwares.
+6)have you written any playbooks
+7)have you done any trubble shooting.
+8)What are the challages u faced in ur project.
+9)who will write the pom.xml file and have u written it any time.

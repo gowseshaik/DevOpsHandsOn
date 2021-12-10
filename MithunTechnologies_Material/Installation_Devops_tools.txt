@@ -1,0 +1,1486 @@
+Java Installation - Linux 
+Java Installation 
+##Login as a root user
+sudo su -
+
+##Change dir to /opt 
+cd /opt
+yum install wget -y
+wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
+yum install jdk-8u131-linux-x64.rpm -y
+
+java -version
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Install Maven Build Tool in Linux Server/ Set Class path for Maven Build Tool in Linux Server
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+Install Git in AWS - EC2 Instance
+##Login as a root user
+sudo su -
+
+##Change dir to /opt
+cd /opt
+##The below command will download and install all required development libraries to your system.
+
+yum groupinstall "Development Tools" -y
+
+yum install gettext-devel openssl-devel perl-CPAN perl-devel zlib-devel curl-devel -y
+yum install wget tar -y
+
+##Open below URL and select the specific version and right click on that and click on Copy Link ##Address, then execute the wget command.
+##https://github.com/git/git/releases
+
+wget https://github.com/git/git/archive/v2.18.0.tar.gz -O git-bash.tar.gz
+tar -zxf git-bash.tar.gz
+
+cd git-2.18.0
+make configure
+./configure --prefix=/usr/local
+##make install command will copy the built program, and its libraries and documentation, to the correct locations.
+make install
+
+git --version
+
+git config --global user.name "Mithun Technologies"
+git config --global user.email "devopstrainingblr@gmail.com"
+git config --list
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Pre Requisite Software to Install Maven
+-----------------------------
+Java is the Pre - Requisite Software for Maven.
+
+java -version
+
+Install Maven
+------------------
+Step1) Login as a root user and change the directory to /opt/
+
+sudo su -
+cd /opt/
+
+Step2) Download the Maven Software
+
+wget http://apachemirror.wuchna.com/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.zip
+
+Step3) Set the class path/Environmental Variable
+
+For Specific User
+----------------------
+vi ~/.bash_profile
+
+export M2_HOME=/opt/apache-maven-3.6.2
+
+export PATH=$PATH:$M2_HOME/bin
+
+source ~/.bash_profile
+
+For All Users
+---------------------- 
+vi /etc/profile
+export M2_HOME=/opt/apache-maven-3.6.2
+export PATH = $PATH:$M2_HOME/bin
+
+source /etc/profile
+
+Step4) Check the Maven version
+
+mvn -version
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Apache Tomcat Server Installation as a Service - Linux 
+
+#Login as a root user
+sudo su -
+
+yum install wget unzip -y
+
+cd /opt
+wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.37/bin/apache-tomcat-9.0.37.zip
+unzip apache-tomcat-9.0.37.zip
+
+chmod u+x /opt/apache-tomcat-9.0.37/bin/*.sh
+
+mv apache-tomcat-9.0.37 tomcat9
+
+#Create a system user called tomcat.
+useradd -r tomcat
+
+cp -r /opt/tomcat9 /usr/local/tomcat9
+
+#Create a file called tomcat.service
+ 
+vi /etc/systemd/system/tomcat.service
+
+
+[Unit]
+Description=Apache Tomcat Server
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment=CATALINA_PID=/usr/local/tomcat9/temp/tomcat.pid
+Environment=CATALINA_HOME=/usr/local/tomcat9
+Environment=CATALINA_BASE=/usr/local/tomcat9
+
+ExecStart=/usr/local/tomcat9/bin/catalina.sh start
+ExecStop=/usr/local/tomcat9/bin/catalina.sh stop
+
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+#Reload the systemd
+systemctl daemon-reload
+ 
+#Enable the  tomcat service
+systemctl enable tomcat.service
+
+#Start the tomcat service
+ systemctl start tomcat.service
+
+# Check the tomcat service
+systemctl status tomcat.service
+
+#netstat -tunlap
+#ps -fax | grep tomcat
+
+
+#vi /usr/local/tomcat9/webapps/manager/META-INF/context.xml
+
+#Comment the below lines	
+
+
+
+
+<!-- 	 
+ 	 	 	 	<Valve className="org.apache.catalina.valves.RemoteAddrValve"
+  allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />       
+-->
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+Tomcat Installation - Linux 
+
+#Login as a root user
+sudo su -
+
+yum install wget unzip -y
+
+cd /opt
+wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.37/bin/apache-tomcat-9.0.37.zip
+unzip apache-tomcat-9.0.37.zip
+cd /opt/apache-tomcat-9.0.37/bin
+chmod u+x *.sh
+#sh /opt/apache-tomcat-9.0.37/bin/startup.sh
+ln -s /opt/apache-tomcat-9.0.37/bin/startup.sh /usr/bin/startTomcat
+ln -s /opt/apache-tomcat-9.0.37/bin/shutdown.sh /usr/bin/stopTomcat
+#ps -fax | grep tomcat
+#netstat -tunlap
+#vi /opt/apache-tomcat-9.0.37/webapps/manager/META-INF/context.xml
+#Comment the below lines
+#<!-- <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+# allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->
+startTomcat
+#stopTomcat
+
+Troubleshooting
+--------------------
+
+tomcat server is not starting?
+
+a)Check the catalina.out file which is available  in conf dir.
+b)check java is installed or not using java -version command.
+
+Unable to access Tomcat server URL in browser?
+
+a)make sure port 8080 is opened in security groups - AWS ec2 instance.
+--------------------------------------------------------------------------------------------------------------------------------
+
+SonarQube Installation - Linux -
+                                                      
+
+#Hardware Requirements for SonarQube
+#----------------------------------------------------
+#The SonarQube server requires at least 2GB of RAM to run efficiently and 1GB of free RAM for the OS.
+
+#Login as a root user.
+sudo su -
+
+#Download the SonarqQube Server software.
+cd /opt
+yum install wget unzip -y
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.8.zip
+unzip sonarqube-7.8.zip
+
+
+#As a good security practice, SonarQuber Server is not advised to run sonar service as a root user, so create a new user called nexus and grant sudo access to manage nexus services as follows.
+useradd sonar
+
+Give the sudo access to sonar user
+visudo
+
+sonar   ALL=(ALL)       NOPASSWD: ALL
+
+Change the owner and group permissions to /opt/sonarqube-7.8/ directory.
+chown -R sonar:sonar /opt/sonarqube-7.8/
+chmod -R 775 /opt/sonarqube-7.8/
+su - sonar
+cd /opt/sonarqube-7.8/bin/linux-x86-64/
+
+./sonar.sh start
+
+Troubleshooting
+--------------------
+
+sonar service is not starting?
+
+a)make sure you need to change the ownership and group to /opt/sonarqube-7.6/ directory for sonar user.
+b)make sure you are trying to start sonar service with sonar user.
+c)check java is installed or not using java -version command.
+
+Unable to access SonarQube server URL in browser?
+
+a)make sure port 9000 is opened in security groups - AWS ec2 instance.
+
+Create SonarQube server as a sonar service
+--------------------------------------------------------
+
+ln /opt/sonarqube-7.8/bin/linux-x86-64/sonar.sh /etc/init.d/sonar
+
+vi /etc/init.d/sonar
+
+#add below lines in /etc/init.d/sonar
+
+SONAR_HOME=/opt/sonarqube-7.8
+PLATFORM=linux-x86-64
+
+WRAPPER_CMD="${SONAR_HOME}/bin/${PLATFORM}/wrapper"
+WRAPPER_CONF="${SONAR_HOME}/conf/wrapper.conf"
+PIDDIR="/opt/sonarqube-7.8/"
+
+#Enable the sonar service
+sudo systemctl enable sonar
+
+#Start the sonar service
+sudo systemctl start sonar
+
+#Check the status of the  sonar service
+sudo systemctl status sonar
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Nexus Server Installation in Linux 
+
+Login as a root user
+sudo su -
+cd /opt
+yum install tar wget -y
+wget http://download.sonatype.com/nexus/3/nexus-3.15.2-01-unix.tar.gz
+tar -zxvf nexus-3.15.2-01-unix.tar.gz
+mv /opt/nexus-3.15.2-01 /opt/nexus
+
+#As a good security practice, Nexus is not advised to run nexus service as a root user, so create a new user called nexus and grant sudo access to manage nexus services as follows.
+ 
+useradd nexus
+
+#Give the sudo access to nexus user
+
+visudo
+nexus ALL=(ALL) NOPASSWD: ALL
+
+#Change the owner and group permissions to /opt/nexus and /opt/sonatype-work directories.
+
+chown -R nexus:nexus /opt/nexus
+chown -R nexus:nexus /opt/sonatype-work
+chmod -R 775 /opt/nexus
+chmod -R 775 /opt/sonatype-work
+
+#Open /opt/nexus/bin/nexus.rc file and  uncomment run_as_user parameter and set as nexus user.
+
+vi /opt/nexus/bin/nexus.rc
+run_as_user="nexus"
+
+#Create nexus as a service
+
+ln -s /opt/nexus/bin/nexus /etc/init.d/nexus
+
+#Switch as a nexus user and start the nexus service as follows.
+
+su - nexus
+
+#Enable the nexus services
+sudo systemctl enable nexus
+
+#Start the nexus service
+sudo systemctl start nexus
+
+#Access the Nexus server from Laptop/Desktop browser.
+ 
+http://IPAddess/Hostname:8081/
+
+#Default Credentials
+User Name: admin
+Password: admin123
+
+Troubleshooting
+---------------------
+nexus service is not starting?
+
+a)make sure need to change the ownership and group to /opt/nexus and /opt/sonatype-work directories and permissions (775) for nexus user.
+b)make sure you are trying to start nexus service with nexus user.
+c)check java is installed or not using java -version command.
+d) check the nexus.log file which is availabe in  /opt/sonatype-work/nexus3/log  directory.
+
+Unable to access nexus URL?
+-------------------------------------
+a)make sure port 8081 is opened in security groups in AWS ec2 instance.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+PUSH/PULL Docker Image form Private Repository (Nexus) 
+PUSH/PULL Docker Image form Private Repository (Nexus)
+
+
+Pre-Requisities:
+Server 1: Ubuntu                                         Server 2: Ubuntu
+Install the below softwares in Server1          Install the below softwares in Server2
+Java 8                                                              Docker
+
+Docker
+
+Jenkins
+
+Maven/Gradle
+Server 1:
+1   We are going to build our project using maven/gradle
+2   Through docker file we are going to create an docker image for that project
+3   We are going to push the docker image to Nexus (docker hosted) repo
+Server 2:
+1  We are going to pull the docker image form Nexus (docker hosted) repo
+2   Create a container using the docker image
+Nexus Repository (docker hosted,proxy) Creation:
+docker hosted:   
+1) Login to your Nexus repository.
+2) Create docker hosted
+
+
+ 
+ Here give a name to the repo (dock-hosted), then we are going to assign a port to this docker hosted repo. Through this port we are going to access this repo. (Note: you should not give 8081 because it is already assigned to Nexus Repo, so use different port number)
+
+In this case I have assigned 8083 for this repo.
+
+3) Keep the remaining settings as it is and create repository
+
+
+
+
+
+ Note: Open 8083 in AWS Security Groups.
+Ubuntu Configuration : Server 1 & 2
+Do these steps in both the servers in order to push and pull docker images from Nexus Repo.
+1.     Login as root user
+2.     Go to /etc/docker
+            cd /etc/docker
+3.     Then create a file called daemon.json
+vi /etc/docker/daemon.json
+4.     Write these script in daemon.json
+
+{
+  "insecure-registries": [ "13.234.21.143:8083" ]
+}
+
+(Here we are allowing our docker daemon to access the Nexus Hosted Repo)
+5.     Save the file
+6.     Restart docker service using below command.
+            systemctl restart docker
+
+ 
+Server 1: Login,Build & Push
+1 Login to Nexus repo
+docker login –u admin –p password 13.234.21.143:8083
+(or)
+docker login 13.234.21.143:8083
+
+
+
+
+2  Build an image using below command.
+docker build –t 13.234.21.143:8083/image1 .
+           
+(here while building an docker image we will use ip address with port for the docked hosted repo instead of username in hub.docker.com)
+
+
+
+ 
+3 Push docker image to Nexus Repo
+
+
+
+
+
+Server 2: Pull image/Run container
+1.     Login to Nexus
+
+
+2   Pull docker image
+
+
+ 
+3  Build a container
+docker run –d –p 8090:8080 –p 9990:9990 - -name wildfly 13.234.21.143:8083/image1
+(I am using wildfly to deploy)     
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Install Docker in Ubuntu Server 
+Method-1
+=======
+
+Step 1: Update all Software Repositories using below command.
+
+#apt-get update
+
+Step 2: Install a Docker using below command
+
+#apt install docker.io -y
+
+Step 3: Enable and start the docker service as follows.
+
+#systemctl enable docker
+#systemctl start docker
+
+
+Step 4: Check the  docker version
+
+#docker --version
+
+
+To Un Install a docker
+----------------------
+Use below command to un-install docker
+#apt-get remove docker docker-engine docker.io -y
+----------------------------------------------------------------------------------------------------------------------------
+Method -2
+========
+Step 1: Update all Software Repositories using below command.
+#apt-get update
+
+
+
+Step 2: Install Docker using below command
+#curl -fsSL get.docker.com | /bin/bash
+
+
+
+
+Step 3: Check all the versions.
+#apt-cache madison docker-ce
+
+
+Step 4: If we want to install the specific version use the below command.
+apt-get install docker-ce=<VERSION>
+
+Step 5: If you would like to use Docker as a non-root user, you should now consider
+adding your user to the "docker" group with something like:
+
+#usermod -aG docker your-user
+------------------------------------------------------------------------------------------------------------------------------
+
+Jenkins Docker Swarm Integration
+=========================
+
+1) CI/CD Pipeline Scrit to build and deploy single service in docker swarm
+
+
+2) CI/CD Pipeline Scrit to build and deploy multiple services using docker stack(Compose File) in docker swarm
+
+
+Pre Requisite:
+==========
+
+1) Docker Swarm Cluster
+  
+   https://www.youtube.com/watch?v=cuNW5Qwd-D4
+  
+2)  Setup CI/CD (Jenkins) Server   
+
+=========Install Java, Jenkins, Docker in Ubuntu==============
+
+sudo apt update -y
+
+sudo apt install openjdk-8-jdk -y
+
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update -y
+sudo apt-get install jenkins -y
+
+sudo systemctl status jenkins
+
+sudo curl -fsSL get.docker.com | /bin/bash
+
+# Add jenkins user to docker group
+sudo usermod -aG docker jenkins
+# Restart jenkins to reflect docker permisions
+sudo systemctl restart jenkins
+
+# Use below commands if you want to switch to jenkins user.
+sudo -i -u jenkins
+sudo su -s /bin/bash jenkins
+
+##Plugins Used
+sshAgent
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Kubernetes Setup Using Kubeadm In AWS EC2 Ubuntu Servers - 
+=======================================================
+
+Prerequisite:
+==========
+
+3 - Ubuntu Serves
+
+1 - Manager  (4GB RAM , 2 Core) t2.medium
+
+2 - Workers  (1 GB, 1 Core)     t2.micro
+
+
+Note: Open Required Ports In AWS Security Groups. For now we will open All trafic.
+
+==========COMMON FOR MASTER & SLAVES START ====
+
+# First, login as ‘root’ user because the following set of commands need to be executed with ‘sudo’ permissions.
+
+sudo su -
+
+# Install Required packages and apt keys.
+
+apt-get update -y
+apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update -y
+
+
+
+#Turn Off Swap Space
+
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# Install And Enable Docker
+
+apt install docker.io -y
+usermod -aG docker ubuntu
+systemctl restart docker
+systemctl enable docker.service
+
+
+#Install kubeadm, Kubelet And Kubectl
+
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+# Enable and start kubelet service
+
+systemctl daemon-reload
+systemctl start kubelet
+systemctl enable kubelet.service
+
+==========COMMON FOR MASTER & SLAVES END=====
+
+
+
+===========In Master Node Start====================
+# Steps Only For Kubernetes Master
+
+# Switch to the root user.
+
+sudo su -
+
+# Initialize Kubernates master by executing below commond.
+
+kubeadm init
+
+#exit root user & exeucte as normal user
+
+exit
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+# To verify, if kubectl is working or not, run the following command.
+
+kubectl get pods -o wide --all-namespaces
+
+#You will notice from the previous command, that all the pods are running except one: ‘kube-dns’. For resolving this we will install a # pod network. To install the weave pod network, run the following command:
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+kubectl get nodes
+
+kubectl get pods --all-namespaces
+
+
+# Get token
+
+kubeadm token create --print-join-command
+
+=========In Master Node End====================
+
+
+Add Worker Machines to Kubernates Master
+=========================================
+
+Copy kubeadm join token from and execute in Worker Nodes to join to cluster
+
+
+
+kubectl commonds has to be executed in master machine.
+
+Check Nodes
+=============
+
+kubectl get nodes
+
+
+Deploy Sample Application
+==========================
+
+kubectl run nginx-demo --image=nginx --port=80
+
+kubectl expose deployment nginx-demo --port=80 --type=NodePort
+
+
+Get Node Port details
+=====================
+kubectl get services
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Configuration of NFS Server
+
+                                                          Configuration of NFS Server
+
+Step 1: Install NFS Kernel Server
+Before installing the NFS Kernel server, we need to update our system’s repository index with that of the Internet through the following apt command as sudo:
+
+$ sudo apt-get update
+
+The above command lets us install the latest available version of a software through the Ubuntu repositories.
+
+Now, run the following command in order to install the NFS Kernel Server on your system:
+
+$ sudo apt install nfs-kernel-server
+
+Step 2: Create the Export Directory
+
+sudo mkdir -p /mnt/share/
+
+# As we want all clients to access the directory, we will remove restrictive permissions.
+sudo chown nobody:nogroup /mnt/share/
+sudo chmod 777 /mnt/share/
+
+Step 3: Assign server access to client(s) through NFS export file
+
+sudo vi /etc/exports
+
+
+#/mnt/share/ <clientIP or Clients CIDR>(rw,sync,no_subtree_check,no_root_squash)
+ #Ex:
+/mnt/share/ *(rw,sync,no_subtree_check,no_root_squash)
+
+
+Step 4: Export the shared directory
+
+$ sudo exportfs -a
+
+
+sudo systemctl restart nfs-kernel-server
+
+Step 5: Open firewall for the client (s) PORT 2049
+
+
+Configuring the Client Machine
+
+
+Step 1: Install NFS Common
+Before installing the NFS Common application, we need to update our system’s repository index with that of the Internet through the following apt command as sudo:
+
+$ sudo apt-get update
+
+
+$ sudo apt-get install nfs-common
+
+
+# Test if we can mount nfs path with client systems folder.
+
+Step 2: Create a mount point for the NFS host’s shared folder
+
+sudo mkdir -p /mnt/sharedfolder_client
+
+Step 3: Mount the shared directory on the client
+
+sudo mount serverIP:/mnt/share/ /mnt/mountfolder_client
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Docker Swarm Setup 
+
+Rerequisites:
+============
+
+3 - Ubuntu Servers
+     1 - Master
+    2 - Workers
+   
+Steps:
+======
+         
+1) Install Docker Community Edition in all the 3 Servers.
+   And add user(ubuntu) to docker group.
+                
+   # Below command works for most of the Linux flavors except Redhat Linux
+   sudo curl -fsSL get.docker.com | /bin/bash
+  
+   # Add Current User to docker group.
+   sudo usermod -aG docker ${USER}
+  
+2) Open below ports in AWS Security Groups.
+      
+    TCP port 2377 for cluster management communications
+    TCP and UDP port 7946 for communication among nodes
+    UDP port 4789 for overlay network traffic.
+   
+    If you are planning on creating an overlay network with encryption     (--opt encrypted), you will  also need     to ensure ip protocol 50 (ESP) traffic is allowed.
+     
+3) Execute below command to initiate docker swarm manager in one system.
+  
+   # Initialize docker swarm cluster.
+   docker swarm init
+  
+   # Get worker token
+   docker swarm join-token worker
+  
+   # Get manager token to add another node as secondary manager
+   docker swarm join-token manager
+  
+4) Add workers machines to cluster.
+   #Execute join token(worker token from manager) in all worker machines.
+  
+  
+5) Display docker cluster nodes in manager machine.
+
+   docker node ls
+  
+6) Deploy Sample Docker Application in docker swarm cluster.
+
+    docker service create --name webserver --replicas 2 -p 80:80 httpd 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+PUSH/PULL Docker Image form Private Repository (Nexus) - 
+PUSH/PULL Docker Image form Private Repository (Nexus)
+
+
+Pre-Requisities:
+Server 1: Ubuntu                                         Server 2: Ubuntu
+Install the below softwares in Server1          Install the below softwares in Server2
+Java 8                                                              Docker
+
+Docker
+
+Jenkins
+
+Maven/Gradle
+Server 1:
+1   We are going to build our project using maven/gradle
+2   Through docker file we are going to create an docker image for that project
+3   We are going to push the docker image to Nexus (docker hosted) repo
+Server 2:
+1  We are going to pull the docker image form Nexus (docker hosted) repo
+2   Create a container using the docker image
+Nexus Repository (docker hosted,proxy) Creation:
+docker hosted:   
+1) Login to your Nexus repository.
+2) Create docker hosted
+
+
+ 
+ Here give a name to the repo (dock-hosted), then we are going to assign a port to this docker hosted repo. Through this port we are going to access this repo. (Note: you should not give 8081 because it is already assigned to Nexus Repo, so use different port number)
+
+In this case I have assigned 8083 for this repo.
+
+3) Keep the remaining settings as it is and create repository
+
+
+
+
+
+ Note: Open 8083 in AWS Security Groups.
+Ubuntu Configuration : Server 1 & 2
+Do these steps in both the servers in order to push and pull docker images from Nexus Repo.
+1.     Login as root user
+2.     Go to /etc/docker
+            cd /etc/docker
+3.     Then create a file called daemon.json
+vi /etc/docker/daemon.json
+4.     Write these script in daemon.json
+
+{
+  "insecure-registries": [ "13.234.21.143:8083" ]
+}
+
+(Here we are allowing our docker daemon to access the Nexus Hosted Repo)
+5.     Save the file
+6.     Restart docker service using below command.
+            systemctl restart docker
+
+ 
+Server 1: Login,Build & Push
+1 Login to Nexus repo
+docker login –u admin –p password 13.234.21.143:8083
+(or)
+docker login 13.234.21.143:8083
+
+
+
+
+2  Build an image using below command.
+docker build –t 13.234.21.143:8083/image1 .
+           
+(here while building an docker image we will use ip address with port for the docked hosted repo instead of username in hub.docker.com)
+
+
+
+ 
+3 Push docker image to Nexus Repo
+
+
+
+
+
+Server 2: Pull image/Run container
+1.     Login to Nexus
+
+
+2   Pull docker image
+
+
+ 
+3  Build a container
+docker run –d –p 8090:8080 –p 9990:9990 - -name wildfly 13.234.21.143:8083/image1
+(I am using wildfly to deploy)     
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+Docker Commands - 
+
+docker info: It will give status of weather docker is running or not  and also It will display the detailed information about docker engine. 
+
+docker version: Show the Docker version information.
+
+docker images (OR) docker image ls : List all images that are locally stored with the Docker engine.
+
+docker run <<Docker Image>> : It will run the docker image.
+
+Example: docker run hello-world: This command will download the hello-world image, if it is not already present, and run the hello-world as a container.
+
+docker images <<Image Name>>: It will display the information about image.
+
+docker images -q: It will display only the images IDs.
+
+docker rmi << Image ID/Image Name>> (OR) docker image rm << Image ID/Image Name>>: It will delete an image from the local image store.
+Example: docker rmi nginx
+
+docker rmi $(docker images -q) (OR) docker rmi -f $(docker images -q) : It will remove all the images from docker engine.
+
+docker run --name “hello-world-container” helloworld: Start the hello-world image with “hello- world-container” container name. 
+
+docker create “hello-world-cont” helloworld : It will create a container called “hello-world-cont” from the image hello-world and it won’t start the container.
+
+docker ps (OR) docker container ls: Lists running containers
+(It will not display the stopped containers)
+
+docker ps –a (OR) docker container ls --all (OR) docker container -a: Lists all containers (It will display the stopped containers along with running containers.)
+                                                    
+docker start <Container name|id>: It will start the container.
+
+docker start webserver: It will start the webserver.
+
+docker stop <container name|id> (OR) docker container stop <container name|id>: It will stop the docker container.
+
+docker stop webserver: It will stop the container called webserver.
+
+docker pause CID/CNAME: It will pause the container.
+
+docker unpause CID/CNAME: It will unpause the container.
+
+Docker Container status are, created, restarting, running, removing, paused, exited, or dead
+
+docker ps -a --filter "name=mithun16thjune": It will display all the containers with name mithun16thjune name.
+
+docker ps -a --filter 'exited=0' :
+
+docker ps --filter status=running: It will display the all the running state containers.
+
+docker ps --filter status=paused: It will display the all the paused state containers.
+
+docker logs <container name>: It will display the logs for that container.
+
+docker logs --tail 100 <<Container Name>>: Print the last 100 lines of a container’s logs.
+
+docker top <<Container ID>>: This will shows the top processes in within in a container.
+
+docker reanme <<Container Old Name>> <<Container New Name>>: It will rename the conatiner.
+
+docker rm -f <<Container Name>>: It will remove the container.
+
+docker rm -f webserver: It will stop and remove the running container with a single command.
+
+docker stop $(docker ps -a -q): It will stop all the containers.
+
+docker rm -f $(docker ps -aq): Delete all running and stopped containers.
+
+docker kill <<CID/C Name>>: It will kill the container.
+
+docker container prune: It will delete all stopped containers.
+
+docker search <<Image Name>>: It will search all of the publicly available images on Docker
+Hub(https://hub.docker.com).
+
+docker pull <<Image Name>: Pull an image from Docker Hub
+
+docker inspect <<CID>> : It will give information for container.
+
+docker attach <<CID>> : It will connect to running container.
+
+docker exec <<CID>> : Run a linux command in a running container.
+
+docker stats <<CID>> : It will display a live stream of container resource usage statics.
+
+docker network ls: List the networks.
+
+docker network create mithuntechnologies : It will create the network with name called as mithuntechnologies.
+
+docker network inspect bridge: Display detailed information on one or more networks.
+
+docker network connect: Connect a container to a network.
+
+docker network prune: Remove all unused networks.
+
+docker run -it -v /Users/mithunreddyl/Desktop/dockervolumes:/mithuntechnoVol1 ubuntu : Create a container with volume mithuntechnoVol1.
+
+
+docker run -it -v /Users/mithunreddyl/Desktop/dockervolumes:/mithuntechnoVol1:ro --name ubuntucontainer16 ubuntu : Create the Read only Volume.
+
+
+docker run -it --volumes-from ubuntucontainer16 --name ubuntucontainer1604 ubuntu:16.04:
+Create a container ubuntucontainer1604 that uses the same volumes as ubuntucontainer16
+
+Can I mount same volume to multiple docker containers?
+Ans) Yes you can add same location as a volume to many docker containers.
+
+docker login: To sign into the Docker Hub.
+
+docker logout: To logout from the Docker Hub. If no server is specified, then the default is used.
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Install Nginx HTTP server 
+Install Nginx HTTP Server Installation 
+
+#Login as root user and execute the below command for install nginx http server.
+sudo su -
+yum install nginx -y
+
+#Enable the service as follows.
+
+systemctl enable nginx.service
+
+#Start the HTTP server as follows.
+
+systemctl start nginx.service
+
+Important Points
+  nginx.conf file is the configuration file for Nginx HTTP server, which is available in         /etc/nginx/  directory.
+Logs will be available in /var/log/nginx/ directory.
+
+at August 12, 2020 
+Email This
+BlogThis!
+Share to Twitter
+Share to Facebook
+Share to Pinterest
+Labels: HTTP Server
+Sunday, January 19, 2020
+Install Apache HTTP Server in Linux Redhat Server - Mithun Technologies - 9980923226
+
+
+Install Apache HTTP Server Installation 
+ Login as root user and execute the below command for install http server.
+
+yum install httpd -y
+
+Enable the service as follows.
+
+systemctl enable httpd.service
+
+Start the HTTP server as follows.
+
+systemctl start httpd.service
+
+Important Points
+ httpd.conf file is the configuration file for Apache HTTP server, which is available in /etc/httpd/conf directory.
+Logs will be available in /etc/httpd/logs directory.
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Install Gradle Build Tool in MAC Book / Set Class path for Gradle Build Tool in MAC Book
+---------------------------------------------------------------------------------------------------------------------
+
+Pre Requisite Software
+-----------------------------
+Java is the Pre Requisite Software for Gradle.
+
+java -version
+
+
+Install Maven
+------------------
+Download the Gradle Software using below url.
+
+https://services.gradle.org/distributions/
+
+Set the class path/Environmental Variable
+vi ~/.bash_profile
+
+export M2_HOME=/Users/mithunreddy/MithunTechnologies/Softwares/Running/gradle-6.6.1
+
+export PATH=$PATH:$M2_HOME/bin
+
+source ~/.bash_profile
+
+Check the Maven version
+
+mvn -version
+---------------------------------------------------------------------------------------------------------------------------------------
+
+DevOps Interview Questions   
+
+GIT
+===
+
+1. What is the difference between GIT and SVN?
+2. Advantages of using GIT?
+3. What is STAGING area and INDEX in GIT?
+4. What is the difference between GIT PUSH and COMMIT? When they are used?
+5. What is GIT STASH?
+6. How do you create a branch in GIT?
+7. How do you merge code from branch to master in GIT?
+8. How do you confirm if GIT branch has merged into master?
+9. What is HEAD in GIT? How many HEADS you can create in GIT?
+10. What does "git config" do?
+11. Learn about all the commands in GIT. Interviewer may ask indirectly about how can u acheive one scenario. You should be able to tell him the command to use.
+12. What is the purpose of branching in GIT? What is the common branching pattern in GIT?
+13. How can u resolve conflict in GIT? Interviewer may also ask you to explain one scenario how you resolved conflicts in GIT in your current project.
+ ----------------------------------------------------------------------------------------------------------------------------------------
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+ 
+SVN
+====
+
+1. Difference between GIT and SVN repository?
+2. What all things we can store in SVN repository?
+3. Difference between "svn import", "svn add" and "svn commit" ?
+4. What is the difference between "svn export", "svn checkout" ?
+5. What is the difference between "svn update and "svn commit" ?
+6. What is the command to see what is inside the svn repository?
+7. How can you revert to previous version in SVN?
+8. Best prctices of SVN
+9. How can u resolve conflict in SVN? Interviewer may also ask you to explain one scenario how you resolved conflicts in SVN in your current project.
+10. How can see the difference between the local version and repository version of files in SVN?
+----------------------------------------------------------------------------------------------------------------------------------------
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+ 
+Maven
+=====
+
+1. Explain Maven Build Lifecycles?
+2. What is convention over configuration. How does maven use it?
+3. What are the phases of Build Life cycle and Clean life cycle? What happens in each phase?
+4. Explain maven dependency
+5. When does maven use external dependency?
+6. What is Build profile and what are the different types of Build Profile?
+7. What are the different types of Maven Repositories? (or) they may ask difference between types of maven repositories
+8. What is the sequence in which maven search for dependencies?
+9. What is the difference between snapshot and version in maven?
+10. What is system dependency and transitive dependency in Maven?
+11. How profiles are specified in maven?
+12. Explain about all the dependency scopes in Maven
+----------------------------------------------------------------------------------------------------------------------------------------
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+ 
+ 
+Docker 
+======
+
+1) difference between add and copy ?
+2) difference between CMD and entry point ?
+3) ADD . .
+4) what is docker file ?
+5) how to check how many containers are running ?
+6) docker logging driver ?
+7) what is difference between bridge network and custom bridge network?
+8) difference between overlay network and host network ?
+9) what is port forwarding in docker what is the use of it ?
+10) how to login/enter to a container?
+11) what is docker system prune and docker image prune?
+12) how many types of volumes are there in Docker? (Local and network)
+13) How to check image vulnerabilty ?
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+
+
+Kubernetes
+=========
+1) what is taint and toleration
+2) node affinity an pod affinity
+3) how to check the logs of a pod or deployment?
+4) how to check how many pods are running
+5) what are deployment strategy used in your project
+6) what is init container
+7) what is statefullset
+8) what is ingress
+9) difference between headfull and headless service
+10) difference between secret and configmap
+11) what is livenessprobe and readynesspeobe
+12) how to access other pods in a cluster
+13) what is a pod
+14) how you will make sure that the database should start first and then application
+15) Types of storage class used in your project
+16) difference between statefullset and stateless
+17) describe kubernetes architecture
+18) difference between PV and pvc
+19) 2 containers are running inside a pod if one container goes down then will it affect other running container
+20) Update the password in secret without restarting the pod or deployment ,is it possible ?
+21) how to rollback the deployment?
+22) what is the reason for pod eviction?
+22) pod is in pending state ,what are the possible reasons?
+23) how you will make sure that in rolling update strategy 2 pods are always available?
+24) crashloopbackoff, what are the possible reasons?
+25) why you are using 3 master node in production?
+26) how you will make sure that pod should be running on a specific node?
+27) how to check what are the activities performed by the container while creating the pod
+28) how to get the ip of a pod ?
+29) which network plugin you are using?
+30) how you are monitoring the kubernetes cluster and the containers
+31) Job should be terminated after 40 seconds ? ActiveDeadLineSeconds: 40
+32) 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+ 
+
+Terraform
+========
+ 
+1) What is statefile and what is the use of it ?
+2) where you are keeping the statefile ?
+3) how to declare a varible ?
+4) what is the difference between provisioner and provider?
+5) how pass a value from one resource block to another ?
+6) how to reuse a module?
+7) what is the differnece between Terrform init and terraform apply?
+8) how to validate the the terraform file ?
+9) what terraform plan does?
+10) how to create 10 ec2 instance using the same script ? ( count= 10)
+11) By mistake if you downgrade the instance from t2.large to t2.micro ,then what will happen when you run the terraform script?
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+
+
+AWS
+====
+
+1) What is EFS ?
+2) how to configure S3 with SDN?
+3) s3 lifecycle policy
+4) static website hosting using s3
+5) Describe your project architecture ?
+6) What is private subnet and public subnet?
+7) what is NAT gateway ? other way , No one can access the database server from internet but from database server we can download the patch?
+8) can we mount s3 on ec2 instance?
+9) can we make s3 bootable?
+10) what are routing policy in rout53?
+12) how to take snapshots of a rds database in every 3 hours?
+13) how to get the public ips of all ec2 instance under a single user account ?
+14) user's are complaing they are not able to access the server ,what is approach to fix this ?
+15) differnece between security group and NACL?
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+What is difference between VMWare & Docker?
+Explain docker structure?
+What is the use of ant & maven?
+What is pom.xml?
+what is ant and maven file name?
+Difference between build.xml and pom.xml?
+what is war, ear? & Difference between them?
+How to integrate sonarqube with jenkins?
+How to restart jenkins?
+how to install plugin?
+If a plugin is not available then how to install that plugin u want ? 15. Have you used nexus ? what is the work of nexus?
+ 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+
+                               Company - Unilog
+ 
+1.If I wanna delete particular repository in branch how to delete?
+
+2.what are the different roles we can give to developers in GIT?
+3.I am committing a code in a particular branch, how the pipeline will go to that particular branch and execute CICD. How we do that in Pipeline?
+4. my linux server is fluctuating. how to check why it is fluctuating? Reason behind that? how to fix that?
+5.what is the standard permission of a file when it is getting created?
+6. Special Permission of linux
+7.What you mean by sudo
+8.I have a directory and it has 3 folders each has some amount of data I wanna check how much size its using everyday through a shell script using crontab
+9.Can you write shell script to monitor the process and give report in mail
+10. what you mean by high availability
+11. If you gonna build docker image how you are going to build?
+12. I wanna deploy an application using tomcat how you are going to dockerize?
+13. ADD and COPY command Difference
+14. CMD and ENTRYPOINT difference
+15. how to push image to private repository
+16. What you mean by Kubernetes?
+17. Explain architecture of Kubernetes? use of each components
+18. what you mean by container?
+19. Tell me about Ctrl manager, Scheduler
+20. What is the use of ETCD?
+21. Difference Services which you used in Kubernetes?
+22. What is the LoadBalancer?
+23. Use of Kubelet?
+24. What you mean by rolling update ? what are different types of rolling updates in Kubernetes
+25. How you gonna achieve zero down time while deploying?
+26. Strategies in Rolling Update?
+27. What is Readiness and Liveness?
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Subscribe our YouTube channel for more Free DevOps videos.
+
+https://www.youtube.com/channel/UC-Jr307MbEREy8bG6McwD6w
+
+Company Accenture
+ 
+ GIT 
+ 
+What is difference bw GIT and SVN
+What is GIT Reset and Revert?
+What is alternate way for merging code instead of GIT Merge?
+Difference Bw GIT Merge and Rebase
+How you will merge code from Development Branch to QA Branch?
+What are the branching Strategy you use in your project?
+How you will give access to developers in a repository?
+Do you create particular Branch for each Developer?
+ 
+MAVEN
+ 
+What is the life cycle of Maven?
+Explain its goal
+Where do you configure?
+What are the repository available in Maven?
+Difference bw Maven and Jenkins ?
+Difference bw install and deploy?
+ 
+NEXUS
+ 
+Do you have access to nexus server?
+why do you need access to it?
+
+SONARQUBE
+What is port number of Sonarqube?
+What is the use of Sonarqube?
+How do you define code coverage in sonarqube?
+
+JENKINS
+what is jenkins?
+what are the plugins you have used ?
+If you wanna migrate jenkins to new upgraded server, how to do it?
+what are plugin used for sonarqube and Code Coverage?
+Pre requisites for Jenkins?
+How to do add nodes to master?
+Can I use different OS to nodes and master?
+What are different ways to create jobs in jenkins?
+What are different types of pipeline scripts?
+what is the diff bw scripted and Declarative pipeline?
+what are 3 important stages in pipeline?
+what are the diff stages of pipeline?
+what is the last stage in pipeline?
+How to select jenkinsfile which is in repository?
+How to configure nexus username and password ?
+How to configure kubernetes and Docker in pipeline script?
+Where i can configure tools in Jenkins GUI?
+How you will check whether build is success or not?
+Can you configure if a job completed successfully, it should trigger another one?If yes, how to do?
+How to stop particular stage in a pipeline being executed?
+what are the different ways to automate jobs?
+Any plugin to migrate jobs from one server to another?
+How many master and slave machine your project has?
+what is master and slave architecture?
+
+DOCKER
+What is Containerization?
+Diff bw containerization vs virtualization?
+Commands in Dockerfile?
+Diff bw RUN and CMD and ENTRYPOINT?
+how to create a container which should only have one file[without Tomcat]?
+Why Docker Compose?
+How to check Docker logs and where it get stored?
+What is ImagePullbackoff?
+diff bw docker run and docker pull
+Diff Networks in Docker?
+
+KUBERNETES
+What you mean by Kubernetes?
+Explain architecture of Kubernetes? use of each components
+what you mean by container/pod?
+Tell me about Ctrl manager, Scheduler
+What is the use of ETCD?
+Difference Services which you used in Kubernetes?
+What is the LoadBalancer?
+Use of Kubelet?
+What you mean by rolling update ? what are different types of rolling updates in Kubernetes
+How you going to achieve zero down time while deploying?
+Strategies in Rolling Update?
+What is Readiness and Liveness?
+What is ConfigMap and Secret? where do u use them?
+Diff types of LoadBalancer?
+Explain Ingress?
+What is HELM and what is the use of it?
+what are the strategies available in k8s?
+What is Blue-Green?
+How to check logs of pod?
+Different ways to configure K8s?
+How many master and slaves you have?
+What if one master goes down? what is the impact?
+If a end User access an application how the request goes to the particular pod?
+How to configure service and an object?
+What is RC and why we go for RC?
+What is RBAC?
+
+OTHERS
+What is code as infrastructure?
+difference ways to deploy an application in a VM ?  Ans: we can ssh to each machine or we can use was Ansible
+Have u used Route table?
+Can you get alert from Prometheus?
+If you are getting alert as kubelet is down? then what is the issue?
+By seeing subnet IP address can you determine whether an IP belongs to that VPC or not?
+what are different volumes in EC2?
+How to configure AWS CLI?
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Ansible Installation
+
+1) Create RedHat 3 Servers (1-AnsibleServer , 2- Host Machines for demo) in AWS.
+
+2) Create Ansible User and provide sudo access in all Servers.
+
+    2.1) Create the user ansible and set the password on all hosts:
+           sudo useradd ansible
+           sudo passwd ansible
+     
+    2.2) Make the necessary entry in sudoers file /etc/sudoersfor ansible        
+           user for password-less sudo access:
+        
+           ansible ALL=(ALL) NOPASSWD: ALL
+
+           visudo
+
+    2.3) Make the necessary changes  in sshd_config file /etc/ssh/sshd_config    
+           to enable password based authentication.
+
+         Un comment PasswordAuthentication yes
+         and comment  PasswordAuthentication no.
+         And save the file .
+
+            vi /etc/ssh/sshd_config
+
+     2.4)    Then restart sshd service.
+                sudo service sshd restart
+
+=============================================================================
+               Install Ansible in Red hat (Ansible Server)
+=============================================================================
+
+1)     SSH to Redhat System & Switch to ansible user
+       sudo su ansible
+      
+2)     Install python
+       sudo yum install python3 -y
+      
+3)    Update python alaternatives
+       sudo alternatives --set python /usr/bin/python3
+      
+4)    Verify Python Version
+         python --version
+ 
+5)    Install PIP
+       sudo yum -y install python3-pip
+      
+6)    Install ansible using PIP
+       pip3 install ansible --user
+      
+7)    Verify Ansible version
+       ansible --version
+      
+8)    Create ansible folder under /etc
+       sudo mkdir /etc/ansible
+      
+9)    create ansible.cfg file under /etc/ansible ., and paste complete content from below git link.
+      https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg
+  
+       sudo vi  /etc/ansible/ansible.cfg
+
+10)   Create hosts file under /etc/ansible.
+        Sample content can found in below git link.
+        https://raw.githubusercontent.com/ansible/ansible/devel/examples/hosts
+ 
+       sudo vi  /etc/ansible/hosts
+
+//Optional Step
+11) Install sshpass in Ansible server if you want to cofigure host machines with username and  
+      password.
+
+    sudo wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    sudo rpm -ivh epel-release-6-8.noarch.rpm
+    sudo yum --enablerepo=epel -y install sshpass
+
+
+
+
+
+

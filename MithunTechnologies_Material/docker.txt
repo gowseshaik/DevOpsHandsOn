@@ -1,0 +1,21 @@
+services:
+springapp:
+image: sumithradockerreg/spring-boot-mongo:1
+ports:
+- 8080:8080 
+networks:
+- springappnetwork
+environment:
+- MONGO_DB_HOSTNAME=mongo
+- MONGO_DB_USERNAME=devdb
+- MONGO_DB_PASSWORD=devdb@123
+container_name: springappcontainer
+mongo:
+image: mongo
+environment:
+- MONGO_INITDB_ROOT_USERNAME=devdb
+- MONGO_INITDB_ROOT_USERNAME=devdb@123
+volumes:
+- mongodbvolume:/data/db
+networks:
+- springappnetwork

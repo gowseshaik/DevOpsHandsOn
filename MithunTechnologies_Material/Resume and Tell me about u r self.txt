@@ -1,0 +1,172 @@
+Resume Preparation
+------------------                       
+Resume Name: MithunReddy_12Years_Java_DevOps.doc
+
+
+Devops --> Wrong
+DevOps --> Correct
+
+genkins--> Wrong
+Jenkins --> Correct
+
+
+Keep all words first character is capital letter like below.
+Maven Build Tool
+Docker Containerisation Tool
+
+Keep all the know tool only.
+Keep all the known roles and responsibilitis only.
+
+Just know breaf about Project and number of modules and names.
+
+Need to know client of that project.
+
+-----------------------------------------------------------------------
+Tell me about your self?
+
+Ans)My Name is XXXXXXX,
+I am having X Years of experience as a DevOps Engineer,
+For the last XX years I have been working in XX Company as a DevOps Engineer. 
+In that position, I have worked on various tools like Git,GitHub, build tools like Maven, Sonarqube as a source code management tool, Nexus is the Arftifactory repo, Jenkins is my CI server, Ansible, DOcker for Containerisation Deployment,K8, Newrelic, Grafana, is the monitoring tool. .. AWS..
+ 
+ 
+Coming to my roles and responsibilities
+-—-------------------------------------
+--Created and Maintained Github repositories, branches and tags for multiple projects.
+--Configuring Maven scripts with Jenkins based on type of project.
+--Automating the Build process using Git and Maven
+--Configured Git with Jenkins and schedule jobs using Poll SCM option
+--Build, release and configuration management of production systems.
+--Experiecned in docker,docker swarm.
+--Good in writing docker files,docker compose files.
+--Automating deployment in docker swarm cluster using docker and jenkins.
+
+
+--Have Strong scripting and automation skills.
+--Have good knowledge on Windows and Linux system administration.
+--Have Experience with system monitoring tools (e.g. NewRelic).
+--Deploying, automating, maintaining and managing AWS cloud based production system,
+  to ensure the availability, performance, scalability and security of productions         
+  systems.
+ 
+ 
+ Remember about your consultancies name, address,HR name and PM.
+ 
+ While explaining about your self, mention the positive points about your company
+ and your boss.
+
+ -Your points should be benificial to the company and the job role you are applying.
+
+ Like: I have suggested the SonarQube for Source COde Quality Mgt 
+ With this devlopment team achived the healthy code.
+
+ Suggested the Git Best Practices.
+ Provided the Trainings on Git..
+------------------------------------------------------------------------
+Salary BreakUp Letter
+OfferLetter/Employment Letter
+Releaving Letter
+Experienc Letter/ Service Letter
+How many days your notice Period? 
+Are you serving notice Period?
+Are you Permanent to Wipro?
+Say No, I am working under payroll of XXX company and deputed in client location Wipro.
+
+What is your payrool compnay name?
+Say your consultency name. Dont call consultency ant time.
+
+Can you tell me your daily activities?
+
+Agile Methodlogy
+-----------------
+Everyday we have scrum meeting/Standup meeting.(15 mins as per Agile standards)
+In meeting we will discuss what we did yesterday and and what we are going
+to do today.
+If any blockers, we will call out in standup meeting.
+Scrum Master will work with respective person will resolve.
+
+
+I will check my Jira board, what are the taks are assigned to me,
+
+I will start working on based on priority.
+
+If any new project on boarded, I will do set up for that project from scratch.
+and will support for already existing job which we created in Jenkins.
+If any job will fail, will look into that and will resoleve.
+
+
+Can you tell me some challenges which you have faced in your recenet projects?
+
+
+Sprint --> duration -- 2 weeks
+
+Sprint Planning meeting
+-----------------------
+Stories - Install Jenkins - 
+  
+Tasks
+Install Java
+
+
+Retrospective meeting 30 mins
+---------------------
+The Sprint Retrospective occurs after the Sprint Review and prior to the next Sprint Planning.
+
+1)What went well in the Sprint
+Team Collbration
+
+2)What went wrong in the Sprint
+3)What could be improved
+4)What we learned 
+
+
+I am OOO --> Out Of Office
+
+
+NNTO : Today I am WFH
+
+BRB 10 mins
+
+Thank you sir
+
+YW
+
+ASAP
+
+EOD
+
+EOM
+
+MOM
+------------------------------------------------------------------------
+
+Job Portals
+-----------
+
+Naukari
+Monster
+LinkedIn
+
+
+Call to below number for Documents
+
+7090600479
+Adarsh Reddy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpadeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: javawebapppod
+  template:
+    metadata:
+      labels:
+        name: javawebapppod
+    spec:
+      containers:
+        - name: javawebapppod
+          image: sumithradockerreg/javaweb-app-docker:17
+          ports:
+          - name: javawebapppod
+            containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpaclusterservice
+  labels:
+    name: hpaservice
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: javawebapppod
+  type: NodePort

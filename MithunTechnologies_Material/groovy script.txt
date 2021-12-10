@@ -1,0 +1,55 @@
+pipeline
+{
+agent any
+stages 
+{
+    
+    stage('continuos download') 
+	{
+	steps{
+        git 'https://github.com/selenium-saikrishna/maven.git'
+		}
+    }
+
+    stage('continuos build') 
+	{
+	steps{
+        sh '''mvn clean
+        mvn package'''
+		}
+    }
+
+    stage('continuous deployment')
+    {
+	steps{
+        sh 'scp /var/lib/jenkins/workspace/Pipeline/webapp/target/webapp.war ubuntu@172.31.24.45:/var/lib/tomcat7/webapps/qaenv.war'
+		}
+	}
+
+    stage('continuous testing')
+    {
+	steps{
+      git 'https://github.com/selenium-saikrishna/testing.git'
+      sh 'java -jar /var/lib/jenkins/workspace/Pipeline/testing.jar'
+	  }
+    }
+}
+post{
+    success{
+
+        input 'Do you approve deployment?'
+        sh 'scp /var/lib/jenkins/workspace/Pipeline/webapp/target/webapp.war ubuntu@172.31.25.93:/var/lib/tomcat7/webapps/prodenv.war'
+            
+
+        
+        }
+    }
+        
+    
+	
+	
+
+    
+
+}
+
