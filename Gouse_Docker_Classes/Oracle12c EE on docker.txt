@@ -1,0 +1,246 @@
+But Podman can be run in multiple ways, rootful and rootless. We end up with people wanting to run various combinations of rootful and rootless Podman:
+
+Rootful Podman in rootful Podman
+Rootless Podman in rootful Podman
+Rootful Podman in rootless Podman
+Rootless Podman in rootless Podman
+
+
+$ podman login podman.io                                                                                                                          127 
+Username: gowseshaik
+Password: 
+Login Succeeded!
+
+$ podman pull store/oracle/database-enterprise:12.1.0.2
+
+$ podman images
+
+Creating podman volumes
+Before I run my Oracle 12c podman container I will create 4 volume to support the following database layout:
+
+/u01 – OraInventory and Oracle 12c product directories
+/u02 – Oracle Datafile
+/u03 – Fast Recovery Area
+/u04 – RedoLog files.
+
+Usage:
+  podman volume create [options] [NAME]
+
+Examples:
+  podman volume create myvol
+  podman volume create
+  podman volume create --label foo=bar myvol
+
+podman volume create --driver=pure --opt size=20GB  --name=PSTG-u01 --label=product
+podman volume create --driver=pure --opt size=100GB --name=PSTG-u02 --label=oradata
+podman volume create --driver=pure --opt size=200GB --name=PSTG-u03 --label=fast_recovery_area
+podman volume create --driver=pure --opt size=10GB  --name=PSTG-u04 --label=redo
+
+
+podman volume create --driver=local SBL-u01 --label=product
+podman volume create --driver=local SBL-u02 --label=oradata
+podman volume create --driver=local SBL-u03 --label=fast_recovery_area
+podman volume create --driver=local SBL-u04 --label=redo
+
+$ podman volume ls -f name=<name>
+$ podman volume ls -f name=SBL-u01
+
+$ podman volume inspect <volume name>
+$ podman volume inspect SBL-u01
+
+create an env file, to give input 
+We will use the docker run command to start our Oracle database docker
+
+$ docker run -d --env-file ./PSTG_env.dat \
+             -p 1527:1521 -p 5507:5500 \
+             -it --name PSTG \  
+             -v PSTG-u01:/u01 \
+             -v PSTG-u02:/u02 \
+             -v PSTG-u03:/u03 \
+             -v PSTG-u04:/u04 \
+             --shm-size=8g \
+             store/oracle/database-enterprise:12.1.0.2
+
+$ docker run -d --env-file <path_to_env_file> -p <listener_port>:1521 -p <http_port>:5500 -it --name <container_name> --shm-size="<shared_memory_size>" -v <volume name> <image_name>
+
+
+$ podman run -d --env-file ./Ora_SID_env \
+-p 1521:1521 -p 5500:5500 \
+-it --name SBLDB \
+--shm-size=8g \
+-v SBL-u01:/u01 \
+-v SBL-u02:/u02 \
+-v SBL-u03:/u03 \
+-v SBL-u04:/u04 \
+docker.io/store/oracle/database-enterprise:12.2.0.1
+
+We can monitor progress of the build using docker logs providing the docker name.
+From within our Oracle 12c ‘SBLDB’ docker container we can see our Pure Storage volumes (/u01, /u02, /u03 & /u04) and the sizes we specified.
+
+
+gouse  /  data  OracleDBContainer  $ podman logs -f SBLDB                                                                                                 127 
+Setup Oracle Database
+Oracle Database 12.2.0.1 Setup
+Fri Aug 20 20:05:30 UTC 2021
+
+Check parameters ......
+log file is : /home/oracle/setup/log/paramChk.log
+paramChk.sh is done at 0 sec
+
+untar DB bits ......
+log file is : /home/oracle/setup/log/untarDB.log
+
+	
+$ docker exec -it PSTG /bin/bash
+
+	
+$ podman exec -it SBLDB /bin/bash
+$ podman exec -it <Oracle-DB> bash -c "source /home/oracle/.bashrc; sqlplus /nolog"
+$ podman exec -it SBLDB bash -c "source /home/oracle/.bashrc; sqlplus /nolog"
+source /home/oracle/.bashrc
+
+As you can see from the above we are connected as root, 
+if you want to use the oracle account then type ‘su – oracle’ and from there try out sqlplus inside your container.
+From sqlplus we can now see our persistent Oracle data files.
+$ sqlplus / as sysdba
+
+SQL> select name from v$datafile;
+SQL> select name from v$database;
+SQL> selecct instance_name, host_name from v$instance;
+
+
+User creation after installation in Oracle Database
+===================================================
+rem Create SIEBEL user
+rem create user SIEBEL identified by SIEBEL;
+grant tblo_role to SIEBEL;
+grant sse_role to SIEBEL;
+alter user SIEBEL quota 0 on SYSTEM quota 0 on SYSAUX;
+alter user SIEBEL default tablespace SBL_DATA;
+alter user SIEBEL temporary tablespace TEMP;
+alter user SIEBEL quota unlimited on SBL_DATA;
+alter user SIEBEL quota unlimited on SBL_INDEX;
+
+[OR]
+
+In summary, the grantusr.sql file now contains commands to direct the Oracle database to do the following:
+=============================================================================================================
+Create the sse_role role for normal accounts and grant the create session privilege to it:
+create role sse_role; grant create session to sse_role;
+Create the tblo_role role for the table owner account and grant various privileges to it:
+create role tblo_role;
+grant ALTER SESSION, CREATE CLUSTER, CREATE DATABASE LINK, CREATE
+INDEXTYPE, CREATE OPERATOR, CREATE PROCEDURE, CREATE SEQUENCE, CREATE
+SESSION, CREATE SYNONYM, CREATE TABLE, CREATE TRIGGER, CREATE TYPE, CREATE
+VIEW, CREATE DIMENSION, CREATE MATERIALIZED VIEW, QUERY REWRITE, ON COMMIT REFRESH
+to tblo_role;
+Create the table owner account SIEBEL, associate it to the sse_role and tblo_role roles and define quotas on the tablespaces:
+rem Create SIEBEL user
+create user SIEBEL identified by dQ7JXufi;
+grant tblo_role to SIEBEL;
+grant sse_role to SIEBEL;
+alter user SIEBEL quota 0 on SYSTEM quota 0 on SYSAUX;
+alter user SIEBEL default tablespace SIEBELDB_DATA;
+alter user SIEBEL temporary tablespace TEMP;
+alter user SIEBEL quota unlimited on SIEBELDB_DATA;
+alter user SIEBEL quota unlimited on SIEBELDB_IDX;
+Create three additional user accounts with the sse_role role assigned:
+create user SADMIN identified by TJay357D;
+grant sse_role to SADMIN;
+alter user SADMIN default tablespace SIEBELDB_DATA;
+alter user SADMIN temporary tablespace TEMP;
+create user LDAPUSER identified by BFxR87DT;
+grant sse_role to LDAPUSER;
+alter user LDAPUSER default tablespace SIEBELDB_DATA;
+alter user LDAPUSER temporary tablespace TEMP;
+create user GUESTCST identified by 8icJIPZH;
+grant sse_role to GUESTCST;
+alter user GUESTCST default tablespace SIEBELDB_DATA;
+alter user GUESTCST temporary tablespace TEMP;
+
+if you want to call the commands in Dockerfile
+RUN sqlplus sys/password AS SYSDBA @create_database.sql
+
+In your Dockerfile, copy the SQL script into the startup directory:
+COPY create_database.sql  /opt/oracle/scripts/setup/01_create_database.sql
+The database will be created on first startup of the container.
+
+User creation in Linux for Siebel installation
+================================================
+mkdir -p /u01/siebel
+groupadd siebel
+useradd -g siebelsiebel
+passwd siebel
+Changing password for user siebel.
+New UNIX password:
+passwd: all authentication tokens updated successfully.
+
+chown -Rf siebel:siebapp /u01/siebel
+chmod -Rf 775 /u01/Siebel
+
+=============
+cat --env-file
+
+DB_SID=SBLDB
+DB_PASSWD=Oracle
+DB_DOMAIN=localdomain
+DB_BUNDLE=basic
+
+Oracle 12c DB Enterprise Container:
+++++++++++++++++++++++++++++++++++++
+$ podman run -d --env-file ./Ora_SID_env \
+-p 1521:1521 -p 5500:5500 \
+-it --name SBLDB \
+--shm-size=8g \
+-v SBL-u01:/u01 \
+-v SBL-u02:/u02 \
+-v SBL-u03:/u03 \
+-v SBL-u04:/u04 \
+docker.io/store/oracle/database-enterprise:12.2.0.1
+
+Oracle 12c DB Client Container:
++++++++++++++++++++++++++++++++
+
+Siebel CRM IP2017 Container:
++++++++++++++++++++++++++++++++
+1. create a persistance volume for software mounting
+podman volume create --driver=local SBL-soft --label=software
+podman volume inspect SBL-soft
+2. get the mountpoint path: 
+"Mountpoint": "/data/containers/storage/volumes/SBL-soft/_data"
+cd /data/containers/storage/volumes/SBL-soft/_data
+3. Copy your software to podman mountpoint with the below command.
+cp -r /data/SiebelIP2017_software_linux_Windows/Linux_Enterprise/Siebel_Install_Image/17.0.0.0/Linux/Server /data/containers/storage/volumes/SBL-soft/_data
+4. run a contianer with the mountpoint
+
+$ podman run -d --env-file ./Ora_SID_env \
+-p 1521:1521 -p 5500:5500 \
+-it --name SBLDB \
+--shm-size=8g \
+-v SBL-u01:/u01 \
+-v SBL-u02:/u02 \
+-v SBL-u03:/u03 \
+-v SBL-u04:/u04 \
+docker.io/store/oracle/database-enterprise:12.2.0.1
+
+podman run -d --env-file ./Ora_SID_env \
+-p 1521:1521 -p 5500:5500 \
+-it --name sblsrvr \
+--shm-size=8g \
+-v SBL-soft:/software \
+container-registry.oracle.com/os/oraclelinux:8.4
+
+Docker-compose.yml example 
+
+version: '3.8'
+
+services:
+  my-app:
+    build: .
+    ports:
+      - ${CONTAINER_PORT}:${PORT} # for example
+    env_file: .env
+    container_name: my-app-${NODE_ENV} # for example
+    environment: 
+      MYSQL_DATABASE: ${DB_NAME} # for example
+      my_app_version: ${MY_APP_VER} # for your case
