@@ -1,3 +1,71 @@
+Printshop webpp application:
+Dockerfile[python installation with custom os]:
+============
+FROM rockylinux:latest
+
+RUN dnf groupinstall "Development Tools" -y && \
+dnf install openssl-devel libffi-devel bzip2-devel -y && \
+dnf install wget -y && \
+dnf install python3
+
+RUN groupadd -r printshop && useradd -r -g printshop printshop
+
+USER printshop
+
+WORKDIR /home/printshop/printshop_webapp
+
+COPY . /home/printshop/printshop_webapp
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# EXPOSE 9000
+
+# ENTRYPOINT [ "streamlit","run"]
+# CMD ["app.py"]
+=================
+Dockerfile [Python:3 version defined official image]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FROM python:3
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD [ "streamlit", "run", "./app.py" ]
+===================
+
+1. build docker images from Dockerfile
+$ docker build -t printshop:v1.0 .
+
+You can also use the following command to specify the file.
+$ docker build -t streamlitapp:latest .f Dockerfile
+
+2. start a container with the above image
+D:\printshop_webapp>
+$ docker run -it --rm --name naaz_webapp -p 9000:8501 printshop:v2.0 
+$ docker run -it --rm --name naaz_webapp -p 9000:8501 printshop:v2.0 app.py
+
+2022-03-20 16:01:42.132 Trying to detect encoding from a tiny portion of (13) byte(s).
+2022-03-20 16:01:42.135 ascii passed initial chaos probing. Mean measured chaos is 0.000000 %
+2022-03-20 16:01:42.135 ascii is most likely the one. Stopping the process.
+
+  You can now view your Streamlit app in your browser.
+
+  Network URL: http://172.17.0.2:8501
+  External URL: http://46.153.25.27:8501
+
+http://localhost:9000
+
+
+
+/bin/sh: pip: command not found
+
+
 Docker volume from host to container
 $ docker run -itd -v /opt/gouse:/opt/mount centos
 
@@ -107,6 +175,7 @@ now run your dockerfile to build an image
 $ docker build -t mycurl .
 
 login to your dockerhub
+
 create a repository gowseshaik\curubuntu
 goto your local:
 
@@ -116,6 +185,57 @@ $ docker push mycurl gowseshaik\mycurl:latest
 goto dockerhub now, and check your pushed image in your dockerhub.
 
 same image should be available in your dockerhub.
+
+[or]
+get the docker container id 
+$ docker ps -a
+copy the container id
+1.) commit your container 
+vagrant@docker:~$ docker commit c78041620df9
+sha256:4b4215a4acc78832b9ceefa5ce2f73224073750e1b7b357cc361d60ebea8a554
+
+2.) check the commited image created or not
+vagrant@docker:~$ docker images
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+<none>                       <none>    4b4215a4acc7   7 seconds ago   2.85GB
+
+3.) now goto dockerhub, and create  a repository in dockerhub 
+gowseshaik/printshoplinux
+
+4.)and copy the name and run in your local
+
+vagrant@docker:~$ docker tag 4b4215a4acc7 gowseshaik/printshoplinux:latest
+vagrant@docker:~$ docker images
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+gowseshaik/printshoplinux    latest    4b4215a4acc7   3 minutes ago   2.85GB
+
+5.) push your image to dockerhub
+$ docker push mycurl gowseshaik/printshoplinux:latest
+
+
+vagrant@docker:~$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: gowseshaik
+Password:
+WARNING! Your password will be stored unencrypted in /home/vagrant/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+vagrant@docker:~$ docker push gowseshaik/printshoplinux:latest
+The push refers to repository [docker.io/gowseshaik/printshoplinux]
+fa15a1eb4ef4: Pushed
+c1adf4de5c10: Pushing [>                                                  ]  10.77MB/1.159GB
+ff5a5c39b939: Pushing [========>                                          ]  41.32MB/247.3MB
+2cf283ed776e: Pushing [>                                                  ]  4.889MB/526.6MB
+d0ee34bb9288: Pushed
+4bf78777d822: Pushed
+39f5a2864e74: Mounted from library/python
+eb0b3ac194c1: Mounted from library/python
+
+
+
+
 ====================
 Docker-compose
 

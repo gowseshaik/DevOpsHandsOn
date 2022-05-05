@@ -1,0 +1,33 @@
+###############Cleaning up Docker images & Containers###############
+
+To kill Running Docker Containers
+=================================
+$ docker kill $(docker ps -q)
+
+To Delete all Stopped Docker Containers
+=======================================
+$ docker rm $(docker ps -a -q)
+
+To Remove a Docker image
+========================
+$ docker rmi <image name>
+
+To Delete Untagged(dangling) Images
+===================================
+$ docker rmi $(docker images -q -f dangling=true)
+
+To Delete All Images
+====================
+$ docker rmi $(docker images -q)
+
+
+######################Cleaning up volumes#########################
+Once a volumne is no longer associated with a container, it is considered as 'dangling'
+
+
+To remove all dangling volumes
+===============================
+$ docker volume rm $(docker volume ls -f dangling=true -q)
+
+Note : Does not remove files from host system in shared volumes
+

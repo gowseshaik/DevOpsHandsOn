@@ -1,0 +1,6 @@
+We use Bamboo for our builds, and we use it for staging deployments, but not to the servers (or environments) directly. 
+Our bamboo deployment projects deploy to one of two places: Artifactory or Octopus.
+
+ 
+
+I *highly* recommend Octopus deploy for deploying - all the things- especially if you have any windows deployment targets. But it is great at deploying to k8s clusters (including Openshift)

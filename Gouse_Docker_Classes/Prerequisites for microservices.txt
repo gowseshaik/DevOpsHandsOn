@@ -1,0 +1,89 @@
+What are Microservices?
+
+Microservices are a software development technique where a single application is not built as a single monolithic application but as a group/collection of small services each of which is Loosely Coupled, running as an Independent Process and each of which you communicate with the others through some type of open or at least well-known protocols like HTTP, TCAP (Transaction Capabilities Application Part), FTP (File Transfer Protocol) etc.
+
+Benefits of Microservices Style Architecture
+
+A developer can walk in on their first day and get their hands around it.
+A small team or even an individual can alter it and test it and version it and deploy it or even completely replace it.
+Easy to understand since they represent a small piece of functionality, and easy to modify for developers, thus they can help a new team member become productive quickly.
+It's easy for each of these services to be managed an independent way.
+If one microservice fails, the others will continue to work.
+Not only are we able to use the right technology for the job but we can deploy at different times.
+It is very easy to test and deploy and manage and re-architect and rewrite and scale individual applications.
+
+https://www.youtube.com/watch?v=TiRSWyCPRPY
+https://www.youtube.com/watch?v=HpZXWqE8MnQ
+https://www.youtube.com/watch?v=TaLymsgbAGk
+https://www.youtube.com/watch?v=MehQOXGHhV0&t=1s
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Microservices is an architectural style in software development life cycle based on SOA (Service Oriented Architecture) to manage and fine grain a giant application.
+
+Here application would be a group of loosely coupled lightweight services which are expert in their service implementation and collectively achieving entire application goal. 
+Netflix, eBay, Amazon and many other which have the first approach as monolithic but now using Microservices architecture.
+
+It is very compatible and adapted architecture for agile methodology as each day requirement and technologies are changing rapidly.
+
+Below are best articles to learn Microservices and implementation of microservices based on Spring boot
+
+They have given code to download from Github.
+
+https://www.opencodez.com/web-development/introduction-microservices-architecture.htm
+
+https://www.opencodez.com/java/microservices-action-spring-boot.htm
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+In which order should we learn these technologies: Spring Microservices, Docker and Spring Boot?
+Docker is completely independent and is more concerned with making release and deployment activity easier. Spring boot is an advance version of spring that wraps everything in an uber jar and makes development easier by using java bas d config instead of XML. My suggestion would be as follows:
+
+1. Spring Boot: Make a simple Rest Api in monolithic architecture. Understand the dynamics and flow.
+2. Spring Microservices
+3. Docker and Kubernetes
+
+Few other things you can take a look at:
+
+1. Zuul proxy for API gateway.
+2. Cocept of composite and core services.
+3. Netflix techblog for crashmonkey and orchestration of services.
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Microservices are an architectural pattern of writing software code where focus is on implementing single responsibility in the code base. 
+Ideally a single Microservice means we have to write code for a single functionality.
+
+This is recommended because each Microservice can be scaled horizontally for handling high load. 
+It is also advisable because a small team can independently work and deploy it as and when required. 
+Microservices normally interact with each other using REST or message passing. 
+We can have different technological stack for all of these Microservices so developers are free to develop them as per their ski set.
+
+Springboot is a framework to develop such Microservices very quickly because it offers a convention based programming paradigm instead of configuration based programming.
+
+This uses Spring and hibernate and also offers REST support along with security aspects of the web application.
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+What are the other options of developing a microservices application other than Spring Boot?
+If you question meant for what are other frameworks built for JVM, you can try the following
+
+Note: Spring boot doesn't provide any microservices functionalities alone. Spring cloud + Spring boot does the magic.
+
+Dropwizard
+Play framework with or without Akka
+Spark framework
+If you are a polygot programmer you can probably have a look at the below frameworks:
+
+Molecular (Node.js)
+Seneca (Node.js)
+nameko (Python)
+go-kit (Golang)
+Note: The above mentioned frameworks just makes your life easier to develop microservices. However, you don't need a framework to develop microservices. 
+You can just use simple lightweight rest libraries like Jersey/express/Flask and still be able to develop your application that run in microservice ecosystem.
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+https://philcalcado.com/2017/06/11/calcados_microservices_prerequisites.html
+
+$$$$$$$$$$$$$$$$$#######################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$

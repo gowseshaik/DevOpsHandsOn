@@ -1,0 +1,46 @@
+1. Make a bootable ISO from your Linux Virtual Machine!
+https://www.youtube.com/watch?v=2tUkmeDdXjM
+https://www.youtube.com/watch?v=3el76_JSlas
+https://www.youtube.com/watch?v=9mn1Giy5TlM
+List of Commands:
+=================
+$ sudo apt-get install systemback
+
+
+2. Convert an ISO to a Docker image
+refer link: https://www.youtube.com/watch?v=3lHGwrshnb4
+https://dev.to/sofianehamlaoui/convert-iso-images-to-docker-images-18jh
+https://wiki.metacentrum.cz/wiki/Creating_Docker_Image_from_.iso_File
+and move your iso file to ~/Downloads directory
+
+List of Commands:
+=================
+$ sudo apt-get install squashfs-tools -y
+$ sudo apt-get install docker.io -y
+$ sudo systemctl start docker
+$ sudo systemctl enable docker
+$ sudo usermod -aG docker $USER
+$ newgrp docker
+$ mkdir rootfs unsquashfs
+$ sudo mount -o loop ~/Downloads/ubuntu-20.04-live-server-amd64.iso ~/rootfs
+		example: $ sudo mount -o loop ~/Downloads/gouse_ubuntu20.4.iso ~/rootfs
+$ cd ~/rootfs
+$ find . -type f | grep filesystem.squashfs
+$ cd ~/
+$ sudo unsquashfs -f -d unsquashfs/ rootfs/casper/filesystem.squashfs
+$ sudo tar -C unsquashfs -c . | docker import - gouse/ubuntu:20.04
+$ docker images
+
+Now you can begin your dockerfiles with
+
+ 
+FROM ubuntuserver/tr
+and your full ubuntu image will be used. However note that build times may take much longer, since basic ubuntu image on docker hub has about 50MB and the image create from ubuntu iso almost 1GB.
+
+Transfer docker images
+If you want to transfer the image to a different machine (via a flash drive or scp for example), save the image into a single easily transferable file.
+
+$ docker save -o ubuntu-20.04.1.tar gouse/ubuntu:20.04
+Then copy your image to a new system with regular file transfer tools such as cp, scp or rsync (preferred for big files). After that you will have to load the image into Docker.
+
+$ docker load -i ubuntu-20.04.1.tar
