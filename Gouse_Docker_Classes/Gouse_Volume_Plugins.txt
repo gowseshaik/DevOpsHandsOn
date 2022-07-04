@@ -1,0 +1,7 @@
+Docker thired party supported plugins list:
+===========================================
+NetApp Docker Volume Plugin (nDVP) ==> https://hub.docker.com/plugins/netapp-docker-volume-plugin-ndvp
+eMC Docker plugin
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjR0IHd8d74AhVo8LsIHXThCAoQFnoECAQQAQ&url=https%3A%2F%2Fwww.snia.org%2Fsites%2Fdefault%2Ffiles%2FSDCIndia%2F2018%2FSlides%2F4%2520-%2520Dell%2520EMC%2520-%2520Persistent%2520storage%2520for%2520Containers.pdf&usg=AOvVaw2ZIna4mbTv0ygvXxtuCjL3
+
+You should have SAN storage, AWS EBS volumes 

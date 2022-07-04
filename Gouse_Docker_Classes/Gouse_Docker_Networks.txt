@@ -38,7 +38,7 @@ Dynamic application: there will be frequent updates, then go for Containers.
 
 3 tier application should be deployed on single server --> then 
 
-
+=================
 Bridge:
 =======
 It is a private default network created on the host

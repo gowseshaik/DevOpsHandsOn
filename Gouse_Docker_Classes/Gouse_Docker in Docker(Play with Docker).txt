@@ -1,0 +1,7 @@
+play with docker
+we will practice docker in this play ground.
+
+ALT+ENTER ==> to enlarge the screen and minimize.
+
+Ctrl+ insert(Copy)
+Shift +insert(paste)

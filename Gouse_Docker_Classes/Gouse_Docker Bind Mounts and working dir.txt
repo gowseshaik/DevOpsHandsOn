@@ -1,4 +1,6 @@
 Bind Mounts and working directories:
+Binds : mounting a host folder to inside a container. at the time of recreation of binds, binds will be disconnected.
+Volume : is a persistence drive, which will create by docker volumes command and will be used for sahred volumnes. Volumes will not be down at the time of recreation of containers.
 
 docker run -it python /bin/sh
 exit

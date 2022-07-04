@@ -1,0 +1,2 @@
+Dockerfile : is only used for creating an images
+Docker-compose: is only used for deploy a whole application( 2web, 2app, 2db) 
