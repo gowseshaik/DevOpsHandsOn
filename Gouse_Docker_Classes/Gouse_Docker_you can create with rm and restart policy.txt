@@ -1,0 +1,4 @@
+#docker run --rm -d --restart unless-stopped httpd
+conflicting options: --restart and --rm
+#docker run --rm -d --restart alway httpd
+conflicting options: --restart and --rm

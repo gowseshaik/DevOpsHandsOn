@@ -36,7 +36,6 @@ we wont upgrade/update container, this is called immutable architechture.
 Static application : there will be no frequent updates, then go for VM
 Dynamic application: there will be frequent updates, then go for Containers.
 
-3 tier application should be deployed on single server --> then 
 
 
 Bridge:

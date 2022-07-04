@@ -1,0 +1,50 @@
+How to Assign a Static IP to a Docker Container
+=================================================
+
+Static IP addresses don’t change when containers or services are stopped and started, making them useful for permanent networking. Assigning Docker containers static IP addresses is an easy way to make them more accessible.
+
+Why Use a Static IP?
+There are two kinds of “static IP”; private IP addresses used for internal networking inside a server, and public IP addresses used to connect outside the server, often over the internet.
+
+If you need to set up a public IP address for a container, you’ll want to use port bindings. You can “publish” ports on the Docker container to be accessible from the host. While there are more advanced networking setups, this is by far the easiest and most common. For example, binding port 80 (HTTP) on the host to point to an NGINX container:
+
+docker run --publish=80:8080 nginx
+If you want to make a static private IP address, you should consider if you need to use one at all. Most of the time, you’ll want a static IP to talk to one container from another, or from the host. In most cases, Docker’s built in networking can handle this.
+
+Docker comes with a default network, but if you make your own, you can give containers aliases when launched in that network. This alias will resolve to the container’s private IP automatically. For example, the NGINX container here can access the MongoDB instance with the connection string mongodb://mongohost:27017.
+
+docker network create example
+docker run --net example --name nginx -d nginx
+docker network connect example --alias mongohost mongodb
+To learn more, you can read Docker’s documentation on user-defined bridge networks.
+
+However, there are still plenty of times when you’ll want to manually specify a private IP address, such as accessing containers directly from the host. You’ll still need to use a custom Docker network to do so, but it’s easy to set up.
+
+Setting Up Static IPs
+First, you’ll need to set up a Docker network, and since we care about the IP address, you’ll need to specify a fixed subnet:
+
+docker network create --subnet=172.20.0.0/16 customnetwork
+RELATED: What are Subnets, and How Do They Affect My Network?
+
+Then, you can run a container, specifying the network with the --net flag, and specifying the IP with the -ip flag:
+
+docker run --net customnetwork --ip 172.20.0.10 -d container
+You caan verify the address is correct by checking it in container with exec -t bin/bash, or by inspecting the Docker container list:
+
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' name_or_id
+Using Docker Compose
+Docker Compose is a tool used to launch multiple containers with predefined settings. This includes setting up networks with specific subnets, and you can attach containers to networks with fixed IPs using the ipv4_address config block shown here:
+
+version: '2'
+services:
+  webserver:
+    image: nginx
+    container_name: web-server
+    networks:
+      customnetwork:
+        ipv4_address: 172.20.0.10
+networks:
+  customnetwork:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

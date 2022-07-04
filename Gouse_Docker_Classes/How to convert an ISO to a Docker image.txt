@@ -1,3 +1,27 @@
+Install qemu-img on Rocky Linux 8 Using dnf
+Update yum database with dnf using the following command.
+
+$ sudo dnf makecache --refresh
+After updating yum database, We can install qemu-img using dnf by running the following command:
+
+$ sudo dnf -y install qemu-img
+
+==============
+How to convert a VM into ISO file via QEMU-IMG command
+1. Install and put both dd and qemu-img program in the system path. Open a Command Prompt window in the folder where the source VMDK file is, and run the following commands to convert the source VMDK file to raw image.
+
+$ qemu-img convert -f vmdk filename.vmdk filename.raw
+
+2. And then run the following command to convert the raw image to ISO file.
+
+$ dd if=filename.raw of=filename.iso
+
+Note: replace filename with the file name of your VMDK file.
+
+https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/22.04/64bit.7z/download
+
+=======================
+
 1. Make a bootable ISO from your Linux Virtual Machine!
 https://www.youtube.com/watch?v=2tUkmeDdXjM
 https://www.youtube.com/watch?v=3el76_JSlas
@@ -44,3 +68,17 @@ $ docker save -o ubuntu-20.04.1.tar gouse/ubuntu:20.04
 Then copy your image to a new system with regular file transfer tools such as cp, scp or rsync (preferred for big files). After that you will have to load the image into Docker.
 
 $ docker load -i ubuntu-20.04.1.tar
+
+
+https://dev.to/sofianehamlaoui/convert-iso-images-to-docker-images-18jh
+
+
+robin
+jforg-xray
+
+
+
+error	27-Jun-2022 16:35:47	SONAR4BAMBOO: Failed SonarQube quality gate: Security Rating on New Code: B > A
+
+error	27-Jun-2022 16:32:15	WARNING: An illegal reflective access operation has occurred
+error	27-Jun-2022 16:32:15	WARNING: Illegal reflective access by net.sf.cglib.core.ReflectUtils$1 (file:/home/br********/.sonar/cache/866bb1adbf016ea515620f1aaa15ec53/sonar-javascript-plugin.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)

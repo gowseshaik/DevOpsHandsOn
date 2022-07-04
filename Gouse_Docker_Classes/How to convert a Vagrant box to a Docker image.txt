@@ -1,0 +1,58 @@
+How to convert a Vagrant box to a Docker image:
+===============================================
+
+I replayed this with EC2 boxes and Virtualbox boxes in my Github project blacklabelops/centos https://github.com/blacklabelops-legacy/centos. I have prepared a Vagrantfile with the necessary installation and you can try it yourself with your Vagrant boxes.
+
+EC2 boxes:
+
+    Create and provision an AMI image with https://github.com/katzj/ami-creator - Skripts in my repository.
+
+    Afterwards use Guestfish in order to extract the image into a tarball. - Skripts in my repository.
+
+    Import the tarball inside Docker. - Example in my repository.
+
+And now with Vagrant Virtualbox, commands can be replayed with my provided Vagrantfile. Just clone the repository, spin it up and type:
+
+$ qemu-img convert -f vmdk -O raw MyTry-disk1.vmdk mytry.img
+
+    The Vagrant box's VMDK can be found in the Virtualbox folder, usually ~/VirtualBox\ VMs/.
+
+After the raw has been created you can apply Guestfish.
+
+$ guestfish -a mytry.img --ro
+$ ><fs> run
+
+    Note: tty
+
+$ ><fs> list-filesystems 
+/dev/sda1: ext4
+/dev/VolGroup/lv_root: ext4
+/dev/VolGroup/lv_swap: swap
+$ ><fs> mount /dev/VolGroup/lv_root /
+$ ><fs> tar-out / - | xz --best >>  mytry.xz
+$ ><fs> exit
+
+    Note: exiting tty
+
+Importing into docker:
+
+$ cat mytry.xz | docker import - mytryimage
+
+Look inside the container
+
+$ docker run -it mytryimage bash
+
+===================
+ Convert a VirtualBox ova file to a Docker image · GitHub
+
+5 days ago Backup VMExtract files from .ova fileConvert .vmdk to .imgCreate an .xz image for Docker with guestfishImport image to dockerRun docker imageRun servicesCommit changes to the docker imageAdd alias to make it simple
+
+1. Backup VM
+2. Extract files from .ova file
+3. Convert .vmdk to .img
+4. Create an .xz image for Docker with guestfish "https://libguestfs.org/guestfish.1.html"
+5. Import image to docker
+6. Run docker image
+7. Run services
+8. Commit changes to the docker image
+9. Add alias to make it simple

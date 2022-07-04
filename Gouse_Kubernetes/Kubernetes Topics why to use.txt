@@ -1,0 +1,51 @@
+Deployment:
+============
+When a docker image is run, a container is created, with its own IP address.
+On the Kubernetes cluster, a container is run inside a pod, which contains one or more containers and has its own IP address.
+Deployment is the type of object that creates pods. Pod creation can be autoscaled based on the resource utilization or the static pod count can be set. For a microservice, there will be one deployment that acts like a group of service instances.
+
+StatefulSet:
+============
+There are services that need to persist the data, such as Postgres, RabbitMQ and ElasticSearch.
+It is advised to use StatefulSet instead of a deployment for such services.
+
+Persistent Volume:
+==================
+Persistent data from the containers should be kept on a storage VM or on a cloud service. Persistent Volume object contains configuration of such target locations, along with the storage types and required sizes.
+Target locations could be NFS or cloud services like Azure Files, Azure Disk, AWS EBS, and AWS S3.
+Instead of associating with Persistent Volume directly, pods are associated with Persistent Volume Claim, which demands for a certain storage type and size. Whichever Persistent Volume satisfies that criteria, is then linked with Persistent Volume Claim.
+When mounting directory on storage node, it is important to provide fsGroup under pod specifications as follows,securityContext:
+fsGroup: 2000Note: The “2000” mentioned here is the group permission of the target directory on the storage node.
+
+Service:
+========
+A service object is a key for inter-service communication inside the Kubernetes cluster. For a microservice, there should be a Kubernetes service present.
+The service name should be the same as the hostname used by the application to call another service.
+Kubernetes maintains an endpoint mapping of service name vs IP addresses of pods. Here, hostname resolution is done out-of-the-box, eliminating the need to maintain entry in the hosts file.
+By default, service type is ClusterIP which is not exposed outside the Kubernetes cluster, but a NodePort type of service is. A LoadBalancer service type is applicable in the cloud where a public IP address associated with the cloud load balancer service is assigned to the Kubernetes service.
+
+Ingress:
+========
+Ingress are the rules that redirect certain requests to a specific service based on the request path. These are read by the Ingress Controller, responsible for routing and load balancing requests. For example, NGINX Ingress Controller (ingress-nginx) is maintained by the Kubernetes community and provides yaml directives that can be used while writing ingress rules.
+Other options for Ingress Controller are HAProxy, NGINX Plus and Azure Gateway Ingress Controller.
+Ingress Controller acts like a load balancer because it forwards a specific request to the destination pod.
+Along with ingress rules, it is necessary to install Ingress Controller, which has its own pod and service. The service is of type NodePort. This would be the single entry point to the entire Kubernetes cluster.
+
+Secret:
+=======
+Secret is a type of object that maintains data in the form of key and value, where values are base64 encoded.
+It is also important to create a secret that has credentials for pulling docker images from a private repository. The secret name should be then provided against imagePullSecrets in pod specification.
+
+ConfigMap:
+==========
+Similar to Secret, ConfigMap can be used to store data in key and value form, which could then be passed to pod as an environment variable. Values are not base64 encoded and stored in plain text form.
+
+Namespace:
+==========
+Namespace is the logical separation of Kubernetes objects inside the cluster, for example, a namespace with infrastructure services containing a database server could serve Dev and QA pods from their respective namespaces.
+If no namespace is provided, then all the resources are deployed in the default namespace.
+
+Deployment Model:
+=================
+Although the ingress controller is capable of SSL termination, this could also be delegated to a gateway service running on the master node.
+Gateway service would conduct an SSL termination and forward requests to the Kubernetes cluster.

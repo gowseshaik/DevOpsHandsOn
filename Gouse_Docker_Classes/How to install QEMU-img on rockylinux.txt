@@ -1,0 +1,49 @@
+How To Install qemu-img on Rocky Linux 8
+In this tutorial we learn how to install qemu-img on Rocky Linux 8. qemu-img is QEMU command line tool for manipulating disk images
+ads via Carbon
+Your new development career awaits. Check out the latest listings.
+ADS VIA CARBON
+Introduction
+In this tutorial we learn how to install qemu-img on Rocky Linux 8.
+
+What is qemu-img
+This package provides a command line tool for manipulating disk images.
+
+We can use yum or dnf to install qemu-img on Rocky Linux 8. In this tutorial we discuss both methods but you only need to choose one of method to install qemu-img.
+
+Install qemu-img on Rocky Linux 8 Using dnf
+Update yum database with dnf using the following command.
+
+$ sudo dnf makecache --refresh
+After updating yum database, We can install qemu-img using dnf by running the following command:
+
+$ sudo dnf -y install qemu-img
+
+Install qemu-img on Rocky Linux 8 Using yum
+Update yum database with yum using the following command.
+
+sudo yum makecache --refresh
+After updating yum database, We can install qemu-img using yum by running the following command:
+
+sudo yum -y install qemu-img
+How To Uninstall qemu-img on Rocky Linux 8
+To uninstall only the qemu-img package we can use the following command:
+
+sudo dnf remove qemu-img
+qemu-img Package Contents on Rocky Linux 8
+/usr/bin/qemu-img
+/usr/bin/qemu-io
+/usr/bin/qemu-nbd
+/usr/lib/.build-id
+/usr/lib/.build-id/0e
+/usr/lib/.build-id/0e/91193a6bc3656d2a42a68d184ec403986c924d
+/usr/lib/.build-id/5a
+/usr/lib/.build-id/5a/11e1e5289e8b7b5575642a6ee192689d10b2c7
+/usr/lib/.build-id/88
+/usr/lib/.build-id/88/93bb77a02987eedb04efb595891f219439f67f
+/usr/share/man/man1/qemu-img.1.gz
+/usr/share/man/man8/qemu-nbd.8.gz
+References 
+qemu-img website
+Summary
+In this tutorial we learn how to install qemu-img on Rocky Linux 8 using yum and dnf.

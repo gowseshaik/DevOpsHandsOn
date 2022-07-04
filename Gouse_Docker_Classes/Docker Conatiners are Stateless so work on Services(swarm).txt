@@ -1,0 +1,8 @@
+Note: Containers are staeless(where containers doesn't have data), it will remove and recreates.
+Application will not work on IP adresses, works on host-name based. 
+so in swarm services come's into picture.
+
+In Any Container system, IP doesnt have value.
+
+so you must work on services.
+

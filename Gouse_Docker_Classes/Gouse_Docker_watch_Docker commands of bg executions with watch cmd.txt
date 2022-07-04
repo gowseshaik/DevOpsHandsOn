@@ -1,0 +1,3 @@
+watch Docker commands in bg executions
+
+#watch -n 1 docker ps -a

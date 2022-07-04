@@ -1,0 +1,1 @@
+Docker Swarm master will have it own internal database called as Corum or RAFT Database(internal Database).

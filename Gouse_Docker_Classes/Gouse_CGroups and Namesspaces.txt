@@ -1,0 +1,61 @@
+https://0xax.gitbooks.io/linux-insides/content/Cgroups/linux-cgroups-1.html
+https://www.geeksforgeeks.org/linux-virtualization-resource-throttling-using-cgroups/
+https://wizardzines.com/comics/
+
+[root@master vagrant]# mount | grep "^cgroup"
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_cls,net_prio)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/rdma type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,rdma)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpu,cpuacct)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+
+*****************========================*******************************
+You may see enabled control groups on your computer via proc filesystem:
+*****************========================*******************************
+
+[root@master vagrant]# cat /proc/cgroups
+#subsys_name    hierarchy       num_cgroups     enabled
+cpuset  11      1       1
+cpu     10      1       1
+cpuacct 10      1       1
+blkio   2       1       1
+memory  7       71      1
+devices 3       63      1
+freezer 12      1       1
+net_cls 5       1       1
+perf_event      6       1       1
+net_prio        5       1       1
+hugetlb 9       1       1
+pids    4       71      1
+rdma    8       1       1
+
+***====*******
+or via sysfs:
+***====*******
+
+[root@master vagrant]# ls -l /sys/fs/cgroup/
+total 0
+dr-xr-xr-x. 2 root root  0 May 22 08:55 blkio
+lrwxrwxrwx. 1 root root 11 May 22 08:55 cpu -> cpu,cpuacct
+lrwxrwxrwx. 1 root root 11 May 22 08:55 cpuacct -> cpu,cpuacct
+dr-xr-xr-x. 2 root root  0 May 22 08:55 cpu,cpuacct
+dr-xr-xr-x. 2 root root  0 May 22 08:55 cpuset
+dr-xr-xr-x. 5 root root  0 May 22 08:55 devices
+dr-xr-xr-x. 2 root root  0 May 22 08:55 freezer
+dr-xr-xr-x. 2 root root  0 May 22 08:55 hugetlb
+dr-xr-xr-x. 5 root root  0 May 22 08:55 memory
+lrwxrwxrwx. 1 root root 16 May 22 08:55 net_cls -> net_cls,net_prio
+dr-xr-xr-x. 2 root root  0 May 22 08:55 net_cls,net_prio
+lrwxrwxrwx. 1 root root 16 May 22 08:55 net_prio -> net_cls,net_prio
+dr-xr-xr-x. 2 root root  0 May 22 08:55 perf_event
+dr-xr-xr-x. 5 root root  0 May 22 08:55 pids
+dr-xr-xr-x. 2 root root  0 May 22 08:55 rdma
+dr-xr-xr-x. 5 root root  0 May 22 08:55 systemd
+[root@master vagrant]#

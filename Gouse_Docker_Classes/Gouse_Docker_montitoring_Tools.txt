@@ -1,0 +1,21 @@
+docker monitoring tools:
+
+buit-in tools:
+
+# docker stats
+# docker logs
+# docker top <container name>
+# docker exec -it <conatiner name>
+
+advance maner tools:
+1. cadvisor (container advisor by Goolgle, written in go lang)
+it will display in a graphical maner.
+run the cadvisor container, to collect all your running containers matrix.
+# docker pull google/cadvisor
+
+http://localhost:8080/containers
+
+
+
+
+

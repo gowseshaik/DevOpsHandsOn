@@ -1,0 +1,4 @@
+# docker inspect <conatinerName>
+# docker inspect <conatinerName> | grep -i ip
+
+# netstat -tulpn | grep LISTEN
