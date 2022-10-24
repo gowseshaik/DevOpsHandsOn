@@ -1,0 +1,40 @@
+26
+
+I replayed this with EC2 boxes and Virtualbox boxes in my Github project blacklabelops/centos. I have prepared a Vagrantfile with the necessary installation and you can try it yourself with your Vagrant boxes.
+
+EC2 boxes:
+
+Create and provision an AMI image with https://github.com/katzj/ami-creator - Skripts in my repository.
+
+Afterwards use Guestfish in order to extract the image into a tarball. - Skripts in my repository.
+
+Import the tarball inside Docker. - Example in my repository.
+
+And now with Vagrant Virtualbox, commands can be replayed with my provided Vagrantfile. Just clone the repository, spin it up and type:
+https://techpiezo.com/linux/convert-disk-images-to-various-formats-using-qemu-img/
+https://docs.openstack.org/image-guide/convert-images.html
+
+$ qemu-img convert -f vmdk -O raw MyTry-disk1.vmdk mytry.img
+The Vagrant box's VMDK can be found in the Virtualbox folder, usually ~/VirtualBox\ VMs/.
+
+After the raw has been created you can apply Guestfish. https://libguestfs.org/guestfish.1.html
+
+$ guestfish -a mytry.img --ro
+$ ><fs> run
+Note: tty
+
+$ ><fs> list-filesystems 
+/dev/sda1: ext4
+/dev/VolGroup/lv_root: ext4
+/dev/VolGroup/lv_swap: swap
+$ ><fs> mount /dev/VolGroup/lv_root /
+$ ><fs> tar-out / - | xz --best >>  mytry.xz
+$ ><fs> exit
+Note: exiting tty
+
+Importing into docker:
+
+$ cat mytry.xz | docker import - mytryimage
+Look inside the container
+
+$ docker run -it mytryimage bash

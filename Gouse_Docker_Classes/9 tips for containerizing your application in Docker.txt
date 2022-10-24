@@ -1,0 +1,11 @@
+9 tips for containerizing your application in Docker: 
+https://www.docker.com/blog/9-tips-for-containerizing-your-node-js-application/
+  1.) Use a specific base image tag instead of latest – "latest" Docker image tag is unpredictable. Try to use specific image tag whenever possible 
+  2.) Use multi-stage build – this makes the final image smaller and more secure 
+  3.) Fix security vulnerabilities in your base image – run security scans on the images to detect any known vulnerabilities 
+  4.) Run container as non-root user – mitigates security risks 
+  5.) Use .dockerignore - increases build performance. Recommended to use in the same directory as your Dockerfile 
+  6.) Leverage HEALTHCHECK – test a container and confirm it is still working 
+  7.) Favor multi-arch Docker image – always build the docker image with Multi-Architecture Platform support 
+  8.) Explore graceful shutdown options – ensure your app is handling ongoing requests and cleaning up resource in a timely fashion 
+  9.) Measure performance – use OpenTelemetry APIs to ensure that apps are fast and performant 
