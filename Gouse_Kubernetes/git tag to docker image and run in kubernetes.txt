@@ -1,0 +1,28 @@
+To know the tags created on your repository
+
+$ git clone <https://repo_url>
+$ git rev-list --tags
+$ git rev-list --tags --date-order
+$ git show-ref --tags
+$ git show-ref --tags | grep <commit id> from (--date-order command>
+
+COMMIT_ID=$(git rev-list --tags --date-order | head -1)
+LATEST_TAG=$(git show-ref --tags | grep $COMMIT_ID | awk -F / '{print $NF}')
+echo $LATEST_TAG
+
+docker build -t gowseshaik/monit:$LATEST_TAG .
+docker push gowseshaik/monit:$LATEST_TAG
+
+now we have to create a deployment file for kubernetes.
+vi deployment.yml file
+replace the recent tag with sed command
+sed -e "s/VERSION/$LATEST_TAG/" /home/siebel/deployment.yml > /tmp/deployment.yml 
+from : image: gowseshaik/monit:VERSION
+To 	 : image: gowseshaik/monit:$LATEST_TAG
+
+now apply your file with kubectl 
+$kubectl apply -f /tmp/deployment.yml
+
+$ kubectl get pods
+$ kubectl get pods -o wide (to get the the ip address of your pods)
+$ curl 192.168.10.1

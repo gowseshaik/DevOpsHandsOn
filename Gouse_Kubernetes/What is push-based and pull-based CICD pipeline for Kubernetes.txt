@@ -1,0 +1,8 @@
+What is push-based and pull-based CI/CD pipeline for Kubernetes?👨🏻‍💻
+
+In a push-based pipeline, an external system, like a CI pipeline, generates build triggers to deploy the changes to the Kubernetes cluster following a commit to a version control system(github,GitLab,Bitbucket) repository. In such a model, Kubernetes cluster credentials are exposed outside the trust domain of your cluster which is not recommended.
+Example - Jenkins, github actions, GitLab CICD
+
+In a pull-based pipeline, Kubernetes operators deploy the changes from inside of a cluster whenever new images are pushed to the registry.
+With a pipeline that pulls an image from the repository, your cluster credentials are not exposed outside of your production environment.
+Example - ArgoCD, Spinnaker
